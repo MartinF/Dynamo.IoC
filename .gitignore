@@ -1,6 +1,7 @@
 .svn/
 obj/
 bin/
+TestResults/
 _ReSharper*
 *.csproj.user
 *.resharper.user
