@@ -1,0 +1,9 @@
+.svn/
+obj/
+bin/
+_ReSharper*
+*.csproj.user
+*.resharper.user
+*.user
+*.suo
+*.Publish.xml
