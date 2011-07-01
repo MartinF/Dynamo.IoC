@@ -1,0 +1,56 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dynamo.Ioc.Website", "Dynamo.Ioc.Website\Dynamo.Ioc.Website.csproj", "{1626AC5D-2849-4637-902D-B78EFE67575E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dynamo.Ioc.Tests", "Dynamo.Ioc.Tests\Dynamo.Ioc.Tests.csproj", "{885ECF2D-5C9F-43E7-9ECA-45DEF2FB40C3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dynamo.Ioc", "Dynamo.Ioc\Dynamo.Ioc.csproj", "{AADD668B-8394-4276-A10B-C8C2EFD165FD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dynamo.Ioc.Web", "Dynamo.Ioc.Web\Dynamo.Ioc.Web.csproj", "{47BA6C40-4D08-4434-A27A-ACFBF0039658}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dynamo.Ioc.Web.Tests", "Dynamo.Ioc.Web.Tests\Dynamo.Ioc.Web.Tests.csproj", "{FDB0FFD2-6BA2-418B-90E7-EBF2544259C5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0F8710E0-254B-47E5-9ED5-76A3C3F8BAAF}"
+	ProjectSection(SolutionItems) = preProject
+		Dynamo.Ioc.vsmdi = Dynamo.Ioc.vsmdi
+		Local.testsettings = Local.testsettings
+		ToDo.txt = ToDo.txt
+		ToDoClass.txt = ToDoClass.txt
+		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = Dynamo.Ioc.vsmdi
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1626AC5D-2849-4637-902D-B78EFE67575E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1626AC5D-2849-4637-902D-B78EFE67575E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1626AC5D-2849-4637-902D-B78EFE67575E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1626AC5D-2849-4637-902D-B78EFE67575E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{885ECF2D-5C9F-43E7-9ECA-45DEF2FB40C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{885ECF2D-5C9F-43E7-9ECA-45DEF2FB40C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{885ECF2D-5C9F-43E7-9ECA-45DEF2FB40C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{885ECF2D-5C9F-43E7-9ECA-45DEF2FB40C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AADD668B-8394-4276-A10B-C8C2EFD165FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AADD668B-8394-4276-A10B-C8C2EFD165FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AADD668B-8394-4276-A10B-C8C2EFD165FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AADD668B-8394-4276-A10B-C8C2EFD165FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47BA6C40-4D08-4434-A27A-ACFBF0039658}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47BA6C40-4D08-4434-A27A-ACFBF0039658}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47BA6C40-4D08-4434-A27A-ACFBF0039658}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47BA6C40-4D08-4434-A27A-ACFBF0039658}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDB0FFD2-6BA2-418B-90E7-EBF2544259C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDB0FFD2-6BA2-418B-90E7-EBF2544259C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDB0FFD2-6BA2-418B-90E7-EBF2544259C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDB0FFD2-6BA2-418B-90E7-EBF2544259C5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
