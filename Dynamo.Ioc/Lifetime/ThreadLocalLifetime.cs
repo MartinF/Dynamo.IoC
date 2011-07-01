@@ -4,6 +4,8 @@
 
 // ThreadLocal<> needs to be disposed ?
 
+// Rename to ThreadLifetime?
+
 namespace Dynamo.Ioc
 {
 	public sealed class ThreadLocalLifetime : LifetimeBase
