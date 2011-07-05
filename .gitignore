@@ -8,3 +8,8 @@ _ReSharper*
 *.user
 *.suo
 *.Publish.xml
+ToDo.txt
+ToDoClass.txt
+Build/
+NuGet/
+Local.testsettings
