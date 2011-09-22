@@ -17,7 +17,7 @@ namespace Dynamo.Ioc.Web.Tests
 		[TestMethod]
 		public void CanSetDefaultLifetimeToRequestLifetime()
 		{
-			using (var container = new Container(() => new RequestLifetime()))
+			using (var container = new IocContainer(() => new RequestLifetime()))
 			{
 				Assert.IsInstanceOfType(container.DefaultLifetime, typeof(RequestLifetime));
 			}
@@ -30,7 +30,7 @@ namespace Dynamo.Ioc.Web.Tests
 		public void RequestLifetimeReturnsSameInstanceForSameRequest()
 		{
 			// Arrange
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				var context1 = new FakeHttpContext("Http://fakeUrl1.com");
 				var context2 = new FakeHttpContext("Http://fakeUrl2.com");
@@ -67,7 +67,7 @@ namespace Dynamo.Ioc.Web.Tests
 		{
 			// Currently throws the wrong Expection (InvalidCastException)
 
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				// Arrange
 				var context = new FakeHttpContext("Http://fakeUrl1.com");

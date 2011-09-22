@@ -13,7 +13,7 @@ namespace Dynamo.Ioc.Tests.LifetimeTests
 		[TestMethod]
 		public void CanSetDefaultLifetimeToContainerLifetime()
 		{
-			using (var container = new Container(() => new ContainerLifetime()))
+			using (var container = new IocContainer(() => new ContainerLifetime()))
 			{
 				Assert.IsInstanceOfType(container.DefaultLifetime, typeof(ContainerLifetime));
 			}
@@ -25,7 +25,7 @@ namespace Dynamo.Ioc.Tests.LifetimeTests
 		[TestMethod]
 		public void ContainerLifetimeAlwaysReturnsSameInstance()
 		{
-			using (var container = new Container(() => new ContainerLifetime()))
+			using (var container = new IocContainer(() => new ContainerLifetime()))
 			{
 				container.Register<IFoo>(c => new Foo1());
 

@@ -10,7 +10,7 @@ using Dynamo.Ioc.Index;
 
 namespace Dynamo.Ioc
 {
-	public interface IContainer : IResolver, IDisposable
+	public interface IIocContainer : IResolver, IDisposable
 	{
 		// Properties
 		IIndex Index { get; }

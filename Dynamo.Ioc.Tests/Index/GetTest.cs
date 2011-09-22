@@ -12,7 +12,7 @@ namespace Dynamo.Ioc.Tests.Index
 		[TestMethod]
 		public void GetRegistrationReturnTheExpectedRegistration()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				var registration = container.Register(typeof(IFoo), c => new Foo1());
 
@@ -26,7 +26,7 @@ namespace Dynamo.Ioc.Tests.Index
 		[TestMethod]
 		public void GetRegistrationUsingKeyReturnTheExpectedRegistration()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				var registration = container.Register(typeof(IFoo), "Foo", c => new Foo1());
 
@@ -41,7 +41,7 @@ namespace Dynamo.Ioc.Tests.Index
 		[ExpectedException(typeof(KeyNotFoundException))]
 		public void GetRegistrationsThrowsExceptionIfRegistrationDoesntExist()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				container.Index.Get(typeof(IFoo));
 			}
@@ -51,7 +51,7 @@ namespace Dynamo.Ioc.Tests.Index
 		[ExpectedException(typeof(KeyNotFoundException))]
 		public void GetRegistrationsByNameThrowsExceptionIfRegistrationDoesntExist()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				container.Index.Get(typeof(IFoo), "Foo");
 			}
@@ -63,7 +63,7 @@ namespace Dynamo.Ioc.Tests.Index
 		[TestMethod]
 		public void GetGenericReturnTheExpectedRegistration()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				var registration = container.Register<IFoo>(c => new Foo1());
 
@@ -77,7 +77,7 @@ namespace Dynamo.Ioc.Tests.Index
 		[TestMethod]
 		public void GetGenericUsingKeyReturnTheExpectedRegistration()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				var registration = container.Register<IFoo>("Foo", c => new Foo1());
 
@@ -92,7 +92,7 @@ namespace Dynamo.Ioc.Tests.Index
 		[ExpectedException(typeof(KeyNotFoundException))]
 		public void GetGenericThrowsExceptionIfRegistrationDoesntExist()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				container.Index.Get<IFoo>();
 			}
@@ -102,7 +102,7 @@ namespace Dynamo.Ioc.Tests.Index
 		[ExpectedException(typeof(KeyNotFoundException))]
 		public void GetGenericUsingKeyThrowsExceptionIfRegistrationDoesntExist()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				container.Index.Get<IFoo>("Foo");
 			}

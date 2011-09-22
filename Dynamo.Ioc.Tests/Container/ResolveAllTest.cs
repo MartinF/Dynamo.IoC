@@ -16,7 +16,7 @@ namespace Dynamo.Ioc.Tests
 		[TestMethod]
 		public void ResolveAllByTypeReturnsInstancesOfExpectedType()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				container.Register<IFoo>(c => new Foo1());
 				container.Register<IFoo>("Foo1", c => new Foo2());
@@ -39,7 +39,7 @@ namespace Dynamo.Ioc.Tests
 		[ExpectedException(typeof(KeyNotFoundException))]
 		public void ResolveAllByTypeNotRegisteredThrowsException()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				var results = container.ResolveAll<IFoo>();
 

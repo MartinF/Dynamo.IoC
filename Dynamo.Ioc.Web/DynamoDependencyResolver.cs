@@ -6,11 +6,11 @@ using System.Web.Mvc;
 
 namespace Dynamo.Ioc.Web
 {
-	public class DynamoDependencyResolver : IDependencyResolver
+	public class DynamoDependencyResolver : IDependencyResolver, IServiceProvider
 	{
-		private readonly IContainer _container;
+		private readonly IIocContainer _container;
 
-		public DynamoDependencyResolver(IContainer container)
+		public DynamoDependencyResolver(IIocContainer container)
 		{
 			if (container == null)
 				throw new ArgumentNullException("container");
@@ -21,10 +21,8 @@ namespace Dynamo.Ioc.Web
 		public object GetService(Type serviceType)
 		{
 			object obj;
-			if (_container.TryResolve(serviceType, out obj))
-				return obj;
-
-			return null;
+			_container.TryResolve(serviceType, out obj);
+			return obj;
 		}
 
 		public IEnumerable<object> GetServices(Type serviceType)

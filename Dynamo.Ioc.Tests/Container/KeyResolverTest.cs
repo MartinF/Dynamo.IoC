@@ -8,7 +8,7 @@ namespace Dynamo.Ioc.Tests
 		[TestMethod]
 		public void KeyResolverWorks()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				var reg1 = container.Register<IDeviceState>(DeviceState.Online, x => new FooConnection(true));
 				var reg2 = container.Register<IDeviceState>(DeviceState.Offline, x => new FooConnection(false));

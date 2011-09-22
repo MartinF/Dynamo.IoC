@@ -14,7 +14,7 @@ namespace Dynamo.Ioc.Tests
 		[TestMethod]
 		public void RegisterInstanceReturnsCorrectType()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				var fooInstance = new Foo1();
 				var result = container.RegisterInstance(typeof(IFoo), fooInstance);
@@ -30,7 +30,7 @@ namespace Dynamo.Ioc.Tests
 		[TestMethod]
 		public void RegisterInstanceUsingKeyReturnsCorrectType()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				var fooInstance = new Foo1();
 				var result = container.RegisterInstance(typeof(IFoo), "Bar", fooInstance);
@@ -47,7 +47,7 @@ namespace Dynamo.Ioc.Tests
 		[ExpectedException(typeof(RegistrationException))]
 		public void RegisterInstanceByTypeThrowsExceptionIfInstanceNotOfExpectedType()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				var fooInstance = new Foo1();
 				var result = container.RegisterInstance(typeof(IBar), fooInstance);
@@ -58,7 +58,7 @@ namespace Dynamo.Ioc.Tests
 		[ExpectedException(typeof(RegistrationException))]
 		public void RegisterInstanceUsingKeyThrowsExceptionIfInstanceNotOfExpectedType()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				var fooInstance = new Foo1();
 				var result = container.RegisterInstance(typeof(IBar), "Foo", fooInstance);
@@ -68,7 +68,7 @@ namespace Dynamo.Ioc.Tests
 		[TestMethod]
 		public void RegisterInstanceCanRegisterAStruct()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				int number = 32;
 				var registration = container.RegisterInstance(typeof(int), number);
@@ -88,7 +88,7 @@ namespace Dynamo.Ioc.Tests
 		[TestMethod]
 		public void RegisterInstanceGenericReturnsCorrectType()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				var fooInstance = new Foo1();
 				var result = container.RegisterInstance<IFoo>(fooInstance);
@@ -104,7 +104,7 @@ namespace Dynamo.Ioc.Tests
 		[TestMethod]
 		public void RegisterInstanceGenericUsingKeyReturnsCorrectType()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				var fooInstance = new Foo1();
 				var result = container.RegisterInstance<IFoo>("Bar", fooInstance);
@@ -121,7 +121,7 @@ namespace Dynamo.Ioc.Tests
 		[ExpectedException(typeof(ArgumentException))]
 		public void RegisterInstanceGenericUsingTypeThatAlreadyExistsThrowsException()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				container.RegisterInstance<IFoo>(new Foo1());
 				container.RegisterInstance<IFoo>(new Foo2());
@@ -132,7 +132,7 @@ namespace Dynamo.Ioc.Tests
 		[ExpectedException(typeof(ArgumentException))]
 		public void RegisterInstanceGenericUsingKeyThatAlreadyExistsThrowsException()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				container.RegisterInstance<IFoo>("Bar", new Foo1());
 				container.RegisterInstance<IFoo>("Bar", new Foo2());

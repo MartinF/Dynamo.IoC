@@ -1,0 +1,5 @@
+<Configuration>
+  <NamespaceFolders>
+    <SkipFolder>AADD668B-8394-4276-A10B-C8C2EFD165FD/d:Container</SkipFolder>
+  </NamespaceFolders>
+</Configuration>

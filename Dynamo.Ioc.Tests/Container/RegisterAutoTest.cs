@@ -15,7 +15,7 @@ namespace Dynamo.Ioc.Tests
 		[TestMethod]
 		public void RegisterAutoByTypeReturnsIConfigurableRegistration()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				var result = container.Register<IFoo, Foo1>();
 
@@ -28,7 +28,7 @@ namespace Dynamo.Ioc.Tests
 		[TestMethod]
 		public void RegisterAutoByNameReturnsIConfigurableRegistration()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				var result = container.Register<IFoo, Foo1>("Bar");
 
@@ -41,7 +41,7 @@ namespace Dynamo.Ioc.Tests
 		[TestMethod]
 		public void RegisterAutoByTypeResolvesToCorrectType()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				container.Register<IFoo, Foo1>();
 				var result = container.Resolve<IFoo>();
@@ -54,7 +54,7 @@ namespace Dynamo.Ioc.Tests
 		[TestMethod]
 		public void RegisterAutoByNameResolvesToCorrectType()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				container.Register<IFoo, Foo1>("Bar");
 				var result = container.Resolve<IFoo>("Bar");
@@ -67,7 +67,7 @@ namespace Dynamo.Ioc.Tests
 		[TestMethod]
 		public void RegisterAutoByTypeWithParametersResolvesToCorrectType()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				container.Register<IFoo, Foo1>();
 				container.Register<IBar, Bar1>();
@@ -88,7 +88,7 @@ namespace Dynamo.Ioc.Tests
 		[TestMethod]
 		public void RegisterAutoByNameWithParametersResolvesToCorrectType()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				container.Register<IFoo, Foo1>();
 				container.Register<IBar, Bar1>();
@@ -109,7 +109,7 @@ namespace Dynamo.Ioc.Tests
 		[TestMethod]
 		public void RegisterAutoIsAbleToRegisterAndResolveClassWithInternalConstructor()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				// Possible to register
 				var result = container.Register<IConstructor, InternalConstructor>();
@@ -125,7 +125,7 @@ namespace Dynamo.Ioc.Tests
 		[TestMethod]
 		public void RegisterAutoIsAbleToRegisterAndResolveClassWithInternalProtectedConstructor()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				// Possible to register
 				var result = container.Register<IConstructor, InternalProtectedConstructor>();
@@ -141,7 +141,7 @@ namespace Dynamo.Ioc.Tests
 		[TestMethod]
 		public void RegisterAutoChoosePublicOverInternalConstructorEvenThoughInternalHaveMoreParameters()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				// Possible to register
 				var result = container.Register<IConstructor, PublicConstructor>();
@@ -161,7 +161,7 @@ namespace Dynamo.Ioc.Tests
 		[ExpectedException(typeof(ArgumentException))]
 		public void RegisterAutoThrowsExceptionIfClassHaveNoPublicOrInternalConstructor()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				// Only a private constructor exists
 				container.Register<IConstructor, PrivateConstructor>();

@@ -12,7 +12,7 @@ namespace Dynamo.Ioc.Tests.Index
 		[TestMethod]
 		public void TryGetAllReturnsAnEmptyEnumerableIfTypeIsNotRegistered()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				// Arrange
 				var foo1 = container.Register<IFoo>(c => new Foo1());
@@ -34,7 +34,7 @@ namespace Dynamo.Ioc.Tests.Index
 		[TestMethod]
 		public void TryGetAllGenericReturnsAnEmptyEnumerableIfTypeIsNotRegistered()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				// Arrange
 				var foo1 = container.Register<IFoo>(c => new Foo1());

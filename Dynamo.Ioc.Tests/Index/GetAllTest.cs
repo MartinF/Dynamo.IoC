@@ -12,7 +12,7 @@ namespace Dynamo.Ioc.Tests.Index
 		[TestMethod]
 		public void GetAllReturnsExpectedRegistrations()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				var foo1 = container.Register(typeof(IFoo), c => new Foo1());
 				var foo2 = container.Register(typeof(IFoo), "Bob", c => new Foo2());
@@ -39,7 +39,7 @@ namespace Dynamo.Ioc.Tests.Index
 		[ExpectedException(typeof(KeyNotFoundException))]
 		public void GetAllThrowsExceptionIfTypeIsNotRegistered()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				var foo1 = container.Register<IFoo>(c => new Foo1());
 				var foo2 = container.Register<IFoo>("Foo", c => new Foo2());
@@ -57,7 +57,7 @@ namespace Dynamo.Ioc.Tests.Index
 		[TestMethod]
 		public void GetAllGenericReturnsExpectedRegistrations()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				var foo1 = container.Register<IFoo>(c => new Foo1());
 				var foo2 = container.Register<IFoo>("Bob", c => new Foo2());
@@ -84,7 +84,7 @@ namespace Dynamo.Ioc.Tests.Index
 		[ExpectedException(typeof(KeyNotFoundException))]
 		public void GetAllGenericThrowsExceptionIfTypeIsNotRegistered()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				var foo1 = container.Register<IFoo>(c => new Foo1());
 				var foo2 = container.Register<IFoo>("Foo", c => new Foo2());

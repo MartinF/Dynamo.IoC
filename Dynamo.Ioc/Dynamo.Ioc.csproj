@@ -46,9 +46,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Container\Container.cs" />
+    <Compile Include="Container\IocContainer.cs" />
     <Compile Include="Container\ContainerExtensions.cs" />
-    <Compile Include="Container\IContainer.cs" />
+    <Compile Include="Container\IIocContainer.cs" />
     <Compile Include="Container\IKeyResolver.cs" />
     <Compile Include="Container\IResolver.cs" />
     <Compile Include="Container\KeyResolver.cs" />

@@ -12,7 +12,7 @@ namespace Dynamo.Ioc.Tests.Index
 		[TestMethod]
 		public void IndexReturnsEmptyEnumerableWhenEmpty()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				Assert.IsFalse(container.Index.Any());
 			}
@@ -21,7 +21,7 @@ namespace Dynamo.Ioc.Tests.Index
 		[TestMethod]
 		public void IndexIsEnumerable()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				var reg1 = container.Register<IFoo>(c => new Foo1());
 				var reg2 = container.Register<IBar>(c => new Bar1());

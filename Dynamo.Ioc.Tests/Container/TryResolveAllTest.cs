@@ -12,7 +12,7 @@ namespace Dynamo.Ioc.Tests
 		[TestMethod]
 		public void TryResolveAllReturnsExpectedInstances()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				// Arrange
 				var foo1 = new Foo1();
@@ -42,7 +42,7 @@ namespace Dynamo.Ioc.Tests
 		[TestMethod]
 		public void TryResolveAllByTypeNotRegisteredReturnsEmptyEnumerable()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				// Arrange
 				var foo1 = new Foo1();

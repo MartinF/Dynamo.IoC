@@ -15,7 +15,7 @@ namespace Dynamo.Ioc.Web.Tests
 		[TestMethod]
 		public void CanSetDefaultLifetimeToSessionLifetime()
 		{
-			using (var container = new Container(() => new SessionLifetime()))
+			using (var container = new IocContainer(() => new SessionLifetime()))
 			{
 				Assert.IsInstanceOfType(container.DefaultLifetime, typeof(SessionLifetime));
 			}
@@ -28,7 +28,7 @@ namespace Dynamo.Ioc.Web.Tests
 		public void SessionLifetimeReturnsSameInstanceForSameSessionAndDifferentInstanceForDifferentSession()
 		{
 			// Arrange
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				var sessionItems1 = new SessionStateItemCollection();
 				var sessionItems2 = new SessionStateItemCollection();

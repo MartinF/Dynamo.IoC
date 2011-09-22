@@ -13,7 +13,7 @@ namespace Dynamo.Ioc.Web.Tests
 		[TestMethod]
 		public void CanSetDefaultLifetimeToCachedLifetime()
 		{
-			using (var container = new Container(() => new CachedLifetime()))
+			using (var container = new IocContainer(() => new CachedLifetime()))
 			{
 				Assert.IsInstanceOfType(container.DefaultLifetime, typeof(CachedLifetime));
 			}
@@ -22,7 +22,7 @@ namespace Dynamo.Ioc.Web.Tests
 		[TestMethod]
 		public void CachedLifetimeReturnsSameInstanceIfCacheNotExpired()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				var lifetime = new CachedLifetime(new TimeSpan(0, 0, 3));
 
@@ -48,7 +48,7 @@ namespace Dynamo.Ioc.Web.Tests
 		[TestMethod]
 		public void CachedLifetimeReturnsDifferentInstanceIfCacheExpired()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				var reg = container.Register<IFoo>(c => new Foo1()).SetLifetime(new CachedLifetime());
 
@@ -100,7 +100,7 @@ namespace Dynamo.Ioc.Web.Tests
 		[TestMethod]
 		public void CachedLifetimeReturnsDifferentInstanceIfSlidingTimeoutHaveExpired()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				// Expires When not Accessed For More than a specific time periode.
 				var lifetime = new CachedLifetime(new TimeSpan(0, 0, 1));
@@ -136,7 +136,7 @@ namespace Dynamo.Ioc.Web.Tests
 		[TestMethod]
 		public void CallbackIsCalledWhenItemRemovedFromCache()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				var lifetime = new CachedLifetime(new TimeSpan(0, 0, 1), itemRemovedCallback: RemovedCallback);
 
@@ -162,7 +162,7 @@ namespace Dynamo.Ioc.Web.Tests
 		[TestMethod]
 		public void IsDependentOnTest()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				var executionDirectory = Environment.CurrentDirectory;
 				

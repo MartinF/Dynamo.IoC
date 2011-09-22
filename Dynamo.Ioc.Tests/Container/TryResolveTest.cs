@@ -12,7 +12,7 @@ namespace Dynamo.Ioc.Tests
 		[TestMethod]
 		public void TryResolveByTypeNotRegisteredReturnsNull()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				// Act
 				IFoo obj;
@@ -27,7 +27,7 @@ namespace Dynamo.Ioc.Tests
 		[TestMethod]
 		public void TryResolveByNameNotRegisteredReturnsNull()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				// Arrange
 				container.Register<IFoo>("Foo", c => new Foo1());
@@ -49,7 +49,7 @@ namespace Dynamo.Ioc.Tests
 		[TestMethod]
 		public void TryResolveByTypeReturnsExpectedInstance()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				// Arrange
 				container.Register<IFoo>(x => new Foo1());
@@ -67,7 +67,7 @@ namespace Dynamo.Ioc.Tests
 		[TestMethod]
 		public void TryResolveByNameReturnsExpectedInstance()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				// Arrange
 				var foo = new Foo1();

@@ -11,7 +11,7 @@ namespace Dynamo.Ioc.Tests.LifetimeTests
 		[TestMethod]
 		public void DefaultLifetimeIsDefaultSetToTransient()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				Assert.IsInstanceOfType(container.DefaultLifetime, typeof(TransientLifetime));
 			}
@@ -24,7 +24,7 @@ namespace Dynamo.Ioc.Tests.LifetimeTests
 		public void DefaultLifetimeAlwaysReturnsNewInstance()
 		{
 			// Arrange 
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				container.Register<IFoo>(c => new Foo1());
 

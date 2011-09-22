@@ -10,7 +10,7 @@ namespace Dynamo.Ioc.Tests
 		[TestMethod]
 		public void GenericResolveByTypeReturnsInstanceOfExpectedType()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				container.Register<IFoo>(c => new Foo1());
 				var result = container.Resolve<IFoo>();
@@ -24,7 +24,7 @@ namespace Dynamo.Ioc.Tests
 		[TestMethod]
 		public void GenericResolveByNameReturnsInstanceOfExpectedType()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				container.Register<IFoo>("Bob", c => new Foo1());
 				var result = container.Resolve<IFoo>("Bob");
@@ -38,7 +38,7 @@ namespace Dynamo.Ioc.Tests
 		[TestMethod]
 		public void ResolveByTypeReturnsInstanceOfExpectedType()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				container.Register(typeof(IFoo), c => new Foo1());
 				var result = container.Resolve<IFoo>();
@@ -52,7 +52,7 @@ namespace Dynamo.Ioc.Tests
 		[TestMethod]
 		public void ResolveByNameReturnsInstanceOfExpectedType()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				container.Register(typeof(IFoo), "Bob", c => new Foo1());
 				var result = container.Resolve<IFoo>("Bob");
@@ -67,7 +67,7 @@ namespace Dynamo.Ioc.Tests
 		[ExpectedException(typeof(KeyNotFoundException))]
 		public void GenericResolveByTypeNotRegisteredThrowsException()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				container.Resolve<IFoo>();
 			}
@@ -77,7 +77,7 @@ namespace Dynamo.Ioc.Tests
 		[ExpectedException(typeof(KeyNotFoundException))]
 		public void GenericResolveByNameNotRegisteredThrowsException()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				container.Resolve<IFoo>("Foo");
 			}
@@ -87,7 +87,7 @@ namespace Dynamo.Ioc.Tests
 		[ExpectedException(typeof(KeyNotFoundException))]
 		public void GenericResolveByTypeNotRegisteredThrowsException2()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				container.Register<IFoo>("Foo", c => new Foo1());
 				container.Resolve<IFoo>();
@@ -98,7 +98,7 @@ namespace Dynamo.Ioc.Tests
 		[ExpectedException(typeof(KeyNotFoundException))]
 		public void GenericResolveByNameNotRegisteredThrowsException2()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				container.Register<IFoo>(c => new Foo1());
 				container.Resolve<IFoo>("Foo");
@@ -108,7 +108,7 @@ namespace Dynamo.Ioc.Tests
 		[TestMethod]
 		public void MultipleResolvesReturnDifferentInstances()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				container.Register<IFoo>(c => new Foo1());
 				
@@ -125,7 +125,7 @@ namespace Dynamo.Ioc.Tests
 		[TestMethod]
 		public void RegistrationsWithDifferentNameResolveToDifferentTypes()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				container.Register<IFoo>("Foo1", c => new Foo1());
 				container.Register<IFoo>("Foo2", c => new Foo2());
@@ -146,7 +146,7 @@ namespace Dynamo.Ioc.Tests
 		[TestMethod]
 		public void RegistrationsRegisteredByTypeOrNameResolvesToDifferentTypes()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				container.Register<IFoo>(c => new Foo1());
 				container.Register<IFoo>("Foo2", c => new Foo2());

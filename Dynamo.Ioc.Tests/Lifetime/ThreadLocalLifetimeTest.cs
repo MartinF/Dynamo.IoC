@@ -12,7 +12,7 @@ namespace Dynamo.Ioc.Tests.LifetimeTests
 		[TestMethod]
 		public void CanSetDefaultLifetimeToThreadLocalStorageLifetime()
 		{
-			using (var container = new Container(() => new ThreadLocalLifetime()))
+			using (var container = new IocContainer(() => new ThreadLocalLifetime()))
 			{
 				Assert.IsInstanceOfType(container.DefaultLifetime, typeof(ThreadLocalLifetime));
 			}
@@ -24,7 +24,7 @@ namespace Dynamo.Ioc.Tests.LifetimeTests
 		[TestMethod]
 		public void ThreadLocalStorageLifetimeReturnsSameInstanceForSameThread()
 		{
-			using (var container = new Container())
+			using (var container = new IocContainer())
 			{
 				container.Register<IFoo>(c => new Foo1()).SetLifetime(new ThreadLocalLifetime());
 

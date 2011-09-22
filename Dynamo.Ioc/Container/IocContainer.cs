@@ -8,7 +8,7 @@ using Dynamo.Ioc.Index;
 
 namespace Dynamo.Ioc
 {
-	public class Container : IContainer
+	public class IocContainer : IIocContainer
 	{
 		#region Fields
 		private readonly IIndex _index = new GroupedIndex();
@@ -17,7 +17,7 @@ namespace Dynamo.Ioc
 		#endregion
 
 		#region Constructor
-		public Container(Func<ILifetime> defaultLifetimeFactory = null, CompileMode compileMode = CompileMode.Dynamic, IIndex index = null)
+		public IocContainer(Func<ILifetime> defaultLifetimeFactory = null, CompileMode compileMode = CompileMode.Dynamic, IIndex index = null)
 		{
 			if (index != null)
 				_index = index;
@@ -115,7 +115,7 @@ namespace Dynamo.Ioc
 		}
 		#endregion
 
-		#region Try- Resolve
+		#region Resolve
 		public object Resolve(Type type)
 		{
 			if (type == null)
@@ -132,7 +132,28 @@ namespace Dynamo.Ioc
 
 			return _index.Get(type, key).GetInstance(this);
 		}
-		public bool TryResolve(Type type, out object obj)
+		public object Resolve(IRegistrationInfo info)
+		{
+			if (info == null)
+				throw new ArgumentNullException("info");
+
+			return info.Key == null ? Resolve(info.Type) : Resolve(info.Type, info.Key);
+		}
+		public T Resolve<T>()
+		{
+			return (T)_index.Get(typeof(T)).GetInstance(this);
+		}
+		public T Resolve<T>(object key)
+		{
+			if (key == null)
+				throw new ArgumentNullException("key");
+
+			return (T)_index.Get(typeof(T), key).GetInstance(this);
+		}
+		#endregion
+		
+		#region TryResolve
+		public bool TryResolve(Type type, out object instance)
 		{
 			if (type == null)
 				throw new ArgumentNullException("type");
@@ -140,14 +161,14 @@ namespace Dynamo.Ioc
 			IRegistration registration;
 			if (_index.TryGet(type, out registration))
 			{
-				obj = registration.GetInstance(this);
+				instance = registration.GetInstance(this);
 				return true;
 			}
 
-			obj = null;
+			instance = null;
 			return false;
 		}
-		public bool TryResolve(Type type, object key, out object obj)
+		public bool TryResolve(Type type, object key, out object instance)
 		{
 			if (type == null)
 				throw new ArgumentNullException("type");
@@ -157,16 +178,50 @@ namespace Dynamo.Ioc
 			IRegistration registration;
 			if (_index.TryGet(type, key, out registration))
 			{
-				obj = registration.GetInstance(this);
+				instance = registration.GetInstance(this);
 				return true;
 			}
 
-			obj = null;
+			instance = null;
+			return false;
+		}
+		public bool TryResolve(IRegistrationInfo info, out object instance)
+		{
+			if (info == null)
+				throw new ArgumentNullException("info");
+
+			return info.Key == null ? TryResolve(info.Type, out instance) : TryResolve(info.Type, info.Key, out instance);
+		}
+		public bool TryResolve<T>(out T instance)
+		{
+			IRegistration registration;
+			if (_index.TryGet(typeof(T), out registration))
+			{
+				instance = (T)registration.GetInstance(this);
+				return true;
+			}
+
+			instance = default(T);
+			return false;
+		}
+		public bool TryResolve<T>(object key, out T instance)
+		{
+			if (key == null)
+				throw new ArgumentNullException("key");
+
+			IRegistration registration;
+			if (_index.TryGet(typeof(T), key, out registration))
+			{
+				instance = (T)registration.GetInstance(this);
+				return true;
+			}
+
+			instance = default(T);
 			return false;
 		}
 		#endregion
 
-		#region Try- ResolveAll
+		#region ResolveAll
 		public IEnumerable<object> ResolveAll(Type type)
 		{
 			if (type == null)
@@ -177,6 +232,16 @@ namespace Dynamo.Ioc
 				yield return registration.GetInstance(this);
 			}
 		}
+		public IEnumerable<T> ResolveAll<T>()
+		{
+			foreach (var registration in _index.GetAll(typeof(T)))
+			{
+				yield return (T)registration.GetInstance(this);
+			}
+		}
+		#endregion
+
+		#region TryResolveAll
 		public IEnumerable<object> TryResolveAll(Type type)
 		{
 			if (type == null)
@@ -187,7 +252,20 @@ namespace Dynamo.Ioc
 				yield return registration.GetInstance(this);
 			}
 		}
+		public IEnumerable<T> TryResolveAll<T>()
+		{
+			foreach (var registration in _index.TryGetAll(typeof(T)))
+			{
+				yield return (T)registration.GetInstance(this);
+			}
+		}
 		#endregion
+
+
+
+
+
+
 
 
 

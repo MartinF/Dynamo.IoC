@@ -13,7 +13,7 @@ namespace Dynamo.Ioc.Web.Tests
 		[TestMethod]
 		public void RequestLifetimeExtensionMethodSetsLifetime()
 		{
-			using (var container = new Container(() => new TransientLifetime()))
+			using (var container = new IocContainer(() => new TransientLifetime()))
 			{
 				var registration = container.Register<IFoo>(c => new Foo1()).RequestLifetime();
 
@@ -24,7 +24,7 @@ namespace Dynamo.Ioc.Web.Tests
 		[TestMethod]
 		public void SessionLifetimeExtensionMethodSetsLifetime()
 		{
-			using (var container = new Container(() => new TransientLifetime()))
+			using (var container = new IocContainer(() => new TransientLifetime()))
 			{
 				var registration = container.Register<IFoo>(c => new Foo1()).SessionLifetime();
 
@@ -35,7 +35,7 @@ namespace Dynamo.Ioc.Web.Tests
 		[TestMethod]
 		public void CachedLifetimeExtensionMethodSetsLifetime()
 		{
-			using (var container = new Container(() => new TransientLifetime()))
+			using (var container = new IocContainer(() => new TransientLifetime()))
 			{
 				var registration = container.Register<IFoo>(c => new Foo1()).CachedLifetime();
 

@@ -1,53 +1,33 @@
 ﻿using System.Web;
 using System.Web.Mvc;
 
+// Expose container at Application_End() ?
+// Do not have IocContainer as static public property ? - make member of instance instead ?
+
 namespace Dynamo.Ioc.Web
 {
 	public abstract class DynamoHttpApplication : HttpApplication
 	{
-		protected DynamoHttpApplication()
-		{
-			IocContainer = new Container();
-		}
-
-		public IContainer IocContainer { get; private set; }
-
-		protected abstract void RegisterServices(IContainer container);
-
-		protected void Application_Start()
-		{
-			AreaRegistration.RegisterAllAreas(IocContainer);
-			RegisterServices(IocContainer);
-
-			RegisterDependencyResolver(new DynamoDependencyResolver(IocContainer));
-
-			OnStart();
-		}
-		protected void Application_End()
-		{
-			OnEnd();
-
-			IocContainer.Dispose();
-			IocContainer = null;
-		}
+		// Fields
+		private static readonly IIocContainer _container = new IocContainer();
 		
+		// Properties
+		public static IResolver IocContainer { get { return _container; } }
+
+		// Methods
+		protected virtual void Application_Start()
+		{
+			RegisterServices(_container);
+			AreaRegistration.RegisterAllAreas(IocContainer);
+
+			RegisterDependencyResolver(new DynamoDependencyResolver(_container));
+		}
+
 		protected virtual void RegisterDependencyResolver(IDependencyResolver resolver)
 		{
 			DependencyResolver.SetResolver(resolver);
 		}
 
-		/// <summary>
-		/// Application_Start() Event
-		/// </summary>
-		protected virtual void OnStart()
-		{
-		}
-
-		/// <summary>
-		/// Application_End() Event
-		/// </summary>
-		protected virtual void OnEnd()
-		{
-		}
+		protected abstract void RegisterServices(IIocContainer container);
 	}
 }
