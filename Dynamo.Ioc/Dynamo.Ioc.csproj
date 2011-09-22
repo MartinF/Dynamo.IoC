@@ -81,6 +81,7 @@
     <Compile Include="Registration\InstanceRegistration.cs" />
     <Compile Include="Registration\IRegistration.cs" />
     <Compile Include="Registration\IRegistrationInfo.cs" />
+    <Compile Include="ServiceProviderAdapter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Dynamo.Ioc.snk" />
