@@ -106,118 +106,6 @@ namespace Dynamo.Ioc.Registration
 			return null;
 		}
 
-		protected override Expression VisitMethodCall(MethodCallExpression methodExpression)
-		{
-			// TODO: Someday this nasty nesting needs to be fixed ... zzZzzzZzz
-			// Create helper methods for testing if it is a static extension method, or a instance method on some interface ?
-			// Support TryResolve (Type/Key, <T>/Key)
-
-			// If method is called on an object
-			if (methodExpression.Object != null)
-			{
-				// Check it is a parameter and of type IResolver
-				if (methodExpression.Object.NodeType == ExpressionType.Parameter && methodExpression.Object.Type == typeof(IResolver))
-				{
-					if (methodExpression.Method.Name == "Resolve")
-					{
-						if (!methodExpression.Method.IsGenericMethod)	// Return parameter is object ! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-						{
-							var arguments = methodExpression.Arguments;		// Arguments for the call
-
-							// Check that arguments was supplied and first one is of type Type
-							if (arguments.Count > 0 && arguments[0] is ConstantExpression && arguments[0].Type == typeof(Type))
-							{
-								var typeArgument = (ConstantExpression)arguments[0];
-								var type = (Type)typeArgument.Value;
-
-								if (arguments.Count == 1)
-								{
-									// object Resolve(Type type)
-
-									return HandleMethodCall(type) ?? base.VisitMethodCall(methodExpression);
-								}
-								else if (arguments.Count == 2)	// && arguments[1] is ConstantExpression && arguments[1].Type == typeof(Object))		// TODO PROBLEM HERE IF STRING !?!?!? it contains the actuall type us is Object?
-								{
-									// object Resolve(Type type, object key)
-
-									var keyArgument = (ConstantExpression)arguments[1];
-									var key = (Object)keyArgument.Value;
-
-									return HandleMethodCall(type, key) ?? base.VisitMethodCall(methodExpression);
-								}
-							}
-
-						}
-
-						throw new Exception("Something on the interface IResolver have changed - Resolve method is not recognized");
-					}
-
-					// More instance methods declared on IResolver here...
-				}
-			}
-			else
-			{
-				// Method not called on an object - static
-
-				var methodInfo = methodExpression.Method;
-
-				// Is a Call on Type ResolverExtensions
-				if (methodExpression.NodeType == ExpressionType.Call && methodInfo.DeclaringType == typeof(ResolverExtensions))
-				{
-					if (methodInfo.Name == "Resolve")
-					{
-						// Is Generic
-						if (methodInfo.IsGenericMethod)
-						{
-							var genericMethodDef = methodExpression.Method.GetGenericMethodDefinition();
-							var genericMethodDefArgs = genericMethodDef.GetGenericArguments();
-
-							// Have same Generic definition (1 generic parameter and return type is the same a generic parameter)
-							if (genericMethodDefArgs.Length == 1 && genericMethodDefArgs[0] == genericMethodDef.ReturnType)
-							{
-								// Get the generic argument type
-								//var genericType = methodExpression.Method.GetGenericArguments()[0];
-								var genericType = methodExpression.Type;
-
-								// Get arguments used in the method call
-								var arguments = methodExpression.Arguments;
-
-								// Check that arguments was supplied and first one is a ParameterExpression and is of type IResolver
-								if (arguments.Count > 0 && arguments[0] is ParameterExpression && arguments[0].Type == typeof(IResolver))
-								{
-									// Check somehow that the argument[0] (as ParameterExpression) is the same as the input parameter for the expression !
-									// Need to have the expression which is being visited stored somewhere !?
-									//var methodArgument1 = (ParameterExpression)arguments[0];
-
-									if (arguments.Count == 1)
-									{
-										// T Resolve<T>(this IResolver resolver)
-
-										return HandleMethodCall(genericType) ?? base.VisitMethodCall(methodExpression);
-									}
-									else if (arguments.Count == 2) // && arguments[1] is ConstantExpression && arguments[1].Type == typeof(Object))		// TODO PROBLEM HERE ! contains the actual type and not object probably so never gets compiled !?
-									{
-										// T Resolve<T>(this IResolver resolver, object key)
-
-										var keyArgument = (ConstantExpression)arguments[1];
-										var key = (Object)keyArgument.Value;
-										
-										return HandleMethodCall(genericType, key) ?? base.VisitMethodCall(methodExpression);
-									}
-								}
-							}
-						}
-
-						throw new Exception("Something on the interface IResolver have changed - Generic Resolve method is not recognized");
-					}
-
-					// More static extensions methods declared in ResolverExtensions here...
-				}
-			}
-
-			return base.VisitMethodCall(methodExpression);
-		}
-
 		protected override Expression VisitUnary(UnaryExpression node)
 		{
 			var exp = base.VisitUnary(node);
@@ -236,6 +124,139 @@ namespace Dynamo.Ioc.Registration
 			}
 
 			return exp;
+		}
+
+		private bool IsInstanceMethod(MethodCallExpression expression, Type instanceType)
+		{
+			// Better and more correct name ?
+
+			if (expression == null)
+				throw new ArgumentNullException("expression");
+			if (instanceType == null)
+				throw new ArgumentNullException("instanceType");
+
+			// If method is not called on an object
+			if (expression.Object == null)
+				return false;
+
+			// If not a parameter
+			if (expression.Object.NodeType != ExpressionType.Parameter)
+				return false;
+
+			// If not of correct type
+			if (expression.Object.Type != instanceType)
+				return false;
+
+			return true;
+		}
+
+		private bool IsMethod(MethodCallExpression expression, string methodName, bool isGeneric)
+		{
+			if (expression == null)
+				throw new ArgumentNullException("expression");
+			if (methodName == null)
+				throw new ArgumentNullException("methodName");
+
+			// If not correct name
+			if (expression.Method.Name != methodName)
+				return false;
+
+			// if not of correct type (generic or not)
+			if (expression.Method.IsGenericMethod != isGeneric)
+				return false;
+
+			return true;
+		}
+
+		protected override Expression VisitMethodCall(MethodCallExpression methodExpression)
+		{
+			// TODO: Someday this nasty nesting needs to be fixed ... zzZzzzZzz
+			// Cleanup handling the parameters
+			// Support TryResolve (Type/Key, <T>/Key)
+
+			if (IsInstanceMethod(methodExpression, typeof(IResolver)))
+			{
+				// Resolve(Type) & Resovle(Type, Key)
+				if (IsMethod(methodExpression, "Resolve", false))
+				{
+					var arguments = methodExpression.Arguments;		// Arguments for the call
+
+					// Check that arguments was supplied and first one is of type Type
+					if (arguments.Count > 0 && arguments[0] is ConstantExpression && arguments[0].Type == typeof(Type))
+					{
+						var typeArgument = (ConstantExpression)arguments[0];
+						var type = (Type)typeArgument.Value;
+
+						if (arguments.Count == 1)
+						{
+							// object Resolve(Type type)
+
+							return HandleMethodCall(type) ?? base.VisitMethodCall(methodExpression);
+						}
+						else if (arguments.Count == 2)	// && arguments[1] is ConstantExpression && arguments[1].Type == typeof(Object))		// TODO PROBLEM HERE IF STRING !?!?!? it contains the actuall type us is Object?
+						{
+							// object Resolve(Type type, object key)
+
+							var keyArgument = (ConstantExpression)arguments[1];
+							var key = (Object)keyArgument.Value;
+
+							return HandleMethodCall(type, key) ?? base.VisitMethodCall(methodExpression);
+						}
+					}
+
+					// Throw exception ?
+				}
+
+
+
+				// Resolve<>() & Resolve<>(key)
+				if (IsMethod(methodExpression, "Resolve", true))
+				{
+					var genericMethodDef = methodExpression.Method.GetGenericMethodDefinition();
+					var genericMethodDefArgs = genericMethodDef.GetGenericArguments();
+
+					// Have same Generic definition (1 generic parameter and return type is the same a generic parameter)
+					if (genericMethodDefArgs.Length == 1 && genericMethodDefArgs[0] == genericMethodDef.ReturnType)
+					{
+						// Get the generic argument type
+						//var genericType = methodExpression.Method.GetGenericArguments()[0];
+						var genericType = methodExpression.Type;
+
+						// Get arguments used in the method call
+						var arguments = methodExpression.Arguments;
+
+						// Check that arguments was supplied and first one is a ParameterExpression and is of type IResolver
+						if (arguments.Count > 0 && arguments[0] is ParameterExpression && arguments[0].Type == typeof(IResolver))
+						{
+							// Check somehow that the argument[0] (as ParameterExpression) is the same as the input parameter for the expression !
+							// Need to have the expression which is being visited stored somewhere !?
+							//var methodArgument1 = (ParameterExpression)arguments[0];
+
+							if (arguments.Count == 0)
+							{
+								// T Resolve<T>()
+
+								return HandleMethodCall(genericType) ?? base.VisitMethodCall(methodExpression);
+							}
+							else if (arguments.Count == 1) // && arguments[1] is ConstantExpression && arguments[1].Type == typeof(Object))		// TODO PROBLEM HERE ! contains the actual type and not object probably so never gets compiled !?
+							{
+								// T Resolve<T>(object key)
+
+								var keyArgument = (ConstantExpression)arguments[0];
+								var key = (Object)keyArgument.Value;
+
+								return HandleMethodCall(genericType, key) ?? base.VisitMethodCall(methodExpression);
+							}
+						}
+					}
+
+					// Throw Exception ?
+				}
+			}
+
+
+
+			return base.VisitMethodCall(methodExpression);
 		}
 		#endregion
 	}
