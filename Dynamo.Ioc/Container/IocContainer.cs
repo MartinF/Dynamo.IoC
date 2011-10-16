@@ -17,7 +17,7 @@ namespace Dynamo.Ioc
 		#endregion
 
 		#region Constructor
-		public IocContainer(Func<ILifetime> defaultLifetimeFactory = null, CompileMode compileMode = CompileMode.Dynamic, IIndex index = null)
+		public IocContainer(Func<ILifetime> defaultLifetimeFactory = null, CompileMode compileMode = CompileMode.Delegate, IIndex index = null)
 		{
 			if (index != null)
 				_index = index;

@@ -31,7 +31,7 @@ namespace Dynamo.Ioc
 		#endregion
 
 		#region Constructors
-		public ExpressionRegistration(Type type, Expression<Func<IResolver, object>> expression, ILifetime lifetime, object key = null, CompileMode compileMode = CompileMode.Dynamic)
+		public ExpressionRegistration(Type type, Expression<Func<IResolver, object>> expression, ILifetime lifetime, object key = null, CompileMode compileMode = CompileMode.Delegate)
 		{
 			if (type == null)
 				throw new ArgumentNullException("type");
@@ -41,11 +41,11 @@ namespace Dynamo.Ioc
 			_type = type;
 			_expression = expression;
 
-			SetFactory(expression);
-			SetLifetime(lifetime);
-
 			_key = key;
 			_compileMode = compileMode;
+
+			SetFactory(expression);
+			SetLifetime(lifetime);
 		}
 		#endregion
 
@@ -68,7 +68,7 @@ namespace Dynamo.Ioc
 					_factory = expression.Compile();
 					break;
 				default:
-					throw new ArgumentException("Unknown CompileMode", "expression");
+					throw new ArgumentException("Unknown CompileMode");	// wrong exception type 
 			}
 		}
 
