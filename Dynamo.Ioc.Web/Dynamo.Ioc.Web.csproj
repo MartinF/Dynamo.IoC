@@ -39,6 +39,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
@@ -51,8 +52,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DynamoAreaRegistration.cs" />
+    <Compile Include="DynamoDataAnnotationsModelValidator.cs" />
     <Compile Include="DynamoDependencyResolver.cs" />
     <Compile Include="DynamoHttpApplication.cs" />
+    <Compile Include="DynamoValidatableObjectAdapter.cs" />
     <Compile Include="Lifetime\CachedLifetime.cs" />
     <Compile Include="Lifetime\HttpContextAwareLifetimeBase.cs" />
     <Compile Include="Lifetime\LifetimeExtensions.cs" />
