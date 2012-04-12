@@ -226,31 +226,6 @@ namespace Dynamo.Ioc
 
 			return (T)_index.Get(typeof(T), key).GetInstance(this);
 		}
-
-
-
-		// These two methods are really not needed
-		// They are just simple helpers
-		// if people have the registration they could just aswell just call registration.GetInstance() ?
-		// Write tests
-		public object Resolve(IRegistration registration)
-		{
-			if (registration == null)
-				throw new ArgumentNullException("registration");
-
-			return registration.GetInstance(this);
-		}
-		public T Resolve<T>(IRegistration<T> registration)
-		{
-			// IMPORTANT !*!*!*!*!*!*!
-			// Remember it needs a fix in the ExpressionCompiler - right now it assumes all calls to Resolve<T> with one parameter is the object key version - this crashes it - call it something else
-			// Or make it an extension method ? doesnt make sense to resolve a registration anyway ? as it can just be called directly on the registration anyway ...
-
-			if (registration == null)
-				throw new ArgumentNullException("registration");
-
-			return registration.GetInstance(this);
-		}
 		#endregion
 		
 		#region TryResolve

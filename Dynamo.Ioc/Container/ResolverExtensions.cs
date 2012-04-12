@@ -7,6 +7,27 @@ namespace Dynamo.Ioc
 {
 	public static class ResolverExtensions
 	{
+		public static object Resolve(this IResolver resolver, IRegistration registration)
+		{
+			if (resolver == null)
+				throw new ArgumentNullException("resolver");
+			if (registration == null)
+				throw new ArgumentNullException("registration");
+
+			return registration.GetInstance(resolver);
+		}
+		public static T Resolve<T>(this IResolver resolver, IRegistration<T> registration)
+		{
+			if (resolver == null)
+				throw new ArgumentNullException("resolver");
+			if (registration == null)
+				throw new ArgumentNullException("registration");
+
+			return registration.GetInstance(resolver);
+		}
+
+
+
 		// Create GetKeyResolver which uses object instead of only generic implementation
 
 		public static IKeyResolver<TType, TKey> GetKeyResolver<TType, TKey>(this IResolver resolver)

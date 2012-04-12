@@ -11,21 +11,15 @@ namespace Dynamo.Ioc.Tests.Container
 	[TestClass]
 	public class CompileTest
 	{
-
-
-
 		// Compile it with Dynamic where it tries to inline a ContainerLifetime or InstanceRegistration ? - Will probably throw exception 
 			// - fix it so it doesnt try to inline when that compile mode!
 
 		// What happens if valueType is used when inlining as a constant ? RegisterInstance etc ?
 
-
-
 		// **************************************************
 
 		// Need to test that it doesnt break if CompileMode is set to Dynamic and InstanceRegistration and ContainerLifetime is used 
 		// They will currently automatically be inlined - which they shouldnt when usign Dynamic compiel !!!!!!!!!!
-
 
 
 
@@ -82,46 +76,46 @@ namespace Dynamo.Ioc.Tests.Container
 
 
 
+		//[TestMethod]
+		//public void CompileDoesntCrashWhenUsingResolveIRegistrationOverload()
+		//{
+		//    // Also test without generics ...
 
 
+		//    // Better name ?
+		//    // Also test using key ?
 
-		[TestMethod]
-		public void CompileDoesntCrashWhenUsingResolveIRegistrationOverload()
-		{
-			// Better name ?
-			// Also test using key ?
+		//    // Make IsCompiled Property ?
 
-			// Make IsCompiled Property ?
+		//    // Test with Constants (declared directly) or references to fields (=MemberExpression) + Using keys
 
-			// Test with Constants (declared directly) or references to fields (=MemberExpression) + Using keys
+		//    using (var container = new IocContainer())
+		//    {
+		//        // Dont let Resolve(IRegistration and Resolve(IRegistration<T>) be part of the IResolver interface ?
 
-			using (var container = new IocContainer())
-			{
-				// Dont let Resolve(IRegistration and Resolve(IRegistration<T>) be part of the IResolver interface ?
+		//        Type type = typeof(Bar1);
+		//        string theKey = "TheKey";
 
-				Type type = typeof(Bar1);
-				string theKey = "TheKey";
+		//        var barInstance = new Bar1();
 
-				var barInstance = new Bar1();
+		//        var reg1 = container.Register<IFoo, Foo1>(theKey);
+		//        var reg2 = container.RegisterInstance(barInstance, theKey);
 
-				var reg1 = container.Register<IFoo, Foo1>(theKey);
-				var reg2 = container.RegisterInstance(barInstance, theKey);
+		//        // x.Resolve(reg1) should not get compiled !?
+		//        // x.Resolve(type, theKey) should get compiled
+		//        var reg3 = container.Register<IFooBar>(x => new FooBar(x.Resolve(reg1), (Bar1)x.Resolve(type, theKey)));
 
-				var reg3 = container.Register<IFooBar>(x => new FooBar(x.Resolve(reg1), (Bar1)x.Resolve(type, theKey)));
+		//        container.Compile();
 
-				container.Compile();
+		//        var res = container.Resolve(reg3);
 
-				var res = container.Resolve(reg3);
+		//        // Assert !? 
 
-				// Assert !? 
+		//        // How do i make sure it is working and the x.Resolve is not getting compiled !? 
 
-				// How do i make sure it is working and the x.Resolve is not getting compiled !? 
-
-
-				Assert.IsTrue(false);
-			}
-		}
-
+		//        Assert.IsTrue(false);
+		//    }
+		//}
 
 
 

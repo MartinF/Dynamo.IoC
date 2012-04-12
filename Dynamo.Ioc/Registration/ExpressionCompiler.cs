@@ -287,11 +287,8 @@ namespace Dynamo.Ioc
 							return HandleMethodCall(genericType) ?? base.VisitMethodCall(expression);
 						}
 
-						if (arguments.Count == 1 && (!arguments[0].Type.IsImplementationOfGenericInterface(typeof(IRegistration<>)))) // T Resolve<T>(object key)
+						if (arguments.Count == 1) // T Resolve<T>(object key)
 						{
-							// Need to check if it hits the T Resolve<T>(IRegistration<T>) overload method
-							// Should only handle if T Resolve<T>(object key)
-
 							var keyArgExpression = arguments[0];
 
 							object key;
