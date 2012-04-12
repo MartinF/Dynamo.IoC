@@ -3,11 +3,13 @@ obj/
 bin/
 TestResults/
 _ReSharper*
+*.user
 *.csproj.user
 *.resharper.user
 *.user
 *.suo
 *.Publish.xml
+*.DotSettings
 ToDo.txt
 ToDoClass.txt
 Build/
