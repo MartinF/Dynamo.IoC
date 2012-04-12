@@ -6,8 +6,6 @@ using System.Web.WebPages;
 // [assembly: PreApplicationStartMethod(typeof(PreApplicationStartCode), "Start")]
 // public static void Start() { Microsoft.Web.Infrastructure.DynamicModuleHelper.DynamicModuleUtility.RegisterModule(typeof(MyModule)); }
 
-// Rename to HttpRequestLifetime ?
-
 namespace Dynamo.Ioc.Web
 {
 	public sealed class RequestLifetime : HttpContextAwareLifetimeBase
@@ -30,18 +28,6 @@ namespace Dynamo.Ioc.Web
 		#endregion
 
 		#region Methods
-		public override void Init(IRegistration key)
-		{
-			// If not used here Init is not used anywhere ! - remove it again ?
-
-			// Could check here if Type implements IDisposable ? 
-			// Will it work checking the actual type ? 
-			//if (_disposeOnEnd && !(key.Type is IDisposable))
-			//{
-			//    throw new DynamoRegistrationException(key, "To use the Dispose On End feature the instance registered needs to implement IDisposable");
-			//}
-		}
-
 		public override object GetInstance(Func<IResolver, object> factory, IResolver resolver)
 		{
 			var context = Context;

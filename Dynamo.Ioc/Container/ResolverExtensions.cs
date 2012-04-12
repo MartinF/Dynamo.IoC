@@ -22,6 +22,8 @@ namespace Dynamo.Ioc
 		// Else it will first throw the exception when trying to resolve later?
 		// But could still throw exception even if the index contains the registration though...
 		
+
+
 		// What about pulling out the registration to check it is there and then it can use registration.GetInstance(this) as the delegate
 		// Then it actually returns a super fast factory !?
 

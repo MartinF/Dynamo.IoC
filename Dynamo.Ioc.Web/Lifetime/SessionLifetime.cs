@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Web;
 
-// Rename to HttpSessionLifetime ?
-
 namespace Dynamo.Ioc.Web
 {
 	public sealed class SessionLifetime : HttpContextAwareLifetimeBase
