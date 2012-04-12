@@ -1,6 +1,4 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -12,89 +10,115 @@ namespace Dynamo.Ioc.Tests.Index
 		[TestMethod]
 		public void GetAllReturnsExpectedRegistrations()
 		{
-			using (var container = new IocContainer())
+			var reg1 = new InstanceRegistration<IFoo>(new Foo1());
+			var reg2 = new InstanceRegistration<IFoo>(new Foo1());
+			var reg3 = new InstanceRegistration<IFoo>(new Foo1());
+			var reg4 = new InstanceRegistration<IBar>(new Bar1());
+
+			foreach (var index in Helper.GetIndexes())
 			{
-				var foo1 = container.Register(typeof(IFoo), c => new Foo1());
-				var foo2 = container.Register(typeof(IFoo), "Bob", c => new Foo2());
-				var foo3 = container.Register(typeof(IFoo), "Bill", c => new Foo2());
-				var bar1 = container.Register(typeof(IBar), "Jane", c => new Bar1());
+				index.Add(reg1);
+				index.Add(reg2, "Key1");
+				index.Add(reg3, "Key2");
+				index.Add(reg4, "Key1");
 
-				var result = container.Index.GetAll(typeof(IFoo));
+				var all = index.GetAll(typeof(IFoo));
 
-				Assert.IsInstanceOfType(result, typeof(IEnumerable<IRegistration>));
-				Assert.IsTrue(result.Count() == 3);
+				Assert.IsInstanceOfType(all, typeof(IEnumerable<IRegistration>));
+				Assert.IsTrue(all.Count() == 3);
 
-				var resultList = result.ToList();
+				var allList = all.ToList();
 
-				CollectionAssert.AllItemsAreNotNull(resultList);
-				CollectionAssert.AllItemsAreInstancesOfType(resultList, typeof(IRegistration));
-				CollectionAssert.Contains(resultList, foo1);
-				CollectionAssert.Contains(resultList, foo2);
-				CollectionAssert.Contains(resultList, foo3);
-				CollectionAssert.DoesNotContain(resultList, bar1);
+				CollectionAssert.AllItemsAreNotNull(allList);
+				CollectionAssert.AllItemsAreInstancesOfType(allList, typeof(InstanceRegistration<IFoo>));
+				CollectionAssert.Contains(allList, reg1);
+				CollectionAssert.Contains(allList, reg2);
+				CollectionAssert.Contains(allList, reg3);
+				CollectionAssert.DoesNotContain(allList, reg4);
 			}
 		}
 
-		[TestMethod]
-		[ExpectedException(typeof(KeyNotFoundException))]
-		public void GetAllThrowsExceptionIfTypeIsNotRegistered()
-		{
-			using (var container = new IocContainer())
-			{
-				var foo1 = container.Register<IFoo>(c => new Foo1());
-				var foo2 = container.Register<IFoo>("Foo", c => new Foo2());
-
-				var result = container.Index.GetAll(typeof(IBar));
-
-				// Doesnt throw exception before it is enumerated because it uses yield return - OK ?
-				var test = result.Count();
-			}
-		}
-
-
-
-		#region GetAll Generic - IndexAccessorExtensions
 		[TestMethod]
 		public void GetAllGenericReturnsExpectedRegistrations()
 		{
-			using (var container = new IocContainer())
+			var reg1 = new InstanceRegistration<IFoo>(new Foo1());
+			var reg2 = new InstanceRegistration<IFoo>(new Foo1());
+			var reg3 = new InstanceRegistration<IFoo>(new Foo1());
+			var reg4 = new InstanceRegistration<IBar>(new Bar1());
+
+			foreach (var index in Helper.GetIndexes())
 			{
-				var foo1 = container.Register<IFoo>(c => new Foo1());
-				var foo2 = container.Register<IFoo>("Bob", c => new Foo2());
-				var foo3 = container.Register<IFoo>("Bill", c => new Foo2());
-				var bar1 = container.Register<IBar>("Jane", c => new Bar1());
+				index.Add(reg1);
+				index.Add(reg2, "Key1");
+				index.Add(reg3, "Key2");
+				index.Add(reg4, "Key1");
 
-				var result = container.Index.GetAll<IFoo>();
+				var all = index.GetAll<IFoo>();
 
-				Assert.IsInstanceOfType(result, typeof(IEnumerable<IRegistration>));
-				Assert.IsTrue(result.Count() == 3);
+				Assert.IsInstanceOfType(all, typeof(IEnumerable<IRegistration>));
+				Assert.IsTrue(all.Count() == 3);
 
-				var resultList = result.ToList();
+				var allList = all.ToList();
 
-				CollectionAssert.AllItemsAreNotNull(resultList);
-				CollectionAssert.AllItemsAreInstancesOfType(resultList, typeof(IRegistration));
-				CollectionAssert.Contains(resultList, foo1);
-				CollectionAssert.Contains(resultList, foo2);
-				CollectionAssert.Contains(resultList, foo3);
-				CollectionAssert.DoesNotContain(resultList, bar1);
+				CollectionAssert.AllItemsAreNotNull(allList);
+				CollectionAssert.AllItemsAreInstancesOfType(allList, typeof(InstanceRegistration<IFoo>));
+				CollectionAssert.Contains(allList, reg1);
+				CollectionAssert.Contains(allList, reg2);
+				CollectionAssert.Contains(allList, reg3);
+				CollectionAssert.DoesNotContain(allList, reg4);
 			}
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(KeyNotFoundException))]
-		public void GetAllGenericThrowsExceptionIfTypeIsNotRegistered()
+		public void GetAllThrowsExceptionIfTypeIsNotRegistered()
 		{
-			using (var container = new IocContainer())
+			var reg1 = new InstanceRegistration<IFoo>(new Foo1());
+			var reg2 = new InstanceRegistration<IFoo>(new Foo1());
+
+			foreach (var index in Helper.GetIndexes())
 			{
-				var foo1 = container.Register<IFoo>(c => new Foo1());
-				var foo2 = container.Register<IFoo>("Foo", c => new Foo2());
+				index.Add(reg1);
+				index.Add(reg2, "Key");
 
-				var result = container.Index.GetAll<IBar>();
+				try
+				{
+					var result = index.GetAll(typeof(IBar));
 
-				// Doesnt throw exception before it is enumerated because it uses yield return - OK ?
-				var test = result.Count();
+					// Doesnt throw exception before it is enumerated because it uses yield return - OK ?
+					var test = result.Count();
+
+					Assert.IsTrue(false);
+				}
+				catch (KeyNotFoundException)
+				{
+				}
 			}
 		}
-		#endregion
+
+		[TestMethod]
+		public void GetAllGenericThrowsExceptionIfTypeIsNotRegistered()
+		{
+			var reg1 = new InstanceRegistration<IFoo>(new Foo1());
+			var reg2 = new InstanceRegistration<IFoo>(new Foo1());
+
+			foreach (var index in Helper.GetIndexes())
+			{
+				index.Add(reg1);
+				index.Add(reg2, "Key");
+
+				try
+				{
+					var result = index.GetAll<IBar>();
+
+					// Doesnt throw exception before it is enumerated because it uses yield return - OK ?
+					var test = result.Count();
+
+					Assert.IsTrue(false);
+				}
+				catch (KeyNotFoundException)
+				{
+				}
+			}
+		}
 	}
 }

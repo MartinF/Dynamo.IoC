@@ -1,4 +1,6 @@
 ﻿
+using System;
+
 namespace Dynamo.Ioc.Tests
 {
 	public interface IFoo
@@ -8,18 +10,17 @@ namespace Dynamo.Ioc.Tests
 
 	public class Foo1 : IFoo
 	{
-		public string Name
+		public Foo1()
 		{
-			get { return "Foo1"; }
+			Name = "Foo1";
 		}
+
+		public string Name { get; set; }
 	}
 
 	public class Foo2 : IFoo
 	{
-		public string Name
-		{
-			get { return "Foo2"; }
-		}
+		public string Name { get { return "Foo2"; } }
 	}
 
 	public interface IBar
@@ -32,6 +33,12 @@ namespace Dynamo.Ioc.Tests
 
 	public class Bar2 : IBar
 	{
+		private readonly IFooBar _foobar;
+
+		public Bar2(IFooBar foobar)
+		{
+			_foobar = foobar;
+		}
 	}
 
 	public interface IFooBar
@@ -53,6 +60,58 @@ namespace Dynamo.Ioc.Tests
 
 		public FooBar()
 		{
+		}
+	}
+
+	internal class InternalFoo : IFoo
+	{
+		internal InternalFoo()
+		{
+		}
+
+		public string Name { get { return "Name"; } }
+	}
+
+	internal class InternalProtectedFoo : IFoo
+	{
+		internal protected InternalProtectedFoo()
+		{
+		}
+
+		public string Name { get { return "Name"; } }
+	}
+
+	internal class ProtectedFoo : IFoo
+	{
+		internal protected ProtectedFoo()
+		{
+		}
+
+		public string Name { get { return "Name"; } }
+	}
+
+	public class PrivateCtorFoo : IFoo
+	{
+		private PrivateCtorFoo()
+		{
+		}
+	
+		public string Name { get { return "Name"; } }
+	}
+
+	public abstract class AbstractFoo : IFoo
+	{
+		public AbstractFoo()
+		{		
+		}
+
+		//protected AbstractFoo()
+		//{	
+		//}
+
+		public string Name
+		{
+			get { return "Name"; }
 		}
 	}
 }

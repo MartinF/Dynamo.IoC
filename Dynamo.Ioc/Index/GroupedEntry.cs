@@ -1,77 +1,88 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-// Make Methods virtual ?
 
 namespace Dynamo.Ioc.Index
 {
-	public class GroupedEntry : IEnumerable<IRegistration>
+	public class GroupedEntry<T> : IGroupedEntry, IEnumerable<IRegistration<T>>
 	{
 		#region Fields
-		private IRegistration _default;
-		private readonly Dictionary<object, IRegistration> _keyed = new Dictionary<object, IRegistration>();
+		private IRegistration<T> _default;
+		private readonly Dictionary<object, IRegistration<T>> _keyed = new Dictionary<object, IRegistration<T>>();
 		#endregion
 
 		#region Methods
-		public void Add(IRegistration registration)
+		public void Add(IRegistration<T> registration, object key)
 		{
 			if (registration == null)
 				throw new ArgumentNullException("registration");
 
-			if (registration.Key == null)
+			if (key == null)
 			{
 				// Default
 				if (_default != null)
-					throw new ArgumentException("Default is already registered for Type: " + registration.Type.Name);
+					throw new ArgumentException("Default is already registered for Type: " + typeof(T).Name);
+
 				_default = registration;
 			}
 			else
 			{
 				// Keyed
-				_keyed.Add(registration.Key, registration);
+				_keyed.Add(key, registration);
 			}
 		}
 
-		public IRegistration GetDefault()
+		IRegistration IGroupedEntry.Get()
 		{
 			if (_default == null)
 				throw new KeyNotFoundException("The given key was not present in the dictionary.");
 
 			return _default;
 		}
-
-		public IRegistration GetKeyed(object key)
+		IRegistration IGroupedEntry.Get(object key)
 		{
 			return _keyed[key];
 		}
 
-		public bool TryGetDefault(out IRegistration registration)
+		public bool TryGet(out IRegistration registration)
 		{
-			registration = _default;
-			return (registration != null);
+			return (registration = _default) != null;
+		}
+		public bool TryGet(object key, out IRegistration registration)
+		{
+			IRegistration<T> reg;
+			if (_keyed.TryGetValue(key, out reg))
+			{
+				registration = reg;
+				return true;
+			}
+
+			registration = null;
+			return false;
 		}
 
-		public bool TryGetKeyed(object key, out IRegistration registration)
+		public IRegistration<T> Get()
+		{
+			if (_default == null)
+				throw new KeyNotFoundException("The given key was not present in the dictionary.");
+
+			return _default;
+		}
+		public IRegistration<T> Get(object key)
+		{
+			return _keyed[key];
+		}
+
+		public bool TryGet(out IRegistration<T> registration)
+		{
+			return (registration = _default) != null;
+		}
+		public bool TryGet(object key, out IRegistration<T> registration)
 		{
 			return _keyed.TryGetValue(key, out registration);
 		}
 
-		//public bool ContainsDefault()
-		//{
-		//    return _default != null;
-		//}
-
-		//public bool ContainsNamed(string name)
-		//{
-		//    return _named.ContainsKey(name);
-		//}
-
-		// ContainsAny / Contains () ?
-
-		public IEnumerator<IRegistration> GetEnumerator()
+		public IEnumerator<IRegistration<T>> GetEnumerator()
 		{
 			if (_default != null)
 				yield return _default;
@@ -81,7 +92,10 @@ namespace Dynamo.Ioc.Index
 				yield return reg;
 			}
 		}
-
+		IEnumerator<IRegistration> IEnumerable<IRegistration>.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();

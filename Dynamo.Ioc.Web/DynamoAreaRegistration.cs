@@ -12,9 +12,9 @@ namespace Dynamo.Ioc.Web
 			if (container == null)
 				throw new ArgumentException("State object in AreaRegistrationContext for Area: " + context.AreaName + " doesnt contain the IOC Container");
 
-			RegisterServices(container);
+			RegisterDependencies(container);
 		}
 
-		protected abstract void RegisterServices(IIocContainer container);
+		protected abstract void RegisterDependencies(IIocContainer container);
 	}
 }

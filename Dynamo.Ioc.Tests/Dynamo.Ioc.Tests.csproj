@@ -52,6 +52,7 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Container\CompileTest.cs" />
     <Compile Include="Container\ContainerTest.cs" />
     <Compile Include="Container\KeyResolverTest.cs" />
     <Compile Include="Container\RegisterAutoTest.cs" />
@@ -61,17 +62,21 @@
     <Compile Include="Container\ResolveTest.cs" />
     <Compile Include="Container\TryResolveAllTest.cs" />
     <Compile Include="Container\TryResolveTest.cs" />
+    <Compile Include="Container\VerifyTest.cs" />
+    <Compile Include="Index\Add.cs" />
     <Compile Include="Index\ContainsTest.cs" />
     <Compile Include="Index\GetAllTest.cs" />
     <Compile Include="Index\GetTest.cs" />
+    <Compile Include="Index\Helper.cs" />
     <Compile Include="Index\IndexTest.cs" />
     <Compile Include="Index\TryGetTest.cs" />
     <Compile Include="Index\TryGetAllTest.cs" />
     <Compile Include="Lifetime\LifetimeExtensionsTest.cs" />
+    <Compile Include="Registration\ExpressionRegistrationTest.cs" />
+    <Compile Include="Registration\InstanceRegistrationTest.cs" />
     <Compile Include="Stubs.cs" />
     <Compile Include="Lifetime\TransientLifetimeTest.cs" />
     <Compile Include="Lifetime\ContainerLifetimeTest.cs" />
-    <Compile Include="Lifetime\DefaultLifetimeTest.cs" />
     <Compile Include="Lifetime\ThreadLocalLifetimeTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

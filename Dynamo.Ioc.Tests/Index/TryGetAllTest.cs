@@ -1,6 +1,4 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -10,45 +8,103 @@ namespace Dynamo.Ioc.Tests.Index
 	public class TryGetAllTest
 	{
 		[TestMethod]
-		public void TryGetAllReturnsAnEmptyEnumerableIfTypeIsNotRegistered()
+		public void TryGetAllReturnsExpectedRegistrations()
 		{
-			using (var container = new IocContainer())
+			var reg1 = new InstanceRegistration<IFoo>(new Foo1());
+			var reg2 = new InstanceRegistration<IFoo>(new Foo1());
+			var reg3 = new InstanceRegistration<IFoo>(new Foo1());
+			var reg4 = new InstanceRegistration<IBar>(new Bar1());
+
+			foreach (var index in Helper.GetIndexes())
 			{
-				// Arrange
-				var foo1 = container.Register<IFoo>(c => new Foo1());
-				var foo2 = container.Register<IFoo>("Foo", c => new Foo2());
+				index.Add(reg1);
+				index.Add(reg2, "Key1");
+				index.Add(reg3, "Key2");
+				index.Add(reg4, "Key1");
 
-				// Act
-				var result = container.Index.TryGetAll(typeof(IBar));
+				var all = index.TryGetAll(typeof(IFoo));
 
-				// Assert
-				Assert.IsNotNull(result);
-				Assert.IsInstanceOfType(result, typeof(IEnumerable<IRegistration>));
-				Assert.IsTrue(result.Count() == 0);
+				Assert.IsInstanceOfType(all, typeof(IEnumerable<IRegistration>));
+				Assert.IsTrue(all.Count() == 3);
+
+				var allList = all.ToList();
+
+				CollectionAssert.AllItemsAreNotNull(allList);
+				CollectionAssert.AllItemsAreInstancesOfType(allList, typeof(InstanceRegistration<IFoo>));
+				CollectionAssert.Contains(allList, reg1);
+				CollectionAssert.Contains(allList, reg2);
+				CollectionAssert.Contains(allList, reg3);
+				CollectionAssert.DoesNotContain(allList, reg4);
 			}
 		}
 
-
-
-		#region TryGetAll Generic - IIndexAccessorExtensions
 		[TestMethod]
-		public void TryGetAllGenericReturnsAnEmptyEnumerableIfTypeIsNotRegistered()
+		public void TryGetAllGenericReturnsExpectedRegistrations()
 		{
-			using (var container = new IocContainer())
-			{
-				// Arrange
-				var foo1 = container.Register<IFoo>(c => new Foo1());
-				var foo2 = container.Register<IFoo>("Foo", c => new Foo2());
+			var reg1 = new InstanceRegistration<IFoo>(new Foo1());
+			var reg2 = new InstanceRegistration<IFoo>(new Foo1());
+			var reg3 = new InstanceRegistration<IFoo>(new Foo1());
+			var reg4 = new InstanceRegistration<IBar>(new Bar1());
 
-				// Act
-				var result = container.Index.TryGetAll<IBar>();
+			foreach (var index in Helper.GetIndexes())
+			{
+				index.Add(reg1);
+				index.Add(reg2, "Key1");
+				index.Add(reg3, "Key2");
+				index.Add(reg4, "Key1");
+
+				var all = index.TryGetAll<IFoo>();
+
+				Assert.IsInstanceOfType(all, typeof(IEnumerable<IRegistration>));
+				Assert.IsTrue(all.Count() == 3);
+
+				var allList = all.ToList();
+
+				CollectionAssert.AllItemsAreNotNull(allList);
+				CollectionAssert.AllItemsAreInstancesOfType(allList, typeof(InstanceRegistration<IFoo>));
+				CollectionAssert.Contains(allList, reg1);
+				CollectionAssert.Contains(allList, reg2);
+				CollectionAssert.Contains(allList, reg3);
+				CollectionAssert.DoesNotContain(allList, reg4);
+			}
+		}
+
+		[TestMethod]
+		public void TryGetAllThrowsExceptionIfTypeIsNotRegistered()
+		{
+			var reg1 = new InstanceRegistration<IFoo>(new Foo1());
+			var reg2 = new InstanceRegistration<IFoo>(new Foo1());
+
+			foreach (var index in Helper.GetIndexes())
+			{
+				index.Add(reg1);
+				index.Add(reg2, "Key");
+
+				var result = index.TryGetAll(typeof(IBar));
 
 				// Assert
-				Assert.IsNotNull(result);
 				Assert.IsInstanceOfType(result, typeof(IEnumerable<IRegistration>));
 				Assert.IsTrue(result.Count() == 0);
 			}
 		}
-		#endregion
+
+		[TestMethod]
+		public void TryGetAllGenericThrowsExceptionIfTypeIsNotRegistered()
+		{
+			var reg1 = new InstanceRegistration<IFoo>(new Foo1());
+			var reg2 = new InstanceRegistration<IFoo>(new Foo1());
+
+			foreach (var index in Helper.GetIndexes())
+			{
+				index.Add(reg1);
+				index.Add(reg2, "Key");
+
+				var result = index.TryGetAll<IBar>();
+
+				// Assert
+				Assert.IsInstanceOfType(result, typeof(IEnumerable<IRegistration>));
+				Assert.IsTrue(result.Count() == 0);
+			}
+		}
 	}
 }

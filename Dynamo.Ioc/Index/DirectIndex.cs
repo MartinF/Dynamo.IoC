@@ -2,11 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 // Fast Get/TryGet, but slow Enumerate
+// Also slow when using generic Get<T> - compared to GroupedEntry
 
-// Remove it ? - there is no real difference compared to the GroupedIndex ? 
+// Use List<IRegistration> to speed up Enumerating ? 
+// Also for Contains(Registration?) equal by reference or by type/key ?
+// private readonly List<Registration> _allIndex = new List<IRegistration>();
+// Could create an index that takes the best from this and the GroupedIndex.
 
 namespace Dynamo.Ioc.Index
 {
@@ -15,36 +18,35 @@ namespace Dynamo.Ioc.Index
 		#region Fields
 		private readonly Dictionary<Type, IRegistration> _defaultIndex = new Dictionary<Type, IRegistration>();
 		private readonly Dictionary<Type, Dictionary<object, IRegistration>> _keyedIndex = new Dictionary<Type, Dictionary<object, IRegistration>>();
-
-		// Use List<IRegistration> to speed up Enumerating ? 
-		// Also for Contains(Registration?) equal by reference or by type/key ?
-		//private readonly List<Registration> _allIndex = new List<IRegistration>();
-		// Could create an index that takes the best from this and the GroupedIndex.
 		#endregion
 
-		public void Add(IRegistration registration)
+		public void Add<T>(IRegistration<T> registration, object key = null)
 		{
-			if (registration.Key == null)
+			if (registration == null)
+				throw new ArgumentNullException("registration");
+
+			var type = typeof(T);
+
+			if (key == null)
 			{
 				// Default
-				_defaultIndex.Add(registration.Type, registration);	
+				_defaultIndex.Add(type, registration);	
 			}
 			else
 			{
 				// Keyed
-
 				Dictionary<object, IRegistration> keyedEntry;
-				if (_keyedIndex.TryGetValue(registration.Type, out keyedEntry))
+				if (_keyedIndex.TryGetValue(type, out keyedEntry))
 				{
 					// Add to already existing entry
-					keyedEntry.Add(registration.Key, registration);
+					keyedEntry.Add(key, registration);
 				}
 				else
 				{
 					// Add new keyed entry
 					keyedEntry = new Dictionary<object, IRegistration>();
-					keyedEntry.Add(registration.Key, registration);
-					_keyedIndex.Add(registration.Type, keyedEntry);
+					keyedEntry.Add(key, registration);
+					_keyedIndex.Add(type, keyedEntry);
 				}
 			}
 		}
@@ -53,23 +55,57 @@ namespace Dynamo.Ioc.Index
 		{
 			return _defaultIndex[type];
 		}
-
 		public IRegistration Get(Type type, object key)
 		{
 			return _keyedIndex[type][key];
+		}
+		public IRegistration<T> Get<T>()
+		{
+			return (IRegistration<T>)_defaultIndex[typeof(T)];
+		}
+		public IRegistration<T> Get<T>(object key)
+		{
+			return (IRegistration<T>)_keyedIndex[typeof(T)][key];
 		}
 
 		public bool TryGet(Type type, out IRegistration registration)
 		{
 			return _defaultIndex.TryGetValue(type, out registration);
 		}
-
 		public bool TryGet(Type type, object key, out IRegistration registration)
 		{
 			Dictionary<object, IRegistration> entry;
 			if (_keyedIndex.TryGetValue(type, out entry))
 			{
 				return entry.TryGetValue(key, out registration);
+			}
+
+			registration = null;
+			return false;
+		}
+		public bool TryGet<T>(out IRegistration<T> registration)
+		{
+			IRegistration reg;
+			if (_defaultIndex.TryGetValue(typeof(T), out reg))
+			{
+				registration = (IRegistration<T>)reg;
+				return true;
+			}
+
+			registration = null;
+			return false;
+		}
+		public bool TryGet<T>(object key, out IRegistration<T> registration)
+		{
+			Dictionary<object, IRegistration> entry;
+			if (_keyedIndex.TryGetValue(typeof(T), out entry))
+			{
+				IRegistration reg;
+				if (entry.TryGetValue(key, out reg))
+				{
+					registration = (IRegistration<T>)reg;
+					return true;
+				}
 			}
 
 			registration = null;
@@ -107,23 +143,37 @@ namespace Dynamo.Ioc.Index
 				}
 			}
 		}
+		public IEnumerable<IRegistration<T>> GetAll<T>()
+		{
+			return GetAll(typeof(T)).Cast<IRegistration<T>>();
+		}
 
 		public IEnumerable<IRegistration> TryGetAll(Type type)
 		{
-			// Make faster implementation !
-
-			foreach (var registration in this)
+			IRegistration defaultRegistration;
+			if (_defaultIndex.TryGetValue(type, out defaultRegistration))
 			{
-				if (registration.Type == type)
-					yield return registration;
+				yield return defaultRegistration;
 			}
+
+			Dictionary<object, IRegistration> keyedRegistrations;
+			if (_keyedIndex.TryGetValue(type, out keyedRegistrations))
+			{
+				foreach (var keyedRegistration in keyedRegistrations.Values)
+				{
+					yield return keyedRegistration;
+				}
+			}
+		}
+		public IEnumerable<IRegistration<T>> TryGetAll<T>()
+		{
+			return TryGetAll(typeof(T)).Cast<IRegistration<T>>();
 		}
 
 		public bool Contains(Type type)
 		{
 			return _defaultIndex.ContainsKey(type);
 		}
-
 		public bool Contains(Type type, object key)
 		{
 			Dictionary<object, IRegistration> registrations;
@@ -134,15 +184,27 @@ namespace Dynamo.Ioc.Index
 
 			return false;
 		}
+		public bool Contains<T>()
+		{
+			return Contains(typeof(T));
+		}
+		public bool Contains<T>(object key)
+		{
+			return Contains(typeof(T), key);
+		}
 
 		public bool ContainsAny(Type type)
 		{
 			return _defaultIndex.ContainsKey(type) || _keyedIndex.ContainsKey(type);
 		}
+		public bool ContainsAny<T>()
+		{
+			return ContainsAny(typeof(T));
+		}
 
 		public IEnumerator<IRegistration> GetEnumerator()
 		{
-			// Could make this faster by keeping a combined index with all registrations no matter type - just a List<IRegistration>
+			// Could make this faster by keeping a combined index with all registrations no matter type - just a List<IRegistration> ?
 
 			foreach (var registration in _defaultIndex.Values)
 			{

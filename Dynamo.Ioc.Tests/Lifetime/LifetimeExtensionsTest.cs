@@ -46,21 +46,21 @@ namespace Dynamo.Ioc.Tests.Lifetime
 		[ExpectedException(typeof(ArgumentNullException))]
 		public void TransientLifetimeExtensionMethodThrowsExceptionIfParameterIsNull()
 		{
-			LifetimeExtensions.TransientLifetime(null);
+			LifetimeExtensions.TransientLifetime<object>(null);
 		}
 
 		[TestMethod]
 		[ExpectedException(typeof(ArgumentNullException))]
 		public void ContainerLifetimeExtensionMethodThrowsExceptionIfParameterIsNull()
 		{
-			LifetimeExtensions.ContainerLifetime(null);
+			LifetimeExtensions.ContainerLifetime<object>(null);
 		}
 
 		[TestMethod]
 		[ExpectedException(typeof(ArgumentNullException))]
 		public void ThreadLocalLifetimeExtensionMethodThrowsExceptionIfParameterIsNull()
 		{
-			LifetimeExtensions.ThreadLocalLifetime(null);
+			LifetimeExtensions.ThreadLocalLifetime<object>(null);
 		}
 	}
 }

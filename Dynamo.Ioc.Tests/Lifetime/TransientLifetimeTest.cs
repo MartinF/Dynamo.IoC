@@ -6,27 +6,15 @@ namespace Dynamo.Ioc.Tests.LifetimeTests
 	public class TransientLifetimeTest
 	{
 		/// <summary>
-		/// Make sure it is possible to set the Default Lifetime to Transient
-		///</summary>
-		[TestMethod]
-		public void CanSetDefaultLifetimeToTransient()
-		{
-			using (var container = new IocContainer(() => new TransientLifetime()))
-			{
-				Assert.IsInstanceOfType(container.DefaultLifetime, typeof(TransientLifetime));
-			}
-		}
-
-		/// <summary>
 		/// Resolving with Transient Lifetime returns a new instance
-		///</summary>
+		/// </summary>
 		[TestMethod]
-		public void AlwayNewLifetimeReturnsANewInstance()
+		public void TransientLifetimeAlwaysReturnsANewInstance()
 		{
 			// Arrange 
-			using (var container = new IocContainer(() => new TransientLifetime()))
+			using (var container = new IocContainer())
 			{
-				container.Register<IFoo>(c => new Foo1());
+				container.Register<IFoo>(c => new Foo1());	//.SetLifetime(new TransientLifetime<IFoo>);
 
 				// Act
 				var result1 = container.Resolve<IFoo>();

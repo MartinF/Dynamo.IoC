@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Web;
 
-namespace Dynamo.Ioc
+namespace Dynamo.Ioc.Web
 {
-	public abstract class HttpContextAwareLifetimeBase : LifetimeBase
+	public abstract class HttpContextAwareLifetimeBase : ILifetime
 	{
 		private readonly Func<HttpContextBase> _func;
 
@@ -19,5 +19,11 @@ namespace Dynamo.Ioc
 		}
 
 		protected HttpContextBase Context { get { return _func(); } }
+
+		public virtual void Init(IRegistration registration)
+		{
+		}
+		
+		public abstract object GetInstance(Func<IResolver, object> factory, IResolver resolver);
 	}
 }

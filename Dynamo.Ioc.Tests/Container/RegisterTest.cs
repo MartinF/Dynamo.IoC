@@ -1,12 +1,9 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-// Testing the Register() methods on the Container and the generic Register method on IResolverExtensions.
-
-// Write tests for each Index supported ? 
-// Write tests for each CompileMode ?
-		
-namespace Dynamo.Ioc.Tests
+// Testing the Register methods on the Container
+	
+namespace Dynamo.Ioc.Tests.Container
 {
 	[TestClass]
 	public class RegisterTest
@@ -16,13 +13,13 @@ namespace Dynamo.Ioc.Tests
 		{
 			using (var container = new IocContainer())
 			{
-				var result = container.Register(typeof(IFoo), c => new Foo1());
+				var reg = container.Register<IFoo>(c => new Foo1());
 
-				Assert.IsInstanceOfType(result, typeof(IConfigurableRegistration));
-				Assert.IsInstanceOfType(result, typeof(ExpressionRegistration));
+				// Correct return type
+				Assert.IsInstanceOfType(reg, typeof(IExpressionRegistration<IFoo>));
 
-				Assert.AreSame(result.Type, typeof(IFoo));
-				Assert.AreEqual(result.Key, null);
+				// Check index
+				Assert.IsTrue(container.Index.Contains(typeof(IFoo)));
 			}
 		}
 
@@ -31,190 +28,19 @@ namespace Dynamo.Ioc.Tests
 		{
 			using (var container = new IocContainer())
 			{
-				var result = container.Register(typeof(IFoo), "Bar", c => new Foo1());
+				var reg = container.Register<IFoo>(c => new Foo1(), "Bar");
+				
+				// Correct return type
+				Assert.IsInstanceOfType(reg, typeof(IExpressionRegistration<IFoo>));
 
-				Assert.IsInstanceOfType(result, typeof(IConfigurableRegistration));
-				Assert.IsInstanceOfType(result, typeof(ExpressionRegistration));
-
-				Assert.AreSame(result.Type, typeof(IFoo));
-				Assert.AreEqual(result.Key, "Bar");
-			}
-		}
-		
-		[TestMethod]
-		[ExpectedException(typeof(ArgumentException))]
-		public void RegisterUsingTypeThatAlreadyExistsThrowsException()
-		{
-			using (var container = new IocContainer())
-			{
-				container.Register(typeof(IFoo), c => new Foo1());
-				container.Register(typeof(IFoo), c => new Foo2());
+				// Test index
+				Assert.IsTrue(container.Index.Contains(typeof(IFoo), "Bar"));
 			}
 		}
 
 		[TestMethod]
 		[ExpectedException(typeof(ArgumentException))]
-		public void RegisterUsingKeyThatAlreadyExistsThrowsException()
-		{
-			using (var container = new IocContainer())
-			{
-				container.Register(typeof(IFoo), "Bar", c => new Foo1());
-				container.Register(typeof(IFoo), "Bar", c => new Foo2());
-			}
-		}
-
-		[TestMethod]
-		public void RegisterWithPropertyInjectionResolvesToCorrectType()
-		{
-			using (var container = new IocContainer())
-			{
-				container.Register(typeof(IFoo), c => new Foo1());
-				container.Register(typeof(IBar), c => new Bar1());
-				container.Register(typeof(IFooBar), c => new FooBar() { Foo = (IFoo)c.Resolve(typeof(IFoo)), Bar = (IBar)c.Resolve(typeof(IBar)) });
-
-				var result = (IFooBar)container.Resolve(typeof(IFooBar));
-
-				Assert.IsNotNull(result);
-				Assert.IsNotNull(result.Foo);
-				Assert.IsNotNull(result.Bar);
-
-				Assert.IsInstanceOfType(result, typeof(FooBar));
-				Assert.IsInstanceOfType(result.Foo, typeof(Foo1));
-				Assert.IsInstanceOfType(result.Bar, typeof(Bar1));
-			}
-		}
-
-		[TestMethod]
-		public void RegisterUsingKeyWithPropertyInjectionResolvesToCorrectType()
-		{
-			using (var container = new IocContainer())
-			{
-				container.Register(typeof(IFoo), "Foo", c => new Foo1());
-				container.Register(typeof(IBar), "Bar", c => new Bar1());
-				container.Register(typeof(IFooBar), "PropInjection", c => new FooBar() { Foo = (IFoo)c.Resolve(typeof(IFoo), "Foo"), Bar = (IBar)c.Resolve(typeof(IBar), "Bar") });
-
-				var result = (IFooBar)container.Resolve(typeof(IFooBar), "PropInjection");
-
-				Assert.IsNotNull(result);
-				Assert.IsNotNull(result.Foo);
-				Assert.IsNotNull(result.Bar);
-
-				Assert.IsInstanceOfType(result, typeof(FooBar));
-				Assert.IsInstanceOfType(result.Foo, typeof(Foo1));
-				Assert.IsInstanceOfType(result.Bar, typeof(Bar1));
-			}
-		}
-
-		[TestMethod]
-		[ExpectedException(typeof(RegistrationException))]
-		public void RegisterThrowsExceptionIfExpressionDoesntReturnExpectedType()
-		{
-			using (var container = new IocContainer())
-			{
-				var result = container.Register(typeof(IBar), c => new Foo1());
-			}
-		}
-
-		[TestMethod]
-		[ExpectedException(typeof(RegistrationException))]
-		public void RegisterUsingKeyThrowsExceptionIfExpressionDoesntReturnExpectedType()
-		{
-			using (var container = new IocContainer())
-			{
-				var result = container.Register(typeof(IBar), "Foo", c => new Foo1());
-			}
-		}
-
-
-
-		[TestMethod]
-		public void RegisterCanRegisterAStruct()
-		{
-			// Works with CompileMode.Delegate
-			// Also works with CompileMode.Dynamic - but only if value is included directly - cannot reference a local variable
-
-			using (var container = new IocContainer())
-			{
-				Type type = typeof(int);
-
-				var registration = container.Register(type, x => 32);
-
-				// Check registration
-				Assert.IsInstanceOfType(registration, typeof(IConfigurableRegistration));
-				Assert.IsInstanceOfType(registration, typeof(ExpressionRegistration));
-
-				Assert.AreSame(registration.Type, type);
-				Assert.AreEqual(registration.Key, null);
-
-				// Try to resolve
-				var result = container.Resolve(type);
-				Assert.AreEqual(32, result);
-			}
-		}
-
-		[TestMethod]
-		public void RegisterGenericCanRegisterAStruct()
-		{
-			// Works with CompileMode.Delegate
-			// Also works with CompileMode.Dynamic - but only if value is included directly - cannot reference a local variable
-
-			using (var container = new IocContainer())
-			{
-				var registration = container.Register<int>(x => 32);
-
-				// Check registration
-				Assert.IsInstanceOfType(registration, typeof(IConfigurableRegistration));
-				Assert.IsInstanceOfType(registration, typeof(ExpressionRegistration));
-
-				Assert.AreSame(registration.Type, typeof(int));
-				Assert.AreEqual(registration.Key, null);
-
-				// Try to resolve
-				var result = container.Resolve<int>();
-				Assert.AreEqual(32, result);
-			}
-		}
-
-
-
-
-
-
-
-		#region Register Generic - ResolverExtensions
-		[TestMethod]
-		public void RegisterGenericReturnsCorrectType()
-		{
-			using (var container = new IocContainer())
-			{
-				var result = container.Register<IFoo>(c => new Foo1());
-
-				Assert.IsInstanceOfType(result, typeof(IConfigurableRegistration));
-				Assert.IsInstanceOfType(result, typeof(ExpressionRegistration));
-
-				Assert.AreSame(result.Type, typeof(IFoo));
-				Assert.AreEqual(result.Key, null);
-			}
-		}
-
-		[TestMethod]
-		public void RegisterGenericUsingKeyReturnsCorrectType()
-		{
-			using (var container = new IocContainer())
-			{
-				var result = container.Register<IFoo>("Bar", c => new Foo1());
-
-				Assert.IsInstanceOfType(result, typeof(IConfigurableRegistration));
-				Assert.IsInstanceOfType(result, typeof(ExpressionRegistration));
-
-				Assert.AreSame(result.Type, typeof(IFoo));
-				Assert.AreEqual(result.Key, "Bar");
-			}
-		}
-
-		[TestMethod]
-		[ExpectedException(typeof(ArgumentException))]
-		public void RegisterGenericUsingTypeThatAlreadyExistsThrowsException()
+		public void RegisterThrowsExceptionIfRegistrationAlreadyExists()
 		{
 			using (var container = new IocContainer())
 			{
@@ -225,17 +51,17 @@ namespace Dynamo.Ioc.Tests
 
 		[TestMethod]
 		[ExpectedException(typeof(ArgumentException))]
-		public void RegisterGenericUsingKeyThatAlreadyExistsThrowsException()
+		public void RegisterUsingKeyThrowsExceptionIfRegistrationAlreadyExists()
 		{
 			using (var container = new IocContainer())
 			{
-				container.Register<IFoo>("Bar", c => new Foo1());
-				container.Register<IFoo>("Bar", c => new Foo2());
+				container.Register<IFoo>(c => new Foo1(), "Bar");
+				container.Register<IFoo>(c => new Foo2(), "Bar");
 			}
 		}
 
 		[TestMethod]
-		public void RegisterGenericWithPropertyInjectionResolvesToCorrectType()
+		public void RegisterWithPropertyInjectionResolvesToCorrectType()
 		{
 			using (var container = new IocContainer())
 			{
@@ -243,38 +69,63 @@ namespace Dynamo.Ioc.Tests
 				container.Register<IBar>(c => new Bar1());
 				container.Register<IFooBar>(c => new FooBar() { Foo = c.Resolve<IFoo>(), Bar = c.Resolve<IBar>() });
 
-				var result = container.Resolve<IFooBar>();
+				var instance = container.Resolve<IFooBar>();
 
-				Assert.IsNotNull(result);
-				Assert.IsNotNull(result.Foo);
-				Assert.IsNotNull(result.Bar);
+				Assert.IsNotNull(instance);
+				Assert.IsNotNull(instance.Foo);
+				Assert.IsNotNull(instance.Bar);
 
-				Assert.IsInstanceOfType(result, typeof(FooBar));
-				Assert.IsInstanceOfType(result.Foo, typeof(Foo1));
-				Assert.IsInstanceOfType(result.Bar, typeof(Bar1));
+				Assert.IsInstanceOfType(instance, typeof(FooBar));
+				Assert.IsInstanceOfType(instance.Foo, typeof(Foo1));
+				Assert.IsInstanceOfType(instance.Bar, typeof(Bar1));
 			}
 		}
 
 		[TestMethod]
-		public void RegisterGenericUsingKeyWithPropertyInjectionResolvesToCorrectType()
+		public void RegisterUsingKeyWithPropertyInjectionResolvesToCorrectType()
 		{
 			using (var container = new IocContainer())
 			{
-				container.Register<IFoo>("Foo", c => new Foo1());
-				container.Register<IBar>("Bar", c => new Bar1());
-				container.Register<IFooBar>("PropInjection", c => new FooBar() { Foo = c.Resolve<IFoo>("Foo"), Bar = c.Resolve<IBar>("Bar") });
+				container.Register<IFoo>(c => new Foo1(), "Foo");
+				container.Register<IBar>(c => new Bar1(), "Bar");
+				container.Register<IFooBar>(c => new FooBar() { Foo = c.Resolve<IFoo>("Foo"), Bar = c.Resolve<IBar>("Bar") }, "PropInjection");
 
-				var result = container.Resolve<IFooBar>("PropInjection");
+				var instance = container.Resolve<IFooBar>("PropInjection");
 
-				Assert.IsNotNull(result);
-				Assert.IsNotNull(result.Foo);
-				Assert.IsNotNull(result.Bar);
+				Assert.IsNotNull(instance);
+				Assert.IsNotNull(instance.Foo);
+				Assert.IsNotNull(instance.Bar);
 
-				Assert.IsInstanceOfType(result, typeof(FooBar));
-				Assert.IsInstanceOfType(result.Foo, typeof(Foo1));
-				Assert.IsInstanceOfType(result.Bar, typeof(Bar1));
+				Assert.IsInstanceOfType(instance, typeof(FooBar));
+				Assert.IsInstanceOfType(instance.Foo, typeof(Foo1));
+				Assert.IsInstanceOfType(instance.Bar, typeof(Bar1));
 			}
 		}
-		#endregion
+
+		[TestMethod]
+		public void RegisterCanRegisterAStruct()
+		{
+			// Works with CompileMode.Delegate
+			// Also works with CompileMode.Dynamic - but only if value is included directly - cannot reference a local variable
+
+			// In this case it would make more sense to use RegisterInstance instead of Register - set constraint on Register so it cant register a struct?
+
+			using (var container = new IocContainer())
+			{
+				var registration = container.Register<int>(x => 32);		// Should use RegisterInstance ? will it work ?
+
+				// Check registration
+				Assert.IsInstanceOfType(registration, typeof(IExpressionRegistration<int>));
+
+				Assert.AreSame(registration.ReturnType, typeof(int));
+
+				// Try to resolve
+				var result = container.Resolve<int>();
+				Assert.AreEqual(32, result);
+
+				// Check index
+				Assert.IsTrue(container.Index.Contains(typeof(int)));
+			}
+		}
 	}
 }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Dynamo.Ioc.Tests
+namespace Dynamo.Ioc.Tests.Container
 {
 	[TestClass]
 	public class KeyResolverTest
@@ -10,8 +10,8 @@ namespace Dynamo.Ioc.Tests
 		{
 			using (var container = new IocContainer())
 			{
-				var reg1 = container.Register<IDeviceState>(DeviceState.Online, x => new FooConnection(true));
-				var reg2 = container.Register<IDeviceState>(DeviceState.Offline, x => new FooConnection(false));
+				var reg1 = container.Register<IDeviceState>(x => new FooConnection(true), DeviceState.Online);
+				var reg2 = container.Register<IDeviceState>(x => new FooConnection(false), DeviceState.Offline);
 				var reg3 = container.Register<IHardwareDevice>(x => new Modem(x.GetKeyResolver<IDeviceState, DeviceState>()));
 
 				var instance = container.Resolve<IHardwareDevice>();

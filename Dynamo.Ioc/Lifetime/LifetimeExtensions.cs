@@ -4,7 +4,7 @@ namespace Dynamo.Ioc
 {
 	public static class LifetimeExtensions
 	{
-		public static IConfigurableRegistration TransientLifetime(this IConfigurableRegistration registration)
+		public static IExpressionRegistration<T> TransientLifetime<T>(this IExpressionRegistration<T> registration)
 		{
 			// TransientLifetime / TransientInstance ?
 
@@ -15,7 +15,7 @@ namespace Dynamo.Ioc
 			return registration;
 		}
 
-		public static IConfigurableRegistration ContainerLifetime(this IConfigurableRegistration registration)
+		public static IExpressionRegistration<T> ContainerLifetime<T>(this IExpressionRegistration<T> registration)
 		{
 			// ContainerLifetime / SingletonInstance ?
 
@@ -26,7 +26,7 @@ namespace Dynamo.Ioc
 			return registration;
 		}
 
-		public static IConfigurableRegistration ThreadLocalLifetime(this IConfigurableRegistration registration)
+		public static IExpressionRegistration<T> ThreadLocalLifetime<T>(this IExpressionRegistration<T> registration)
 		{
 			// ThreadLocalLifetime / ThreadLocalInstance ?
 

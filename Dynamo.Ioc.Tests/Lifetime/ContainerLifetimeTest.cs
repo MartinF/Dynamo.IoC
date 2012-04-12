@@ -4,24 +4,20 @@
 
 namespace Dynamo.Ioc.Tests.LifetimeTests
 {
+	// Test the actual lifetime - without going through the container !
+	
 	[TestClass]
 	public class ContainerLifetimeTest
 	{
-		/// <summary>
-		/// Make sure that Default Lifetime can be set to ContainerLifetime
-		///</summary>
 		[TestMethod]
 		public void CanSetDefaultLifetimeToContainerLifetime()
 		{
 			using (var container = new IocContainer(() => new ContainerLifetime()))
 			{
-				Assert.IsInstanceOfType(container.DefaultLifetime, typeof(ContainerLifetime));
+				Assert.IsInstanceOfType(container.DefaultLifetimeFactory(), typeof(ContainerLifetime));
 			}
 		}
 
-		/// <summary>
-		/// Resolving with Lifetime Container always returns the same instance
-		///</summary>
 		[TestMethod]
 		public void ContainerLifetimeAlwaysReturnsSameInstance()
 		{

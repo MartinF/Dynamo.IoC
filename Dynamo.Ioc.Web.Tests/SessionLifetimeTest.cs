@@ -17,7 +17,7 @@ namespace Dynamo.Ioc.Web.Tests
 		{
 			using (var container = new IocContainer(() => new SessionLifetime()))
 			{
-				Assert.IsInstanceOfType(container.DefaultLifetime, typeof(SessionLifetime));
+				Assert.IsInstanceOfType(container.DefaultLifetimeFactory(), typeof(SessionLifetime));
 			}
 		}
 

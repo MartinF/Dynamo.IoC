@@ -6,7 +6,9 @@ using System.Web.WebPages;
 // [assembly: PreApplicationStartMethod(typeof(PreApplicationStartCode), "Start")]
 // public static void Start() { Microsoft.Web.Infrastructure.DynamicModuleHelper.DynamicModuleUtility.RegisterModule(typeof(MyModule)); }
 
-namespace Dynamo.Ioc
+// Rename to HttpRequestLifetime ?
+
+namespace Dynamo.Ioc.Web
 {
 	public sealed class RequestLifetime : HttpContextAwareLifetimeBase
 	{
@@ -28,35 +30,36 @@ namespace Dynamo.Ioc
 		#endregion
 
 		#region Methods
-		public override object GetInstance(IInstanceFactory factory, IResolver resolver)
+		public override void Init(IRegistration key)
 		{
-			var context = Context;
+			// If not used here Init is not used anywhere ! - remove it again ?
 
-			var instance = context.Items[_key];
-			if (instance == null)
-			{
-				instance = factory.CreateInstance(resolver);
-				context.Items[_key] = instance;
-
-				if (_disposeOnEnd)
-					context.RegisterForDispose((IDisposable)instance);	// throws exception to make you aware that it doesnt implement IDisposable as expected 
-																		// But should throw different Exception than InvalidCastException ? Fix test ?
-																		// Could make the check in Init instead ?
-			}
-
-			return instance;
-		}
-
-		public override void Init(IRegistrationInfo key)
-		{
-			base.Init(key);
-			
 			// Could check here if Type implements IDisposable ? 
 			// Will it work checking the actual type ? 
 			//if (_disposeOnEnd && !(key.Type is IDisposable))
 			//{
 			//    throw new DynamoRegistrationException(key, "To use the Dispose On End feature the instance registered needs to implement IDisposable");
 			//}
+		}
+
+		public override object GetInstance(Func<IResolver, object> factory, IResolver resolver)
+		{
+			var context = Context;
+
+			var instance = context.Items[_key];
+			if (instance == null)
+			{
+				instance = factory(resolver);
+				context.Items[_key] = instance;
+
+				if (_disposeOnEnd)
+					context.RegisterForDispose((IDisposable)instance);	// throws exception to make you aware that it doesnt implement IDisposable as expected 
+
+				// But should throw different Exception than InvalidCastException ? Fix test ?
+				// Could make the check in Init instead ?
+			}
+
+			return instance;
 		}
 		#endregion
 	}

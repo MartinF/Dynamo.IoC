@@ -1,13 +1,19 @@
 ﻿using System;
 using System.Web.Caching;
 
+// Name how ? 
+// Set-Request/Session/Cached-Lifetime ?
+// Prefix with Http ? - HttpRequestLifetime / SetHttpRequestLifetime ?
+
+// Instead of Http -RequestLifetime - prefix with Web ? Web-RequestLifetime / WebSessionLifetime ?
+
 namespace Dynamo.Ioc.Web
 {
 	public static class LifetimeExtensions
 	{
-		public static IConfigurableRegistration RequestLifetime(this IConfigurableRegistration registration, bool disposeOnEnd = false)
+		public static IExpressionRegistration RequestLifetime(this IExpressionRegistration registration, bool disposeOnEnd = false)
 		{
-			// InstancePerRequest / RequestLifetime ? 
+			// HttpRequestLifetime / InstancePerRequest / RequestLifetime ? 
 
 			if (registration == null)
 				throw new ArgumentNullException("registration");
@@ -16,9 +22,9 @@ namespace Dynamo.Ioc.Web
 			return registration;
 		}
 
-		public static IConfigurableRegistration SessionLifetime(this IConfigurableRegistration registration)
+		public static IExpressionRegistration SessionLifetime(this IExpressionRegistration registration)
 		{
-			// InstancePerSession / SessionLifetime ?
+			// HttpSessionLifetime / InstancePerSession / SessionLifetime ?
 
 			if (registration == null)
 				throw new ArgumentNullException("registration");
@@ -27,7 +33,7 @@ namespace Dynamo.Ioc.Web
 			return registration;
 		}
 
-		public static IConfigurableRegistration CachedLifetime(this IConfigurableRegistration registration, CacheDependency dependency = null, CacheItemPriority itemPriority = CacheItemPriority.Default, CacheItemRemovedCallback itemRemovedCallback = null)
+		public static IExpressionRegistration CachedLifetime(this IExpressionRegistration registration, CacheDependency dependency = null, CacheItemPriority itemPriority = CacheItemPriority.Default, CacheItemRemovedCallback itemRemovedCallback = null)
 		{
 			// HttpCachedLifetime / CachedLifetime ?
 
@@ -38,7 +44,7 @@ namespace Dynamo.Ioc.Web
 			return registration;
 		}
 
-		public static IConfigurableRegistration CachedLifetime(this IConfigurableRegistration registration, TimeSpan slidingExpiration, CacheDependency dependency = null, CacheItemPriority itemPriority = CacheItemPriority.Default, CacheItemRemovedCallback itemRemovedCallback = null)
+		public static IExpressionRegistration CachedLifetime(this IExpressionRegistration registration, TimeSpan slidingExpiration, CacheDependency dependency = null, CacheItemPriority itemPriority = CacheItemPriority.Default, CacheItemRemovedCallback itemRemovedCallback = null)
 		{
 			// HttpCachedLifetime / CachedLifetime ?
 

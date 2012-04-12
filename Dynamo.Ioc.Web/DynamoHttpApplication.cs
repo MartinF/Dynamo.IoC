@@ -4,6 +4,9 @@ using System.Web.Mvc;
 
 // Dispose container at Application_End() ?
 
+// Any way to run clean/clear on lifetime after Application_Start() have run ?
+//[assembly: WebActivator.PostApplicationStartMethod(typeof(Rmote.Web.App_Start.MiniProfilerPackage), "PostStart")]
+
 namespace Dynamo.Ioc.Web
 {
 	public abstract class DynamoHttpApplication : HttpApplication

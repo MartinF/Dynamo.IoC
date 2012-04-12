@@ -6,23 +6,20 @@ using System.Web.Caching;
 
 // Add Clear/Reset method ?
 
-namespace Dynamo.Ioc
+namespace Dynamo.Ioc.Web
 {
-	public sealed class CachedLifetime : LifetimeBase
+	public sealed class CachedLifetime : ILifetime
 	{
 		#region Fields
-
-		private string _key;
+		private readonly string _key = Guid.NewGuid().ToString();
 		private readonly CacheDependency _dependency = null;	
 		private readonly CacheItemPriority _itemPriority = CacheItemPriority.Default;
 		private readonly CacheItemRemovedCallback _itemRemovedCallback = null;
 		private readonly DateTime _absoluteExpiration = Cache.NoAbsoluteExpiration;
 		private readonly TimeSpan _slidingExpiration = Cache.NoSlidingExpiration;
-		
 		#endregion
 
 		#region Constructors
-
 		/// <summary>
 		/// 
 		/// </summary>
@@ -61,29 +58,20 @@ namespace Dynamo.Ioc
 		{
 			_slidingExpiration = slidingExpiration;
 		}
-
 		#endregion
 
 		#region Methods
-
-		public override void Init(IRegistrationInfo registration)
+		public void Init(IRegistration registration)
 		{
-			// TODO: Needs fixing doesnt it !? key hashcode ? or whatever should be used ? _key.GetType().Name ?
-
-			// Create key
-			_key = "#" + registration.Type.Name;	// Fullname ?
-			if (registration.Key != null)
-				_key += "-" + registration.Key;
 		}
-
-		public override object GetInstance(IInstanceFactory factory, IResolver resolver)
+		public object GetInstance(Func<IResolver, object> factory, IResolver resolver)
 		{
 			Cache cache = HttpRuntime.Cache;
 
 			var instance = cache[_key];
 			if (instance == null)
 			{
-				instance = factory.CreateInstance(resolver);
+				instance = factory(resolver);
 				cache.Insert(_key, instance, _dependency, _absoluteExpiration, _slidingExpiration, _itemPriority, _itemRemovedCallback);
 			}
 

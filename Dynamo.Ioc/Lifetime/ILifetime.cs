@@ -1,11 +1,18 @@
-﻿
+﻿using System;
+
 namespace Dynamo.Ioc
 {
-	public interface ILifetime : ILifetimeInfo
+	public interface ILifetime
 	{
-		void Init(IRegistrationInfo key);
-		object GetInstance(IInstanceFactory factory, IResolver resolver);	// Inject both the IInstanceFactory and the IResolver (or IContainer) ?
+		// Methods
+		
+		// If RequestLifetime doesnt use Init then dont use it at all 
+		void Init(IRegistration registration);										// Just include IExpressionRegistration / ExpressionRegistration ?
+		
+		object GetInstance(Func<IResolver, object> factory, IResolver resolver);
+		
+		// void Reset/Clear/Clean/Cleanup ?
 
-		// void Reset/Clear() ?
+		// IDisposable ? - so _instance or resources used can be disposed ? else you would have to write a wrapper for each object used if it uses managed resources ?
 	}
 }

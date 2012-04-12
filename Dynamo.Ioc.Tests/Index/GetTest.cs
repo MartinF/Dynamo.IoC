@@ -1,7 +1,4 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Dynamo.Ioc.Tests.Index
@@ -10,81 +7,74 @@ namespace Dynamo.Ioc.Tests.Index
 	public class GetTest
 	{
 		[TestMethod]
-		public void GetRegistrationReturnTheExpectedRegistration()
+		public void GetReturnTheExpectedRegistration()
 		{
-			using (var container = new IocContainer())
+			var reg1 = new InstanceRegistration<IFoo>(new Foo1());
+			var reg2 = new InstanceRegistration<IFoo>(new Foo1());
+			var reg3 = new InstanceRegistration<IFoo>(new Foo1());
+			var reg4 = new InstanceRegistration<IBar>(new Bar1());
+
+			foreach (var index in Helper.GetIndexes())
 			{
-				var registration = container.Register(typeof(IFoo), c => new Foo1());
+				index.Add(reg1);
+				index.Add(reg2, "Key1");
+				index.Add(reg3, "Key2");
+				index.Add(reg4, "Key1");
 
-				var result = container.Index.Get(typeof(IFoo));
+				var out1 = index.Get(typeof(IFoo));
+				var out2 = index.Get(typeof(IFoo), "Key2");
 
-				Assert.IsNotNull(result);
-				Assert.AreSame(result, registration);
+				Assert.IsInstanceOfType(out1, typeof(IRegistration));
+				Assert.IsInstanceOfType(out2, typeof(IRegistration));
+
+				Assert.AreSame(reg1, out1);
+				Assert.AreSame(reg3, out2);
 			}
 		}
 
-		[TestMethod]
-		public void GetRegistrationUsingKeyReturnTheExpectedRegistration()
-		{
-			using (var container = new IocContainer())
-			{
-				var registration = container.Register(typeof(IFoo), "Foo", c => new Foo1());
-
-				var result = container.Index.Get(typeof(IFoo), "Foo");
-
-				Assert.IsNotNull(result);
-				Assert.AreSame(result, registration);
-			}
-		}
-
-		[TestMethod]
-		[ExpectedException(typeof(KeyNotFoundException))]
-		public void GetRegistrationsThrowsExceptionIfRegistrationDoesntExist()
-		{
-			using (var container = new IocContainer())
-			{
-				container.Index.Get(typeof(IFoo));
-			}
-		}
-
-		[TestMethod]
-		[ExpectedException(typeof(KeyNotFoundException))]
-		public void GetRegistrationsByNameThrowsExceptionIfRegistrationDoesntExist()
-		{
-			using (var container = new IocContainer())
-			{
-				container.Index.Get(typeof(IFoo), "Foo");
-			}
-		}
-
-
-
-		#region Get Generic - IIndexAccessorExtensions
 		[TestMethod]
 		public void GetGenericReturnTheExpectedRegistration()
 		{
-			using (var container = new IocContainer())
+			var reg1 = new InstanceRegistration<IFoo>(new Foo1());
+			var reg2 = new InstanceRegistration<IFoo>(new Foo1());
+			var reg3 = new InstanceRegistration<IFoo>(new Foo1());
+			var reg4 = new InstanceRegistration<IBar>(new Bar1());
+
+			foreach (var index in Helper.GetIndexes())
 			{
-				var registration = container.Register<IFoo>(c => new Foo1());
+				index.Add(reg1);
+				index.Add(reg2, "Key1");
+				index.Add(reg3, "Key2");
+				index.Add(reg4, "Key1");
 
-				var result = container.Index.Get<IFoo>();
+				var out1 = index.Get<IFoo>();
+				var out2 = index.Get<IFoo>("Key2");
 
-				Assert.IsNotNull(result);
-				Assert.AreSame(result, registration);
+				Assert.IsInstanceOfType(out1, typeof(IRegistration));
+				Assert.IsInstanceOfType(out2, typeof(IRegistration));
+
+				Assert.AreSame(reg1, out1);
+				Assert.AreSame(reg3, out2);
 			}
 		}
 
 		[TestMethod]
-		public void GetGenericUsingKeyReturnTheExpectedRegistration()
+		[ExpectedException(typeof(KeyNotFoundException))]
+		public void GetThrowsExceptionIfRegistrationDoesntExist()
 		{
-			using (var container = new IocContainer())
+			foreach (var index in Helper.GetIndexes())
 			{
-				var registration = container.Register<IFoo>("Foo", c => new Foo1());
+				index.Get(typeof(IFoo));
+			}
+		}
 
-				var result = container.Index.Get<IFoo>("Foo");
-
-				Assert.IsNotNull(result);
-				Assert.AreSame(result, registration);
+		[TestMethod]
+		[ExpectedException(typeof(KeyNotFoundException))]
+		public void GetUsingKeyThrowsExceptionIfRegistrationDoesntExist()
+		{
+			foreach (var index in Helper.GetIndexes())
+			{
+				index.Get(typeof(IFoo), "Key");
 			}
 		}
 
@@ -92,9 +82,9 @@ namespace Dynamo.Ioc.Tests.Index
 		[ExpectedException(typeof(KeyNotFoundException))]
 		public void GetGenericThrowsExceptionIfRegistrationDoesntExist()
 		{
-			using (var container = new IocContainer())
+			foreach (var index in Helper.GetIndexes())
 			{
-				container.Index.Get<IFoo>();
+				index.Get<IFoo>();
 			}
 		}
 
@@ -102,11 +92,10 @@ namespace Dynamo.Ioc.Tests.Index
 		[ExpectedException(typeof(KeyNotFoundException))]
 		public void GetGenericUsingKeyThrowsExceptionIfRegistrationDoesntExist()
 		{
-			using (var container = new IocContainer())
+			foreach (var index in Helper.GetIndexes())
 			{
-				container.Index.Get<IFoo>("Foo");
+				index.Get<IFoo>("Key");
 			}
 		}
-		#endregion
 	}
 }

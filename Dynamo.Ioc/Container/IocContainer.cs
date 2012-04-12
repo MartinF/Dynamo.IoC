@@ -1,119 +1,201 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
+using System.Runtime.Serialization;
 using Dynamo.Ioc.Index;
 
-// The container is basically just a wrapper around the IIndex
-// It creates registrations and adds them to the index, and when resolving it gets the registration from the index and calls GetInstance() on it
+// Make Registration type for each lifetime instead of attaching the lifetime to the ExpressionRegistration ?
+
+// Set constraint on Register so it cant register a struct? - should use RegisterInstance for that ?
+
+// Rename useInternalCtor to includeInternalCtor - and make so it includes internal constructors when selecting
+// Should useInternalCtor be false per default ?
+
+// Remove generic implementation again? (IRegistration<T> and IExpressionRegistration<T>)
+
+// IDisposable - Container, Registration, Lifetime, Index ? - but index and registration can be shared ?
 
 namespace Dynamo.Ioc
 {
 	public class IocContainer : IIocContainer
 	{
 		#region Fields
-		private readonly IIndex _index = new GroupedIndex();
-		private readonly Func<ILifetime> _defaultLifetimeFactory = () => new TransientLifetime();
+		private readonly IIndex _index;
 		private readonly CompileMode _defaultCompileMode;
+		private readonly Func<ILifetime> _defaultLifetimeFactory;
 		#endregion
 
 		#region Constructor
-		public IocContainer(Func<ILifetime> defaultLifetimeFactory = null, CompileMode compileMode = CompileMode.Delegate, IIndex index = null)
+		public IocContainer(Func<ILifetime> defaultLifetimeFactory = null, CompileMode defaultCompileMode = CompileMode.Delegate, IIndex index = null)
 		{
-			if (index != null)
-				_index = index;
-
 			if (defaultLifetimeFactory != null)
-			{
-				// Check that the func returns a ILifetime
-				if (defaultLifetimeFactory() == null)
-					throw new ArgumentException("Default Lifetime Factory returns null. It must return a ILifetime.");
+				_defaultLifetimeFactory = defaultLifetimeFactory;	// Test if the lifetime factory returns valid ILifetime?
+			else
+				_defaultLifetimeFactory = () => new TransientLifetime();
+	
+			if (!Enum.IsDefined(typeof(CompileMode), defaultCompileMode))
+				throw new ArgumentException("Invalid CompileMode value");
 
-				_defaultLifetimeFactory = defaultLifetimeFactory;
-			}
-
-			_defaultCompileMode = compileMode;
+			_defaultCompileMode = defaultCompileMode;
+			_index = index ?? new GroupedIndex();
 		}
 		#endregion
 
 		#region Properties
 		public IIndex Index { get { return _index; } }
-		public ILifetimeInfo DefaultLifetime { get { return _defaultLifetimeFactory(); } }
 		public CompileMode DefaultCompileMode { get { return _defaultCompileMode; } }
+		public Func<ILifetime> DefaultLifetimeFactory { get { return _defaultLifetimeFactory; } }
 		#endregion
+
+
+
+		// IResolvable + IResolveable<T> - instead of IRegistration ? can be used as a lazy resolve feature bascically 
+		// IRegistration have all info about the registratration ? which shouldnt be available for IResolveable ?
 
 		#region Methods
 
 		#region Register
-		public IConfigurableRegistration Register(Type type, Expression<Func<IResolver, object>> expression)
+		// Remove Unneeded parameters - compileMode and lifetime ? - both for Register and Register Automatic
+			// Set compileMode when creating registration, or set it afterwards (change it) with .SetCompileMode() ?
+			// Set lifetime when creating registration, or set it afterwards (change it) with .SetLifetime() ?
+		public IExpressionRegistration<T> Register<T>(Expression<Func<IResolver, T>> expression, ILifetime lifetime = null, CompileMode? compileMode = null)
 		{
-			if (type == null)
-				throw new ArgumentNullException("type");
-			if (expression == null)
-				throw new ArgumentNullException("expression");
-
-			return RegisterImpl(type, null, expression);
+			return RegisterImpl(expression, null, lifetime, compileMode);
 		}
-		public IConfigurableRegistration Register(Type type, object key, Expression<Func<IResolver, object>> expression)
+		public IExpressionRegistration<T> Register<T>(Expression<Func<IResolver, T>> expression, object key, ILifetime lifetime = null, CompileMode? compileMode = null)
 		{
-			if (type == null)
-				throw new ArgumentNullException("type");
 			if (key == null)
 				throw new ArgumentNullException("key");
+
+			return RegisterImpl(expression, key, lifetime, compileMode);
+		}
+		private IExpressionRegistration<T> RegisterImpl<T>(Expression<Func<IResolver, T>> expression, object key, ILifetime lifetime, CompileMode? compileMode)
+		{
 			if (expression == null)
 				throw new ArgumentNullException("expression");
+			
+			lifetime = lifetime ?? _defaultLifetimeFactory();
 
-			return RegisterImpl(type, key, expression);
-		}
-		private IConfigurableRegistration RegisterImpl(Type type, object key, Expression<Func<IResolver, object>> expression)
-		{
-			// Skip this check ?
-			// Problem here if struct - use RegisterInstance ?
-			// Not possible to use CompileMode.Dynamic if expression reference a variable - but else it works
-			Type returnType = type.IsValueType ? ((UnaryExpression)expression.Body).Operand.Type : expression.Body.Type;
-			if (!type.IsAssignableFrom(returnType))
-				throw new RegistrationException(type, key, "Lambda Expression doesnt return an object of the expected type: " + type.Name);
-
-			var lifetime = _defaultLifetimeFactory();
-			var registration = new ExpressionRegistration(type, expression, lifetime, key, _defaultCompileMode);
-			_index.Add(registration);
+			if (compileMode == null)
+				compileMode = _defaultCompileMode;
+			
+			var registration = new ExpressionRegistration<T>(expression, lifetime, compileMode.Value);
+			
+			_index.Add<T>(registration, key);
 
 			return registration;
+		}
+		#endregion
+
+		#region Register - Automatic
+		public IExpressionRegistration Register(Type type, Type implType, ILifetime lifetime = null, CompileMode? compileMode = null, bool includeInternalCtor = false, Func<ConstructorInfo[], ConstructorInfo> selector = null)
+		{
+			return RegisterAutoImpl(type, implType, null, lifetime, compileMode, includeInternalCtor, selector);
+		}
+		public IExpressionRegistration Register(Type type, Type implType, object key, ILifetime lifetime = null, CompileMode? compileMode = null, bool includeInternalCtor = false, Func<ConstructorInfo[], ConstructorInfo> selector = null)
+		{
+			if (key == null)
+				throw new ArgumentNullException("key");
+
+			return RegisterAutoImpl(type, implType, key, lifetime, compileMode, includeInternalCtor, selector);
+		}
+		private IExpressionRegistration RegisterAutoImpl(Type type, Type implType, object key, ILifetime lifetime, CompileMode? compileMode, bool includeInternalCtor, Func<ConstructorInfo[], ConstructorInfo> selector)
+		{
+			if (type == null)
+				throw new ArgumentNullException("type");
+			if (implType == null)
+				throw new ArgumentNullException("implType");
+
+			if (!type.IsAssignableFrom(implType))
+				throw new ArgumentException("Type: " + type.Name + " is not assignable from implementation type: " + implType.Name);
+
+			// Forward call to Generic RegisterImpl<,> method using reflection
+			Func<object, ILifetime, CompileMode?, bool, Func<ConstructorInfo[], ConstructorInfo>, IExpressionRegistration> pointer = RegisterAutoImpl<object, object>;
+			var reg = ReflectionHelper.InvokeGenericMethod(this, pointer.Method, new Type[] { type, implType }, new Object[] { key, lifetime, compileMode, includeInternalCtor, selector });
+
+			return (IExpressionRegistration)reg;
+		}
+
+		// Generics
+		public IExpressionRegistration<TType> Register<TType, TImpl>(ILifetime lifetime = null, CompileMode? compileMode = null, bool includeInternalCtor = false, Func<ConstructorInfo[], ConstructorInfo> selector = null)
+			where TType : class
+			where TImpl : class, TType
+		{
+			return RegisterAutoImpl<TType, TImpl>(null, lifetime, compileMode, includeInternalCtor, selector);
+		}
+		public IExpressionRegistration<TType> Register<TType, TImpl>(object key, ILifetime lifetime = null, CompileMode? compileMode = null, bool includeInternalCtor = false, Func<ConstructorInfo[], ConstructorInfo> selector = null)
+			where TType : class
+			where TImpl : class, TType
+		{
+			if (key == null)
+				throw new ArgumentNullException("key");
+
+			return RegisterAutoImpl<TType, TImpl>(key, lifetime, compileMode, includeInternalCtor, selector);
+		}
+		private IExpressionRegistration<TType> RegisterAutoImpl<TType, TImpl>(object key, ILifetime lifetime, CompileMode? compileMode, bool includeInternalCtor, Func<ConstructorInfo[], ConstructorInfo> selector)
+			where TType : class
+			where TImpl : class, TType
+		{
+			var exp = ExpressionHelper.CreateExpression<TType, TImpl>(includeInternalCtor: includeInternalCtor, selector: selector);
+			return RegisterImpl<TType>(exp, key, lifetime, compileMode);
 		}
 		#endregion
 
 		#region Register Instance
 		public IRegistration RegisterInstance(Type type, object instance)
 		{
-			if (type == null)
-				throw new ArgumentNullException("type");
-			if (instance == null)
-				throw new ArgumentNullException("instance");
-
-			return RegisterInstanceImpl(type, null, instance);
+			return RegisterInstanceImpl(type, instance, null);
 		}
-		public IRegistration RegisterInstance(Type type, object key, object instance)
+		public IRegistration RegisterInstance(Type type, object instance, object key)
 		{
-			if (type == null)
-				throw new ArgumentNullException("type");
 			if (key == null)
 				throw new ArgumentNullException("key");
+
+			return RegisterInstanceImpl(type, instance, key);
+		}
+		public IRegistration<T> RegisterInstance<T>(T instance)
+		{
+			return RegisterInstanceImpl(instance, null);
+		}
+		public IRegistration<T> RegisterInstance<T>(T instance, object key)
+		{
+			if (key == null)
+				throw new ArgumentNullException("key");
+
+			return RegisterInstanceImpl(instance, key);
+		}
+
+		private IRegistration RegisterInstanceImpl(Type type, object instance, object key)
+		{
+			if (type == null)
+				throw new ArgumentNullException("type");
 			if (instance == null)
 				throw new ArgumentNullException("instance");
 
-			return RegisterInstanceImpl(type, key, instance);
-		}
-		private IRegistration RegisterInstanceImpl(Type type, object key, object instance)
-		{
-			// Keep this check ?
 			if (!type.IsAssignableFrom(instance.GetType()))
-				throw new RegistrationException(type, key, "Instance being registered is not assignable from Type: " + type.Name);
+				throw new ArgumentException("Type: " + type.Name + " is not assignable from instance of type: " + instance.GetType().Name);
 
-			var registration = new InstanceRegistration(type, instance, key);
-			_index.Add(registration);
+			// Forward call to Generic Register<,> methods using reflection
+			Func<object, object, IRegistration> pointer = RegisterInstanceImpl<object>;
+			var reg = ReflectionHelper.InvokeGenericMethod(this, pointer.Method, new Type[] { type }, new Object[] { instance, key });
+
+			return (IRegistration)reg;
+		}
+		private IRegistration<T> RegisterInstanceImpl<T>(T instance, object key)
+		{
+			if (instance == null)
+				throw new ArgumentNullException("instance");
+
+			var registration = new InstanceRegistration<T>(instance);
+			_index.Add<T>(registration, key);
 
 			return registration;
 		}
 		#endregion
+
+
 
 		#region Resolve
 		public object Resolve(Type type)
@@ -132,16 +214,10 @@ namespace Dynamo.Ioc
 
 			return _index.Get(type, key).GetInstance(this);
 		}
-		public object Resolve(IRegistrationInfo info)
-		{
-			if (info == null)
-				throw new ArgumentNullException("info");
-
-			return info.Key == null ? Resolve(info.Type) : Resolve(info.Type, info.Key);
-		}
 		public T Resolve<T>()
 		{
-			return (T)_index.Get(typeof(T)).GetInstance(this);
+			return (T)_index.Get(typeof(T)).GetInstance(this);	// Faster
+			//return _index.Get<T>().GetInstance(this);			// Slower
 		}
 		public T Resolve<T>(object key)
 		{
@@ -150,9 +226,37 @@ namespace Dynamo.Ioc
 
 			return (T)_index.Get(typeof(T), key).GetInstance(this);
 		}
+
+
+
+		// These two methods are really not needed
+		// They are just simple helpers
+		// if people have the registration they could just aswell just call registration.GetInstance() ?
+		// Write tests
+		public object Resolve(IRegistration registration)
+		{
+			if (registration == null)
+				throw new ArgumentNullException("registration");
+
+			return registration.GetInstance(this);
+		}
+		public T Resolve<T>(IRegistration<T> registration)
+		{
+			// IMPORTANT !*!*!*!*!*!*!
+			// Remember it needs a fix in the ExpressionCompiler - right now it assumes all calls to Resolve<T> with one parameter is the object key version - this crashes it - call it something else
+			// Or make it an extension method ? doesnt make sense to resolve a registration anyway ? as it can just be called directly on the registration anyway ...
+
+			if (registration == null)
+				throw new ArgumentNullException("registration");
+
+			return registration.GetInstance(this);
+		}
 		#endregion
 		
 		#region TryResolve
+
+		// Let generic version use non-generic version ?
+		
 		public bool TryResolve(Type type, out object instance)
 		{
 			if (type == null)
@@ -184,13 +288,6 @@ namespace Dynamo.Ioc
 
 			instance = null;
 			return false;
-		}
-		public bool TryResolve(IRegistrationInfo info, out object instance)
-		{
-			if (info == null)
-				throw new ArgumentNullException("info");
-
-			return info.Key == null ? TryResolve(info.Type, out instance) : TryResolve(info.Type, info.Key, out instance);
 		}
 		public bool TryResolve<T>(out T instance)
 		{
@@ -263,30 +360,35 @@ namespace Dynamo.Ioc
 
 
 
-
-
-
-
-
-
 		public void Compile()
 		{
 			// Verify before or/and after ? 
 	
 			foreach (var registration in _index)
 			{
-				var compilableRegistration = registration as ICompilable;
+				var compilableRegistration = registration as ICompilableRegistration;
 				if (compilableRegistration != null)
-					compilableRegistration.Compile(_index);
+					compilableRegistration.Compile(this);
 			}
 		}
-		
+
+
+		// Clean / Clear All method - runs through all and casts to IExpressionRegistration and if true calls Clean/Clear on lifetime !
+
+
+
+		/* Removed until problems are fixed
+		 * 
+		 * Implement Reset/Refresh/Clear method on ILifetime
+		 * Only few methods needs to implement it - like Session/Request Lifetime ?
+		 * 
 		public void Verify()
 		{
 			// This doesnt really work as intended currently.
 
 			// Right now it just tries to resolve all - and if this is done in Application_Start of a web app etc and it is registered to be disposed on RequestEnd it will never happen because the event is never fired.
 			// Currently it remindes more of just a init/warmup method.
+			
 			// Call Reset() on all ExpressionRegistrations or only their Lifetimes after Verify have been run so they can clean up themselves? or let them stay "initialized"?
 
 			// Create both a Verify and a TryVerify ? 
@@ -308,6 +410,7 @@ namespace Dynamo.Ioc
 		            throw new RegistrationException(registration, "Resolved instance was null.");	// Exception type ?
 		    }
 		}
+		*/
 
 		public void Dispose()
 		{

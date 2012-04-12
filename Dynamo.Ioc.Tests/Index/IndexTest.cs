@@ -1,7 +1,4 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Dynamo.Ioc.Tests.Index
@@ -12,24 +9,28 @@ namespace Dynamo.Ioc.Tests.Index
 		[TestMethod]
 		public void IndexReturnsEmptyEnumerableWhenEmpty()
 		{
-			using (var container = new IocContainer())
+			foreach (var index in Helper.GetIndexes())
 			{
-				Assert.IsFalse(container.Index.Any());
+				Assert.IsFalse(index.Any());		
 			}
 		}
 
 		[TestMethod]
 		public void IndexIsEnumerable()
 		{
-			using (var container = new IocContainer())
+			var reg1 = new InstanceRegistration<IFoo>(new Foo1());
+			var reg2 = new InstanceRegistration<IBar>(new Bar1());
+			var reg3 = new InstanceRegistration<IBar>(new Bar1());
+			
+			foreach (var index in Helper.GetIndexes())
 			{
-				var reg1 = container.Register<IFoo>(c => new Foo1());
-				var reg2 = container.Register<IBar>(c => new Bar1());
-				var reg3 = container.Register<IBar>("Bar", c => new Bar1());
+				index.Add(reg1);
+				index.Add(reg2);
+				index.Add(reg3, "Key");
+				
+				Assert.IsTrue(index.Count() == 3);
 
-				var registrations = container.Index.ToList();
-
-				Assert.IsTrue(container.Index.Count() == 3);
+				var registrations = index.ToList();
 
 				CollectionAssert.AllItemsAreNotNull(registrations);
 				CollectionAssert.AllItemsAreUnique(registrations);

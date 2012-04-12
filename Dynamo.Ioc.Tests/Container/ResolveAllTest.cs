@@ -1,6 +1,4 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -8,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 // Because they use yield they are lazy and first resolve when enumerated ? 
 // So they could actually call ResolveAll<IFoo>() and not throw an exception before later.
 
-namespace Dynamo.Ioc.Tests
+namespace Dynamo.Ioc.Tests.Container
 {
 	[TestClass]
 	public class ResolveAllTest
@@ -19,8 +17,8 @@ namespace Dynamo.Ioc.Tests
 			using (var container = new IocContainer())
 			{
 				container.Register<IFoo>(c => new Foo1());
-				container.Register<IFoo>("Foo1", c => new Foo2());
-				container.Register<IFoo>("Foo2", c => new Foo2());
+				container.Register<IFoo>(c => new Foo2(), "Foo1");
+				container.Register<IFoo>(c => new Foo2(), "Foo2");
 				container.Register<IBar>(c => new Bar1());
 
 				var results = container.ResolveAll<IFoo>();

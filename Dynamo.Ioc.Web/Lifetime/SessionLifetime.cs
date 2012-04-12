@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Web;
 
-namespace Dynamo.Ioc
+// Rename to HttpSessionLifetime ?
+
+namespace Dynamo.Ioc.Web
 {
 	public sealed class SessionLifetime : HttpContextAwareLifetimeBase
 	{
 		#region Fields
-		private string _key;
+		private readonly string _key = Guid.NewGuid().ToString();
 		#endregion
 
 		#region Constructors
@@ -20,28 +22,21 @@ namespace Dynamo.Ioc
 		#endregion
 
 		#region Methods
-		public override void Init(IRegistrationInfo registration)
-		{
-			// TODO: Needs fixing - use Key.GetType().Name or Key.GetHashcode or something. Should be Unique - Use Guid ?
-
-			// Create key
-			_key = "#" + registration.Type.Name;	// Fullname ?
-			if (registration.Key != null)
-				_key += "-" + registration.Key;
-		}
-		public override object GetInstance(IInstanceFactory factory, IResolver resolver)
+		public override object GetInstance(Func<IResolver, object> factory, IResolver resolver)
 		{
 			var session = Context.Session;
 
 			// if run in Application_Start() Session will be null - just return new instance ?
+			// throw exception instead and let it be known that you are trying tor resolve through SessionLifetime when Session doesnt exist ?
+			// or create some temporary storage (thread storage) ?
 			if (session == null)
-				return factory.CreateInstance(resolver);
+				return factory(resolver);
 
 			object instance = session[_key];
 
 			if (instance == null)
 			{
-				instance = factory.CreateInstance(resolver);
+				instance = factory(resolver);
 				session[_key] = instance;
 			}
 

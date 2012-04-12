@@ -1,8 +1,7 @@
 ﻿using System;
 
 // Need to write tests for both GetKeyResolver and LazyResolve 
-
-// Move to Container and IResolver interface ?
+// Move to IResolver interface ?
 
 namespace Dynamo.Ioc
 {
@@ -22,7 +21,12 @@ namespace Dynamo.Ioc
 		// Check index contains first and throw exception before creating the Func ? 
 		// Else it will first throw the exception when trying to resolve later?
 		// But could still throw exception even if the index contains the registration though...
-			
+		
+		// What about pulling out the registration to check it is there and then it can use registration.GetInstance(this) as the delegate
+		// Then it actually returns a super fast factory !?
+
+		// GetFactory / GetFastFactory ?
+
 		public static Func<T> LazyResolve<T>(this IResolver resolver)
 		{
 			if (resolver == null)

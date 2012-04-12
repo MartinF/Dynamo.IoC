@@ -1,16 +1,12 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Dynamo.Ioc.Tests
+namespace Dynamo.Ioc.Tests.Container
 {
 	[TestClass]
 	public class TryResolveTest
 	{
 		[TestMethod]
-		public void TryResolveByTypeNotRegisteredReturnsNull()
+		public void TryResolveByTypeNotRegisteredReturnsFalseAndNull()
 		{
 			using (var container = new IocContainer())
 			{
@@ -30,7 +26,7 @@ namespace Dynamo.Ioc.Tests
 			using (var container = new IocContainer())
 			{
 				// Arrange
-				container.Register<IFoo>("Foo", c => new Foo1());
+				container.Register<IFoo>(c => new Foo1(), "Foo");
 
 				// Act
 				IFoo obj1;
@@ -71,7 +67,7 @@ namespace Dynamo.Ioc.Tests
 			{
 				// Arrange
 				var foo = new Foo1();
-				container.RegisterInstance<IFoo>("Foo", foo);
+				container.RegisterInstance<IFoo>(foo, "Foo");
 
 				// Act
 				IFoo obj;

@@ -11,11 +11,11 @@ namespace Dynamo.Ioc.Web.Tests
 	public class CachedLifetimeTest
 	{
 		[TestMethod]
-		public void CanSetDefaultLifetimeToCachedLifetime()
+		public void CachedLifetimeCanBeSetAsDefaultLifetime()
 		{
 			using (var container = new IocContainer(() => new CachedLifetime()))
 			{
-				Assert.IsInstanceOfType(container.DefaultLifetime, typeof(CachedLifetime));
+				Assert.IsInstanceOfType(container.DefaultLifetimeFactory(), typeof(CachedLifetime));
 			}
 		}
 
@@ -134,7 +134,7 @@ namespace Dynamo.Ioc.Web.Tests
 		}
 
 		[TestMethod]
-		public void CallbackIsCalledWhenItemRemovedFromCache()
+		public void CachedLifetimeCallbackIsCalledWhenItemRemovedFromCache()
 		{
 			using (var container = new IocContainer())
 			{
@@ -160,7 +160,7 @@ namespace Dynamo.Ioc.Web.Tests
 		}
 
 		[TestMethod]
-		public void IsDependentOnTest()
+		public void CachedLifetimeIsDependentOnTest()
 		{
 			using (var container = new IocContainer())
 			{
@@ -211,7 +211,7 @@ namespace Dynamo.Ioc.Web.Tests
 		}
 
 		[TestMethod]
-		public void WithPriorityTest()
+		public void CachedLifetimeWithPriorityTest()
 		{
 			// Hmm...
 			Assert.IsTrue(false);

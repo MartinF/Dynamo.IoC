@@ -19,7 +19,7 @@ namespace Dynamo.Ioc.Web.Tests
 		{
 			using (var container = new IocContainer(() => new RequestLifetime()))
 			{
-				Assert.IsInstanceOfType(container.DefaultLifetime, typeof(RequestLifetime));
+				Assert.IsInstanceOfType(container.DefaultLifetimeFactory(), typeof(RequestLifetime));
 			}
 		}
 
@@ -62,10 +62,11 @@ namespace Dynamo.Ioc.Web.Tests
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(RegistrationException))]
+		[ExpectedException(typeof(InvalidOperationException))]
 		public void RequestLifetimeWithDisposeOnEndThrowsExceptionIfInstanceIsNotIDisposable()
 		{
 			// Currently throws the wrong Expection (InvalidCastException)
+			// Type Exception of some sort ?
 
 			using (var container = new IocContainer())
 			{

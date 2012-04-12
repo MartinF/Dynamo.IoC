@@ -1,38 +1,43 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Dynamo.Ioc
 {
-	public class InstanceRegistration : IRegistration
+	public class InstanceRegistration<T> : IRegistration<T>
 	{
 		#region Fields
-		private readonly Type _type;
-		private readonly object _key;
-		private readonly object _instance;
+		private readonly Type _implementationType;
+		private readonly Type _returnType;
+		private readonly T _instance;
 		#endregion
 
 		#region Constructors
-		public InstanceRegistration(Type type, object instance, object key = null)
+		public InstanceRegistration(T instance)
 		{
-			if (type == null)
-				throw new ArgumentNullException("type");
+			if (instance == null)
+				throw new ArgumentNullException("instance");
 
-			_type = type;
 			_instance = instance;
-			_key = key;
+
+			_returnType = typeof(T);
+			_implementationType = _instance.GetType();
 		}
 		#endregion
 
 		#region Properties
-		public Type Type { get { return _type; } }
-		public object Key { get { return _key; } }
+		public Type ImplementationType { get { return _implementationType; } }
+		public Type ReturnType { get { return _returnType; } }
 		#endregion
 
 		#region Methods
-		public object GetInstance(IResolver resolver)
+		public T GetInstance(IResolver resolver)
 		{
+			return _instance;
+		}
+
+		object IRegistration.GetInstance(IResolver resolver)
+		{
+			// In case of struct / value type 
+			// could store instance as object when created to not get hit by the boxing (from int etc to object) every time GetInstance is called?
 			return _instance;
 		}
 	

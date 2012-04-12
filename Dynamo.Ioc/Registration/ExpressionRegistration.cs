@@ -1,59 +1,78 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using Dynamo.Ioc.Index;
-using Dynamo.Ioc.Registration;
 
-// *** Decide ? 
-// Could remove the Lifetime and make an implementation of IRegistration for each lifetime instead to make it faster.
-// Just make an base implementation and override the GetInstance method ?
-// Then there should just be different Register methods or one that takes an Enum defining the Registration/Liftime type to create and add to the index.
-// But how should the Registration/Lifetime be configured ? - needs a Register method for each type supported then, or come up with some seperate fluent like syntax/interface ...
-// Instead of doing: container.Register<IFoo>(x => new Foo(x.Resolve<IBar>())).RequestLifetime()
-// you could do something like: var reg = new RequestLifetimeRegistration<IFoo>(x => new Foo(x.Resolve<IBar>()), (configuration here?)); reg.DisposeOnEnd(); container.Register(reg); ? - not fluent, but will work.
-// If people create their own Registration they can just add it directly to the index or create an extension for the Container doing it.
+// Create IInstanceFactory interface with CreateInstance(IResolver) method instead of injecting Func<IResolver, object> directly into the GetInstance() method on ILifetime?
 
-// Change IConfigurableRegistration to IExpressionRegistration ?
+
+
+
+
+
+
+// Registration also needs to be disposable - etc InstanceRegistration could have instance using unmanaged resources that needs to be disposed ?
+
+// What about writing a generic wrapper for any kind of object ? - the object should implement a desctructor that automatically calls Dispose on the object ?
+
+
+
+
+// Use generic parameter
+// Also make generic IRegistration interface which can be returned by the Register method and automatically used when using Resolve(IRegistration<T>) etc ?
+	// !!! - IRegistration could have generic implementation of GetInstance() - T GetInstance(IResolver) ?
+	// OBS.: Should be covariant then because the <T> value should not be the type registered but the type it should use for the lookup ?
+	// But not really needed ? using the the implementation Type as T will just give the exact type and not an interface etc !?
+
+// Make lifetime optional in constructor and let it automatically use TransientLifetime if null etc ?
+
+// Fix problem where Func<IResolver, object> factory always return an object - if generic it doesnt make sense to return anything else than the T
+// Requires fix of Expression<Func<IResolver, object>> to also include the T
+// The problem bascially comes from when the Expression is compiled by the compiler which currently doesnt preserve the original T but only works with object ?
+
+
+
+
+
+
+// Wrap the ExpressionCompiler - So there is a Worker/Visitior and a Compiler which is just a wrapper around it where a cache for the current compiling could be implemented etc ?
 
 namespace Dynamo.Ioc
 {
-	public class ExpressionRegistration : IRegistration, IInstanceFactory, IConfigurableRegistration, IRegistrationInfo, ICompilable
+	public class ExpressionRegistration<T> : IExpressionRegistration<T>, ICompilableRegistration
 	{
 		#region Fields
-		private readonly Type _type;
-		private readonly object _key;
-		private readonly CompileMode _compileMode;
+		private readonly Type _returnType;
+		private readonly Type _implementationType;
 		private readonly Expression<Func<IResolver, object>> _expression;
 		private Func<IResolver, object> _factory;
 		private ILifetime _lifetime;
+		private CompileMode _compileMode;	
 		#endregion
 
 		#region Constructors
-		public ExpressionRegistration(Type type, Expression<Func<IResolver, object>> expression, ILifetime lifetime, object key = null, CompileMode compileMode = CompileMode.Delegate)
+		public ExpressionRegistration(Expression<Func<IResolver, T>> expression, ILifetime lifetime, CompileMode compileMode = CompileMode.Delegate)
 		{
-			if (type == null)
-				throw new ArgumentNullException("type");
 			if (expression == null)
 				throw new ArgumentNullException("expression");
+			if (lifetime == null)
+				throw new ArgumentNullException("lifetime");
 
-			_type = type;
-			_expression = expression;
+			_expression = expression.Convert();
+			
+			_returnType = typeof(T);
+			_implementationType = expression.Body.Type;	// _returnType.IsValueType ? ((UnaryExpression)expression.Body).Operand.Type : expression.Body.Type; // Stores the actual type which is returned and not the Type (interface etc) it is registered for in the index 
 
-			_key = key;
-			_compileMode = compileMode;
-
-			SetFactory(expression);
+			SetCompileMode(compileMode);
+			SetFactory(_expression);
 			SetLifetime(lifetime);
 		}
 		#endregion
 
 		#region Properties
-		public Type Type { get { return _type; } }
-		public object Key { get { return _key; } }
-		internal Expression<Func<IResolver, object>> Expression { get { return _expression; } }		// make public / protected ? expose via interface (IConfigurableRegistration/IExpressionRegistration) ?
-		public ILifetimeInfo Lifetime { get { return _lifetime; } }									// What to do with the ILifetimeInfo interface ? Right now doesnt make sense, only used to test for type of lifetime really - reg.Lifetime is TransientLifetime etc 
+		public Type ReturnType { get { return _returnType; } }
+		public Type ImplementationType { get { return _implementationType; } }
+		public CompileMode CompileMode { get { return _compileMode; } }	
+		public Expression<Func<IResolver, object>> Expression { get { return _expression; } }
+		public ILifetime Lifetime { get { return _lifetime; } }
 		#endregion
 
 		#region Methods
@@ -68,11 +87,25 @@ namespace Dynamo.Ioc
 					_factory = expression.Compile();
 					break;
 				default:
-					throw new ArgumentException("Unknown CompileMode");	// wrong exception type 
+					throw new NotSupportedException("CompileMode: " + _compileMode + " is not supported");	// NotImplementedException instead ?
+			}
+		}
+		
+		public void Compile(IIocContainer container)
+		{
+			if (container == null)
+				throw new ArgumentNullException("container");
+
+			var compiler = new ExpressionCompiler(container);
+			var compiledExpression = compiler.Compile(this);
+
+			if (compiledExpression != _expression)
+			{
+				SetFactory(compiledExpression);
 			}
 		}
 
-		public IConfigurableRegistration SetLifetime(ILifetime lifetime)
+		public IExpressionRegistration<T> SetLifetime(ILifetime lifetime)
 		{
 			// Currently allows changing lifetime no matter if compiled or not and/or used in other compiled registrations
 			// The change wont be reflected if changed after it have been compiled (and not re-compiled) which is a problem.
@@ -82,7 +115,7 @@ namespace Dynamo.Ioc
 				throw new ArgumentNullException("lifetime");
 
 			// Init new lifetime
-			lifetime.Init(this);
+			//lifetime.Init(this);
 
 			// If _lifetime is already set dispose it first ? or call Clear/Reset() if supported ?
 			//if (_lifetime != null)
@@ -92,35 +125,32 @@ namespace Dynamo.Ioc
 
 			return this;
 		}
-
-		public void Compile(IIndexAccessor index)
+		IExpressionRegistration IExpressionRegistration.SetLifetime(ILifetime lifetime)
 		{
-			var compiler = new ExpressionCompiler(index);
-
-			Expression<Func<IResolver, object>> compiledExpression; 
-			if (compiler.TryCompile(_expression, out compiledExpression))
-			{
-				SetFactory(compiledExpression);
-
-				// Store Compiled Expression so it can be reused later if referenced from another registration instead of compiling it again ?
-				// _compiledExpression = compiledExpression;
-			}
+			return SetLifetime(lifetime);
 		}
 
-		public object GetInstance(IResolver resolver)
+		public IExpressionRegistration<T> SetCompileMode(CompileMode compileMode)
 		{
-			return _lifetime.GetInstance(this, resolver);
+			if (!Enum.IsDefined(typeof(CompileMode), compileMode))
+				throw new ArgumentException("Invalid CompileMode value");
+
+			_compileMode = compileMode;
+
+			return this;
+		}
+		IExpressionRegistration IExpressionRegistration.SetCompileMode(CompileMode compileMode)
+		{
+			return SetCompileMode(compileMode);
 		}
 
-		public object CreateInstance(IResolver resolver)
+		public T GetInstance(IResolver resolver)
 		{
-			return _factory(resolver);
+			return (T)_lifetime.GetInstance(_factory, resolver);
 		}
-
-		public void Dispose()
+		object IRegistration.GetInstance(IResolver resolver)
 		{
-			// Remove ? 
-			// Else try to dispose the Lifetime which could then handle the clean up
+			return _lifetime.GetInstance(_factory, resolver);
 		}
 		#endregion
 	}

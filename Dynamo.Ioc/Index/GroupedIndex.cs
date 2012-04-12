@@ -1,68 +1,102 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
-// Improve the GroupedEntry and work with it directly instead of through methods - just expose the default and keyed collection - only a small performance improvement
+// Choosen as default because it is the best all-round with both Get() and Get<T>() etc.
+// DirectIndex is a little bit faster when it comes to the Get() method but a lot slower using Get<T>()
 
-// Change name to GetDefault / GetKeyed ? ContainsDefault / ContainsKeyed to make it more clear ?
-
-// Make methods virtual ?
+// Using "as" to cast instead of explicit cast is maybe slightly faster.
+// Using method with no overloads might also be slightly faster ?
 
 namespace Dynamo.Ioc.Index
 {
 	public class GroupedIndex : IIndex
 	{
 		#region Fields
-		private readonly Dictionary<Type, GroupedEntry> _index = new Dictionary<Type, GroupedEntry>();
+		private readonly Dictionary<Type, IGroupedEntry> _index = new Dictionary<Type, IGroupedEntry>();
 		#endregion
 
 		#region Methods
-		public void Add(IRegistration registration)
+		public void Add<T>(IRegistration<T> registration, object key = null)
 		{
-			GroupedEntry entry;
-			if (_index.TryGetValue(registration.Type, out entry))
+			if (registration == null)
+				throw new ArgumentNullException("registration");
+
+			var type = typeof(T);
+
+			IGroupedEntry oldEntry;
+			if (_index.TryGetValue(type, out oldEntry))
 			{
 				// Add to already existing entry
-				entry.Add(registration);
+				//oldEntry.Add(registration, key);		// create virtual add method on GroupedEntry - will it hit the generic one or the base one ?
+				((GroupedEntry<T>)oldEntry).Add(registration, key);
 			}
 			else
 			{
 				// Add new entry
-				entry = new GroupedEntry();
-				entry.Add(registration);
-				_index.Add(registration.Type, entry);
+				var newEntry = new GroupedEntry<T>();
+				newEntry.Add(registration, key);
+				_index.Add(type, newEntry);
 			}
 		}
 
 		public IRegistration Get(Type type)
 		{
-			return _index[type].GetDefault();
+			return _index[type].Get();
 		}
-
 		public IRegistration Get(Type type, object key)
 		{
-			return _index[type].GetKeyed(key);
+			return _index[type].Get(key);
+		}
+		public IRegistration<T> Get<T>()
+		{
+			return ((GroupedEntry<T>)_index[typeof(T)]).Get();
+		}
+		public IRegistration<T> Get<T>(object key)
+		{
+			//return (IRegistration<T>)_index[typeof(T)].Get(key);
+			return ((GroupedEntry<T>)_index[typeof(T)]).Get(key);
 		}
 
 		public bool TryGet(Type type, out IRegistration registration)
 		{
-			GroupedEntry entry;
+			IGroupedEntry entry;
 			if (_index.TryGetValue(type, out entry))
 			{
-				return entry.TryGetDefault(out registration);
+				return entry.TryGet(out registration);
 			}
 
 			registration = null;
 			return false;
 		}
-
 		public bool TryGet(Type type, object key, out IRegistration registration)
 		{
-			GroupedEntry entry;
+			IGroupedEntry entry;
 			if (_index.TryGetValue(type, out entry))
 			{
-				return entry.TryGetKeyed(key, out registration);
+				return entry.TryGet(key, out registration);
+			}
+
+			registration = null;
+			return false;
+		}
+		public bool TryGet<T>(out IRegistration<T> registration)
+		{
+			IGroupedEntry entry;
+			if (_index.TryGetValue(typeof(T), out entry))
+			{
+				return ((GroupedEntry<T>)entry).TryGet(out registration);
+			}
+
+			registration = null;
+			return false;
+		}
+		public bool TryGet<T>(object key, out IRegistration<T> registration)
+		{
+			IGroupedEntry entry;
+			if (_index.TryGetValue(typeof(T), out entry))
+			{
+				return ((GroupedEntry<T>)entry).TryGet(key, out registration);
 			}
 
 			registration = null;
@@ -76,10 +110,17 @@ namespace Dynamo.Ioc.Index
 				yield return registration;
 			}
 		}
+		public IEnumerable<IRegistration<T>> GetAll<T>()
+		{
+			foreach (var registration in (GroupedEntry<T>)_index[typeof(T)])
+			{
+				yield return registration;
+			}
+		}
 
 		public IEnumerable<IRegistration> TryGetAll(Type type)
 		{
-			GroupedEntry entry;
+			IGroupedEntry entry;
 			if (_index.TryGetValue(type, out entry))
 			{
 				foreach (var registration in entry)
@@ -88,40 +129,46 @@ namespace Dynamo.Ioc.Index
 				}
 			}
 		}
+		public IEnumerable<IRegistration<T>> TryGetAll<T>()
+		{
+			IGroupedEntry entry;
+			if (_index.TryGetValue(typeof(T), out entry))
+			{
+				foreach (var registration in (GroupedEntry<T>)entry)
+				{
+					yield return registration;
+				}
+			}
+		}
 
 		public bool Contains(Type type)
 		{
-			// Improve ! shouldnt return the registration
-
-			// Either create Contains method on GroupedEntry
-			// Or just enumerate it and use linq ?
-
 			IRegistration registration;
 			return TryGet(type, out registration);
 		}
-
 		public bool Contains(Type type, object key)
 		{
-			// Improve ! shouldnt return the registration
-
-			// Either create Contains method on GroupedEntry
-			// Or just enumerate it and use linq ?
-
 			IRegistration registration;
 			return TryGet(type, key, out registration);
+		}
+		public bool Contains<T>()
+		{
+			IRegistration registration;
+			return TryGet(typeof(T), out registration);
+		}
+		public bool Contains<T>(object key)
+		{
+			IRegistration registration;
+			return TryGet(typeof(T), key, out registration);
 		}
 
 		public bool ContainsAny(Type type)
 		{
-			// Improve - could make ContainsAny method on the GroupedEntry
-			// Or access the default and keyed collections directly from here instead
-
-			// Just check if GroupedEntry exists - if it does it is true ?
-
-			GroupedEntry entry;
-			return _index.TryGetValue(type, out entry);
-
-			//return TryGetAll(type).Any();
+			return _index.ContainsKey(type);
+		}
+		public bool ContainsAny<T>()
+		{
+			return _index.ContainsKey(typeof(T));
 		}
 
 		public IEnumerator<IRegistration> GetEnumerator()

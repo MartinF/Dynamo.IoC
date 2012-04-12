@@ -1,11 +1,16 @@
-﻿
+﻿using System;
+
 namespace Dynamo.Ioc
 {
-	public sealed class TransientLifetime : LifetimeBase
+	public sealed class TransientLifetime : ILifetime
 	{
-		public override object GetInstance(IInstanceFactory factory, IResolver resolver)
+		public void Init(IRegistration registration)
 		{
-			return factory.CreateInstance(resolver);
+		}
+
+		public object GetInstance(Func<IResolver, object> factory, IResolver resolver)
+		{
+			return factory(resolver);
 		}
 	}
 }

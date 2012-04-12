@@ -1,8 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
 
-// TODO: Keep or remove ?
-// Used for hiding the methods in the intellisense
+// Keep or remove ?
+// Used for hiding the methods in the intellisense to get a more fluent syntax feel
 
 namespace Dynamo.Ioc
 {

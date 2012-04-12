@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-// Testing the RegisterInstance() method on the Container and the Generic RegisterInstance method in the IResolverExtensions
+// Testing the RegisterInstance() and RegisterInstance<T> methods on the Container
 
-namespace Dynamo.Ioc.Tests
+namespace Dynamo.Ioc.Tests.Container
 {
 	[TestClass]
 	public class RegisterInstanceTest
@@ -19,11 +16,12 @@ namespace Dynamo.Ioc.Tests
 				var fooInstance = new Foo1();
 				var result = container.RegisterInstance(typeof(IFoo), fooInstance);
 
-				Assert.IsInstanceOfType(result, typeof(IRegistration));
-				Assert.IsInstanceOfType(result, typeof(InstanceRegistration));
+				Assert.IsInstanceOfType(result, typeof(InstanceRegistration<IFoo>));
 
-				Assert.AreSame(result.Type, typeof(IFoo));
-				Assert.AreEqual(result.Key, null);
+				Assert.AreSame(result.ReturnType, typeof(IFoo));
+
+				// Check index
+				Assert.IsTrue(container.Index.Contains(typeof(IFoo)));
 			}
 		}
 
@@ -33,71 +31,86 @@ namespace Dynamo.Ioc.Tests
 			using (var container = new IocContainer())
 			{
 				var fooInstance = new Foo1();
-				var result = container.RegisterInstance(typeof(IFoo), "Bar", fooInstance);
+				var result = container.RegisterInstance(typeof(IFoo), fooInstance, "Bar");
 
-				Assert.IsInstanceOfType(result, typeof(IRegistration));
-				Assert.IsInstanceOfType(result, typeof(InstanceRegistration));
+				Assert.IsInstanceOfType(result, typeof(InstanceRegistration<IFoo>));
 
-				Assert.AreSame(result.Type, typeof(IFoo));
-				Assert.AreEqual(result.Key, "Bar");
+				Assert.AreSame(result.ReturnType, typeof(IFoo));
+
+				// Check index
+				Assert.IsTrue(container.Index.Contains(typeof(IFoo), "Bar"));
 			}
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(RegistrationException))]
-		public void RegisterInstanceByTypeThrowsExceptionIfInstanceNotOfExpectedType()
+		[ExpectedException(typeof(ArgumentException))]
+		public void RegisterInstanceThrowsExceptionIfInstanceNotOfExpectedType()
 		{
 			using (var container = new IocContainer())
 			{
 				var fooInstance = new Foo1();
-				var result = container.RegisterInstance(typeof(IBar), fooInstance);
+				var reg = container.RegisterInstance(typeof(IBar), fooInstance);
 			}
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(RegistrationException))]
+		[ExpectedException(typeof(ArgumentException))]
 		public void RegisterInstanceUsingKeyThrowsExceptionIfInstanceNotOfExpectedType()
 		{
 			using (var container = new IocContainer())
 			{
 				var fooInstance = new Foo1();
-				var result = container.RegisterInstance(typeof(IBar), "Foo", fooInstance);
+				var result = container.RegisterInstance(typeof(IBar), fooInstance, "Foo");
 			}
 		}
 
 		[TestMethod]
 		public void RegisterInstanceCanRegisterAStruct()
 		{
+			// Struct / ValueType ?
+
 			using (var container = new IocContainer())
 			{
 				int number = 32;
-				var registration = container.RegisterInstance(typeof(int), number);
 
-				// Check registration
-				Assert.IsInstanceOfType(registration, typeof(IRegistration));
-				Assert.AreSame(registration.Type, typeof(int));
-				Assert.AreEqual(registration.Key, null);
+				var reg1 = container.RegisterInstance(typeof(int), number);
+				var reg2 = container.RegisterInstance(number, "key");
+
+				// Check registrations
+				Assert.IsInstanceOfType(reg1, typeof(InstanceRegistration<int>));
+				Assert.IsInstanceOfType(reg2, typeof(InstanceRegistration<int>));
+
+				Assert.AreSame(reg1.ReturnType, typeof(int));
+				Assert.AreSame(reg2.ReturnType, typeof(int));
+
+				// Check index
+				Assert.IsTrue(container.Index.Contains(typeof(int)));
+				Assert.IsTrue(container.Index.Contains(typeof(int), "key"));
 
 				// Try to resolve
-				var result = container.Resolve(typeof(int));
-				Assert.AreEqual(number, result);
+				var result1 = (int)container.Resolve(typeof(int));
+				var result2 = container.Resolve<int>("key");
+
+				Assert.AreEqual(number, result1);
+				Assert.AreEqual(number, result2);
+				Assert.AreEqual(result1, result2);
 			}
 		}
 
-		#region RegisterInstance Generic - IResolverExtensions
 		[TestMethod]
 		public void RegisterInstanceGenericReturnsCorrectType()
 		{
 			using (var container = new IocContainer())
 			{
 				var fooInstance = new Foo1();
-				var result = container.RegisterInstance<IFoo>(fooInstance);
+				var reg = container.RegisterInstance<IFoo>(fooInstance);
 
-				Assert.IsInstanceOfType(result, typeof(IRegistration));
-				Assert.IsInstanceOfType(result, typeof(InstanceRegistration));
+				Assert.IsInstanceOfType(reg, typeof(InstanceRegistration<IFoo>));
 
-				Assert.AreSame(result.Type, typeof(IFoo));
-				Assert.AreEqual(result.Key, null);
+				Assert.AreSame(reg.ReturnType, typeof(IFoo));
+
+				// Check index
+				Assert.IsTrue(container.Index.Contains(typeof(IFoo)));
 			}
 		}
 
@@ -107,13 +120,14 @@ namespace Dynamo.Ioc.Tests
 			using (var container = new IocContainer())
 			{
 				var fooInstance = new Foo1();
-				var result = container.RegisterInstance<IFoo>("Bar", fooInstance);
+				var reg = container.RegisterInstance<IFoo>(fooInstance, "Bar");
 
-				Assert.IsInstanceOfType(result, typeof(IRegistration));
-				Assert.IsInstanceOfType(result, typeof(InstanceRegistration));
+				Assert.IsInstanceOfType(reg, typeof(InstanceRegistration<IFoo>));
 
-				Assert.AreSame(result.Type, typeof(IFoo));
-				Assert.AreEqual(result.Key, "Bar");
+				Assert.AreSame(reg.ReturnType, typeof(IFoo));
+
+				// Check index
+				Assert.IsTrue(container.Index.Contains(typeof(IFoo), "Bar"));
 			}
 		}
 
@@ -134,10 +148,9 @@ namespace Dynamo.Ioc.Tests
 		{
 			using (var container = new IocContainer())
 			{
-				container.RegisterInstance<IFoo>("Bar", new Foo1());
-				container.RegisterInstance<IFoo>("Bar", new Foo2());
+				container.RegisterInstance<IFoo>(new Foo1(), "Bar");
+				container.RegisterInstance<IFoo>(new Foo2(), "Bar");
 			}
 		}
-		#endregion
 	}
 }

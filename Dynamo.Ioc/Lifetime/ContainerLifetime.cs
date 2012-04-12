@@ -4,14 +4,26 @@
 
 namespace Dynamo.Ioc
 {
-	public sealed class ContainerLifetime : LifetimeBase
+	// Rename to Singleton or something else ?
+
+	public sealed class ContainerLifetime : ILifetime
 	{
 		private object _instance;
 
-		public override object GetInstance(IInstanceFactory factory, IResolver resolver)
+		public void Init(IRegistration registration)
 		{
-			return _instance ?? (_instance = factory.CreateInstance(resolver));
 		}
+
+		public object GetInstance(Func<IResolver, object> factory, IResolver resolver)
+		{
+			return _instance ?? (_instance = factory(resolver));
+		}
+
+		
+
+		// automatically try to dispose lifetimes ? - implement a desctructor in every lifetime ?
+		// I never know what kind of _instance will be stored - maybe it will need to be disposed when GC kicks in
+		// but if that is the case the object is managed and that object it self could just implement a desctructor
 
 		//public override void Dispose()
 		//{
