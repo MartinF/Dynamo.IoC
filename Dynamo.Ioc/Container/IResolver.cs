@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 // Rename to IIocResolver ?
 
+// LazyResolve?
+
 namespace Dynamo.Ioc
 {
 	public interface IResolver : IFluentInterface

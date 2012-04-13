@@ -48,7 +48,7 @@ namespace Dynamo.Ioc.Tests.Container
 				Assert.IsTrue(container.DefaultCompileMode == CompileMode.Delegate);
 
 				// Default Index
-				Assert.IsInstanceOfType(container.Index, typeof(GroupedIndex));
+				Assert.IsInstanceOfType(container.Index, typeof(DirectIndex));
 			}
 		}
 
@@ -97,12 +97,6 @@ namespace Dynamo.Ioc.Tests.Container
 				CollectionAssert.Contains(registrations, reg3);
 			}
 		}
-
-
-
-
-
-
 
 
 
