@@ -56,7 +56,6 @@
     <Compile Include="IFluentInterface.cs" />
     <Compile Include="Index\DirectIndex.cs" />
     <Compile Include="Index\GroupedEntry.cs" />
-    <Compile Include="Index\IGroupedEntry.cs" />
     <Compile Include="Index\IIndex.cs" />
     <Compile Include="Index\IIndexAccessor.cs" />
     <Compile Include="Index\IIndexBuilder.cs" />

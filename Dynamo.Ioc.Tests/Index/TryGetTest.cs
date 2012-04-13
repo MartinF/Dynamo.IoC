@@ -52,10 +52,10 @@ namespace Dynamo.Ioc.Tests.Index
 				index.Add(reg3, "Key2");
 				index.Add(reg4, "Key1");
 
-				IRegistration<IFoo> out1;
+				IRegistration out1;
 				var result1 = index.TryGet<IFoo>(out out1);
 
-				IRegistration<IFoo> out2;
+				IRegistration out2;
 				var result2 = index.TryGet<IFoo>("Key2", out out2);
 
 				Assert.IsTrue(result1);
@@ -100,7 +100,7 @@ namespace Dynamo.Ioc.Tests.Index
 		{
 			foreach (var index in Helper.GetIndexes())
 			{
-				IRegistration<IFoo> reg;
+				IRegistration reg;
 				var result = index.TryGet<IFoo>(out reg);
 
 				Assert.IsFalse(result);
@@ -113,7 +113,7 @@ namespace Dynamo.Ioc.Tests.Index
 		{
 			foreach (var index in Helper.GetIndexes())
 			{
-				IRegistration<IFoo> reg;
+				IRegistration reg;
 				var result = index.TryGet<IFoo>("Key", out reg);
 
 				Assert.IsFalse(result);

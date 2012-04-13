@@ -10,10 +10,6 @@ namespace Dynamo.Ioc
 	{
 		private readonly ThreadLocal<object> _threadLocalInstance = new ThreadLocal<object>();
 
-		public void Init(IRegistration registration)
-		{
-		}
-
 		public object GetInstance(Func<IResolver, object> factory, IResolver resolver)
 		{
 			if (!_threadLocalInstance.IsValueCreated)

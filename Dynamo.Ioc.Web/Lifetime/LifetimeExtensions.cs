@@ -4,7 +4,6 @@ using System.Web.Caching;
 // Name how ? 
 // Set-Request/Session/Cached-Lifetime ?
 // Prefix with Http ? - HttpRequestLifetime / SetHttpRequestLifetime ?
-
 // Instead of Http -RequestLifetime - prefix with Web ? Web-RequestLifetime / WebSessionLifetime ?
 
 namespace Dynamo.Ioc.Web
@@ -13,8 +12,6 @@ namespace Dynamo.Ioc.Web
 	{
 		public static IExpressionRegistration RequestLifetime(this IExpressionRegistration registration, bool disposeOnEnd = false)
 		{
-			// HttpRequestLifetime / InstancePerRequest / RequestLifetime ? 
-
 			if (registration == null)
 				throw new ArgumentNullException("registration");
 
@@ -24,8 +21,6 @@ namespace Dynamo.Ioc.Web
 
 		public static IExpressionRegistration SessionLifetime(this IExpressionRegistration registration)
 		{
-			// HttpSessionLifetime / InstancePerSession / SessionLifetime ?
-
 			if (registration == null)
 				throw new ArgumentNullException("registration");
 
@@ -35,8 +30,6 @@ namespace Dynamo.Ioc.Web
 
 		public static IExpressionRegistration CachedLifetime(this IExpressionRegistration registration, CacheDependency dependency = null, CacheItemPriority itemPriority = CacheItemPriority.Default, CacheItemRemovedCallback itemRemovedCallback = null)
 		{
-			// HttpCachedLifetime / CachedLifetime ?
-
 			if (registration == null)
 				throw new ArgumentNullException("registration");
 
@@ -46,8 +39,6 @@ namespace Dynamo.Ioc.Web
 
 		public static IExpressionRegistration CachedLifetime(this IExpressionRegistration registration, TimeSpan slidingExpiration, CacheDependency dependency = null, CacheItemPriority itemPriority = CacheItemPriority.Default, CacheItemRemovedCallback itemRemovedCallback = null)
 		{
-			// HttpCachedLifetime / CachedLifetime ?
-
 			if (registration == null)
 				throw new ArgumentNullException("registration");
 

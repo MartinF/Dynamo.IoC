@@ -4,16 +4,10 @@
 
 namespace Dynamo.Ioc
 {
-	// Rename to Singleton or something else ?
-
 	public sealed class ContainerLifetime : ILifetime
 	{
 		private object _instance;
-
-		public void Init(IRegistration registration)
-		{
-		}
-
+		
 		public object GetInstance(Func<IResolver, object> factory, IResolver resolver)
 		{
 			return _instance ?? (_instance = factory(resolver));

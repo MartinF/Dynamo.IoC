@@ -61,9 +61,6 @@ namespace Dynamo.Ioc.Web
 		#endregion
 
 		#region Methods
-		public void Init(IRegistration registration)
-		{
-		}
 		public object GetInstance(Func<IResolver, object> factory, IResolver resolver)
 		{
 			Cache cache = HttpRuntime.Cache;

@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Dynamo.Ioc;
 
 // Somehow make a way to test if the registration was actually compiled - expect the expression created (but it is currently not stored) !?
 
@@ -39,8 +40,8 @@ namespace Dynamo.Ioc.Tests.Container
 
 				container.Compile();
 
-				var res1 = container.Resolve(reg3);
-				var res2 = container.Resolve(reg3);
+				var res1 = container.Resolve<IFooBar>();
+				var res2 = container.Resolve<IFooBar>();
 
 				// Assert
 				Assert.AreNotSame(res1, res2);
@@ -48,6 +49,7 @@ namespace Dynamo.Ioc.Tests.Container
 				Assert.AreSame(res1.Foo, res2.Foo);
 			}
 		}
+
 		[TestMethod]
 		public void CompileUsingKeyDoesntBreakUsingCompileModeDynamicWhenUsingInstanceRegistrationOrContainerLifetime()
 		{
@@ -64,8 +66,8 @@ namespace Dynamo.Ioc.Tests.Container
 
 				container.Compile();
 
-				var res1 = container.Resolve(reg3);
-				var res2 = container.Resolve(reg3);
+				var res1 = container.Resolve<IFooBar>();
+				var res2 = container.Resolve<IFooBar>();
 
 				// Assert
 				Assert.AreNotSame(res1, res2);

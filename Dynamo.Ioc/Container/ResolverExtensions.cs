@@ -7,6 +7,8 @@ namespace Dynamo.Ioc
 {
 	public static class ResolverExtensions
 	{
+		// Problem with overloading the Resolve(object key) method
+
 		public static object Resolve(this IResolver resolver, IRegistration registration)
 		{
 			if (resolver == null)
@@ -16,15 +18,20 @@ namespace Dynamo.Ioc
 
 			return registration.GetInstance(resolver);
 		}
-		public static T Resolve<T>(this IResolver resolver, IRegistration<T> registration)
-		{
-			if (resolver == null)
-				throw new ArgumentNullException("resolver");
-			if (registration == null)
-				throw new ArgumentNullException("registration");
 
-			return registration.GetInstance(resolver);
-		}
+		// Why does this one not work as well and as expected as the one above?
+
+		// Move to the IIocContainer interface and IocContainer implementation again - but problem for the compiler - maybe rename ResolveRegistration / ResolveReg
+
+		//public static T Resolve<T>(this IResolver resolver, IRegistration registration)
+		//{
+		//    if (resolver == null)
+		//        throw new ArgumentNullException("resolver");
+		//    if (registration == null)
+		//        throw new ArgumentNullException("registration");
+
+		//    return (T)registration.GetInstance(resolver);
+		//}
 
 
 

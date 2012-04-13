@@ -28,24 +28,24 @@ namespace Dynamo.Ioc
 		// Methods
 
 			// Register
-		IExpressionRegistration<T> Register<T>(Expression<Func<IResolver, T>> expression, ILifetime lifetime = null, CompileMode? compileMode = null);
-		IExpressionRegistration<T> Register<T>(Expression<Func<IResolver, T>> expression, object key, ILifetime lifetime = null, CompileMode? compileMode = null);
+		IExpressionRegistration Register<T>(Expression<Func<IResolver, T>> expression, ILifetime lifetime = null, CompileMode? compileMode = null);
+		IExpressionRegistration Register<T>(Expression<Func<IResolver, T>> expression, object key, ILifetime lifetime = null, CompileMode? compileMode = null);
 
 			// Register Auto
 		IExpressionRegistration Register(Type type, Type implType, ILifetime lifetime = null, CompileMode? compileMode = null, bool includeInternalCtor = true, Func<ConstructorInfo[], ConstructorInfo> selector = null);
 		IExpressionRegistration Register(Type type, Type implType, object key, ILifetime lifetime = null, CompileMode? compileMode = null, bool includeInternalCtor = true, Func<ConstructorInfo[], ConstructorInfo> selector = null);
-		IExpressionRegistration<TType> Register<TType, TImpl>(ILifetime lifetime = null, CompileMode? compileMode = null, bool includeInternalCtor = true, Func<ConstructorInfo[], ConstructorInfo> selector = null)
+		IExpressionRegistration Register<TType, TImpl>(ILifetime lifetime = null, CompileMode? compileMode = null, bool includeInternalCtor = true, Func<ConstructorInfo[], ConstructorInfo> selector = null)
 			where TType : class
 			where TImpl : class, TType;
-		IExpressionRegistration<TType> Register<TType, TImpl>(object key, ILifetime lifetime = null, CompileMode? compileMode = null, bool includeInternalCtor = true, Func<ConstructorInfo[], ConstructorInfo> selector = null)
+		IExpressionRegistration Register<TType, TImpl>(object key, ILifetime lifetime = null, CompileMode? compileMode = null, bool includeInternalCtor = true, Func<ConstructorInfo[], ConstructorInfo> selector = null)
 			where TType : class
 			where TImpl : class, TType;
 
 			// Register Instance
 		IRegistration RegisterInstance(Type type, object instance);	
 		IRegistration RegisterInstance(Type type, object instance, object key);
-		IRegistration<T> RegisterInstance<T>(T instance);
-		IRegistration<T> RegisterInstance<T>(T instance, object key);
+		IRegistration RegisterInstance<T>(T instance);
+		IRegistration RegisterInstance<T>(T instance, object key);
 
 		void Compile();
 		// bool TryCompile()

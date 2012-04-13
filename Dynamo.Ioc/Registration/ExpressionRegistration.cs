@@ -5,14 +5,9 @@ using System.Linq.Expressions;
 
 
 
-
-
-
-
 // Registration also needs to be disposable - etc InstanceRegistration could have instance using unmanaged resources that needs to be disposed ?
 
 // What about writing a generic wrapper for any kind of object ? - the object should implement a desctructor that automatically calls Dispose on the object ?
-
 
 
 
@@ -30,14 +25,15 @@ using System.Linq.Expressions;
 
 
 
-
-
-
 // Wrap the ExpressionCompiler - So there is a Worker/Visitior and a Compiler which is just a wrapper around it where a cache for the current compiling could be implemented etc ?
+
+
+
+// Doesnt need to be generic!? - only there to enforce the constraints
 
 namespace Dynamo.Ioc
 {
-	public class ExpressionRegistration<T> : IExpressionRegistration<T>, ICompilableRegistration
+	public class ExpressionRegistration<T> : IExpressionRegistration, ICompilableRegistration
 	{
 		#region Fields
 		private readonly Type _returnType;
@@ -105,7 +101,7 @@ namespace Dynamo.Ioc
 			}
 		}
 
-		public IExpressionRegistration<T> SetLifetime(ILifetime lifetime)
+		public IExpressionRegistration SetLifetime(ILifetime lifetime)
 		{
 			// Currently allows changing lifetime no matter if compiled or not and/or used in other compiled registrations
 			// The change wont be reflected if changed after it have been compiled (and not re-compiled) which is a problem.
@@ -125,12 +121,8 @@ namespace Dynamo.Ioc
 
 			return this;
 		}
-		IExpressionRegistration IExpressionRegistration.SetLifetime(ILifetime lifetime)
-		{
-			return SetLifetime(lifetime);
-		}
 
-		public IExpressionRegistration<T> SetCompileMode(CompileMode compileMode)
+		public IExpressionRegistration SetCompileMode(CompileMode compileMode)
 		{
 			if (!Enum.IsDefined(typeof(CompileMode), compileMode))
 				throw new ArgumentException("Invalid CompileMode value");
@@ -139,16 +131,8 @@ namespace Dynamo.Ioc
 
 			return this;
 		}
-		IExpressionRegistration IExpressionRegistration.SetCompileMode(CompileMode compileMode)
-		{
-			return SetCompileMode(compileMode);
-		}
 
-		public T GetInstance(IResolver resolver)
-		{
-			return (T)_lifetime.GetInstance(_factory, resolver);
-		}
-		object IRegistration.GetInstance(IResolver resolver)
+		public object GetInstance(IResolver resolver)
 		{
 			return _lifetime.GetInstance(_factory, resolver);
 		}

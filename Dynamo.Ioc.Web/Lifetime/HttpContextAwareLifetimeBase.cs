@@ -20,10 +20,6 @@ namespace Dynamo.Ioc.Web
 
 		protected HttpContextBase Context { get { return _func(); } }
 
-		public virtual void Init(IRegistration registration)
-		{
-		}
-		
 		public abstract object GetInstance(Func<IResolver, object> factory, IResolver resolver);
 	}
 }

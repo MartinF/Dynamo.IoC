@@ -39,7 +39,7 @@ namespace Dynamo.Ioc
 				throw new ArgumentException("Invalid CompileMode value");
 
 			_defaultCompileMode = defaultCompileMode;
-			_index = index ?? new GroupedIndex();
+			_index = index ?? new DirectIndex();	// new GroupedIndex(); Which one is fastest now?
 		}
 		#endregion
 
@@ -48,6 +48,11 @@ namespace Dynamo.Ioc
 		public CompileMode DefaultCompileMode { get { return _defaultCompileMode; } }
 		public Func<ILifetime> DefaultLifetimeFactory { get { return _defaultLifetimeFactory; } }
 		#endregion
+
+
+
+		// SET DirectIndex as the standard one ???? better now !?!?!??!
+
 
 
 
@@ -60,18 +65,18 @@ namespace Dynamo.Ioc
 		// Remove Unneeded parameters - compileMode and lifetime ? - both for Register and Register Automatic
 			// Set compileMode when creating registration, or set it afterwards (change it) with .SetCompileMode() ?
 			// Set lifetime when creating registration, or set it afterwards (change it) with .SetLifetime() ?
-		public IExpressionRegistration<T> Register<T>(Expression<Func<IResolver, T>> expression, ILifetime lifetime = null, CompileMode? compileMode = null)
+		public IExpressionRegistration Register<T>(Expression<Func<IResolver, T>> expression, ILifetime lifetime = null, CompileMode? compileMode = null)
 		{
 			return RegisterImpl(expression, null, lifetime, compileMode);
 		}
-		public IExpressionRegistration<T> Register<T>(Expression<Func<IResolver, T>> expression, object key, ILifetime lifetime = null, CompileMode? compileMode = null)
+		public IExpressionRegistration Register<T>(Expression<Func<IResolver, T>> expression, object key, ILifetime lifetime = null, CompileMode? compileMode = null)
 		{
 			if (key == null)
 				throw new ArgumentNullException("key");
 
 			return RegisterImpl(expression, key, lifetime, compileMode);
 		}
-		private IExpressionRegistration<T> RegisterImpl<T>(Expression<Func<IResolver, T>> expression, object key, ILifetime lifetime, CompileMode? compileMode)
+		private IExpressionRegistration RegisterImpl<T>(Expression<Func<IResolver, T>> expression, object key, ILifetime lifetime, CompileMode? compileMode)
 		{
 			if (expression == null)
 				throw new ArgumentNullException("expression");
@@ -83,7 +88,7 @@ namespace Dynamo.Ioc
 			
 			var registration = new ExpressionRegistration<T>(expression, lifetime, compileMode.Value);
 			
-			_index.Add<T>(registration, key);
+			_index.Add(registration, key);
 
 			return registration;
 		}
@@ -119,13 +124,13 @@ namespace Dynamo.Ioc
 		}
 
 		// Generics
-		public IExpressionRegistration<TType> Register<TType, TImpl>(ILifetime lifetime = null, CompileMode? compileMode = null, bool includeInternalCtor = false, Func<ConstructorInfo[], ConstructorInfo> selector = null)
+		public IExpressionRegistration Register<TType, TImpl>(ILifetime lifetime = null, CompileMode? compileMode = null, bool includeInternalCtor = false, Func<ConstructorInfo[], ConstructorInfo> selector = null)
 			where TType : class
 			where TImpl : class, TType
 		{
 			return RegisterAutoImpl<TType, TImpl>(null, lifetime, compileMode, includeInternalCtor, selector);
 		}
-		public IExpressionRegistration<TType> Register<TType, TImpl>(object key, ILifetime lifetime = null, CompileMode? compileMode = null, bool includeInternalCtor = false, Func<ConstructorInfo[], ConstructorInfo> selector = null)
+		public IExpressionRegistration Register<TType, TImpl>(object key, ILifetime lifetime = null, CompileMode? compileMode = null, bool includeInternalCtor = false, Func<ConstructorInfo[], ConstructorInfo> selector = null)
 			where TType : class
 			where TImpl : class, TType
 		{
@@ -134,7 +139,7 @@ namespace Dynamo.Ioc
 
 			return RegisterAutoImpl<TType, TImpl>(key, lifetime, compileMode, includeInternalCtor, selector);
 		}
-		private IExpressionRegistration<TType> RegisterAutoImpl<TType, TImpl>(object key, ILifetime lifetime, CompileMode? compileMode, bool includeInternalCtor, Func<ConstructorInfo[], ConstructorInfo> selector)
+		private IExpressionRegistration RegisterAutoImpl<TType, TImpl>(object key, ILifetime lifetime, CompileMode? compileMode, bool includeInternalCtor, Func<ConstructorInfo[], ConstructorInfo> selector)
 			where TType : class
 			where TImpl : class, TType
 		{
@@ -155,18 +160,6 @@ namespace Dynamo.Ioc
 
 			return RegisterInstanceImpl(type, instance, key);
 		}
-		public IRegistration<T> RegisterInstance<T>(T instance)
-		{
-			return RegisterInstanceImpl(instance, null);
-		}
-		public IRegistration<T> RegisterInstance<T>(T instance, object key)
-		{
-			if (key == null)
-				throw new ArgumentNullException("key");
-
-			return RegisterInstanceImpl(instance, key);
-		}
-
 		private IRegistration RegisterInstanceImpl(Type type, object instance, object key)
 		{
 			if (type == null)
@@ -183,13 +176,32 @@ namespace Dynamo.Ioc
 
 			return (IRegistration)reg;
 		}
-		private IRegistration<T> RegisterInstanceImpl<T>(T instance, object key)
+
+		public IRegistration RegisterInstance<T>(T instance)
+		{
+			return RegisterInstanceImpl(instance, null);
+		}
+		public IRegistration RegisterInstance<T>(T instance, object key)
+		{
+			if (key == null)
+				throw new ArgumentNullException("key");
+
+			return RegisterInstanceImpl(instance, key);
+		}
+		private IRegistration RegisterInstanceImpl<T>(T instance, object key)
 		{
 			if (instance == null)
 				throw new ArgumentNullException("instance");
 
+
+
+			// Check for null where ? 
+			// Split index in two add methods so check for null on key happens there instead of here?
+			
+
+
 			var registration = new InstanceRegistration<T>(instance);
-			_index.Add<T>(registration, key);
+			_index.Add(registration, key);
 
 			return registration;
 		}
@@ -200,18 +212,10 @@ namespace Dynamo.Ioc
 		#region Resolve
 		public object Resolve(Type type)
 		{
-			if (type == null)
-				throw new ArgumentNullException("type");
-
 			return _index.Get(type).GetInstance(this);
 		}
 		public object Resolve(Type type, object key)
 		{
-			if (type == null)
-				throw new ArgumentNullException("type");
-			if (key == null)
-				throw new ArgumentNullException("key");
-
 			return _index.Get(type, key).GetInstance(this);
 		}
 		public T Resolve<T>()
@@ -221,9 +225,6 @@ namespace Dynamo.Ioc
 		}
 		public T Resolve<T>(object key)
 		{
-			if (key == null)
-				throw new ArgumentNullException("key");
-
 			return (T)_index.Get(typeof(T), key).GetInstance(this);
 		}
 		#endregion
@@ -234,9 +235,6 @@ namespace Dynamo.Ioc
 		
 		public bool TryResolve(Type type, out object instance)
 		{
-			if (type == null)
-				throw new ArgumentNullException("type");
-
 			IRegistration registration;
 			if (_index.TryGet(type, out registration))
 			{
@@ -249,11 +247,6 @@ namespace Dynamo.Ioc
 		}
 		public bool TryResolve(Type type, object key, out object instance)
 		{
-			if (type == null)
-				throw new ArgumentNullException("type");
-			if (key == null)
-				throw new ArgumentNullException("key");
-
 			IRegistration registration;
 			if (_index.TryGet(type, key, out registration))
 			{
@@ -278,9 +271,6 @@ namespace Dynamo.Ioc
 		}
 		public bool TryResolve<T>(object key, out T instance)
 		{
-			if (key == null)
-				throw new ArgumentNullException("key");
-
 			IRegistration registration;
 			if (_index.TryGet(typeof(T), key, out registration))
 			{
@@ -296,9 +286,6 @@ namespace Dynamo.Ioc
 		#region ResolveAll
 		public IEnumerable<object> ResolveAll(Type type)
 		{
-			if (type == null)
-				throw new ArgumentNullException("type");
-
 			foreach (var registration in _index.GetAll(type))
 			{
 				yield return registration.GetInstance(this);
@@ -316,13 +303,12 @@ namespace Dynamo.Ioc
 		#region TryResolveAll
 		public IEnumerable<object> TryResolveAll(Type type)
 		{
-			if (type == null)
-				throw new ArgumentNullException("type");
+			yield return TryResolveAll<object>();
 
-			foreach (var registration in _index.TryGetAll(type))
-			{
-				yield return registration.GetInstance(this);
-			}
+			//foreach (var registration in _index.TryGetAll(type))
+			//{
+			//    yield return registration.GetInstance(this);
+			//}
 		}
 		public IEnumerable<T> TryResolveAll<T>()
 		{

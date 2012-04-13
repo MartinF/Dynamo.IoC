@@ -58,7 +58,7 @@ namespace Dynamo.Ioc.Tests.Index
 					index.Add(reg2);
 					Assert.IsTrue(false);
 				}
-				catch (ArgumentException e)
+				catch (ArgumentException)
 				{
 				}
 			}
@@ -79,7 +79,7 @@ namespace Dynamo.Ioc.Tests.Index
 					index.Add(reg2, "Key");
 					Assert.IsTrue(false);
 				}
-				catch (ArgumentException e)
+				catch (ArgumentException)
 				{
 				}
 			}

@@ -1,13 +1,16 @@
 ﻿using System;
 
+// How to name it?
+// Set TransientLifetime
+// Use TransientLifetime
+// With TransientLifetime
+
 namespace Dynamo.Ioc
 {
 	public static class LifetimeExtensions
 	{
-		public static IExpressionRegistration<T> TransientLifetime<T>(this IExpressionRegistration<T> registration)
+		public static IExpressionRegistration TransientLifetime(this IExpressionRegistration registration)
 		{
-			// TransientLifetime / TransientInstance ?
-
 			if (registration == null)
 				throw new ArgumentNullException("registration");
 			
@@ -15,10 +18,8 @@ namespace Dynamo.Ioc
 			return registration;
 		}
 
-		public static IExpressionRegistration<T> ContainerLifetime<T>(this IExpressionRegistration<T> registration)
+		public static IExpressionRegistration ContainerLifetime(this IExpressionRegistration registration)
 		{
-			// ContainerLifetime / SingletonInstance ?
-
 			if (registration == null)
 				throw new ArgumentNullException("registration");
 
@@ -26,10 +27,8 @@ namespace Dynamo.Ioc
 			return registration;
 		}
 
-		public static IExpressionRegistration<T> ThreadLocalLifetime<T>(this IExpressionRegistration<T> registration)
+		public static IExpressionRegistration ThreadLocalLifetime(this IExpressionRegistration registration)
 		{
-			// ThreadLocalLifetime / ThreadLocalInstance ?
-
 			if (registration == null)
 				throw new ArgumentNullException("registration");
 

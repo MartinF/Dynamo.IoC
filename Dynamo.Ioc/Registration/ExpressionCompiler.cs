@@ -37,7 +37,7 @@ namespace Dynamo.Ioc
 		#endregion
 
 		#region Methods
-		public Expression<Func<IResolver, object>> Compile<T>(IExpressionRegistration<T> registration)
+		public Expression<Func<IResolver, object>> Compile(IExpressionRegistration registration)
 		{
 			if (registration == null)
 				throw new ArgumentNullException("registration");

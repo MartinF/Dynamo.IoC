@@ -16,8 +16,10 @@ namespace Dynamo.Ioc.Tests.Container
 				var reg = container.Register<IFoo>(c => new Foo1());
 
 				// Correct return type
-				Assert.IsInstanceOfType(reg, typeof(IExpressionRegistration<IFoo>));
-
+				Assert.IsInstanceOfType(reg, typeof(IExpressionRegistration));
+				Assert.IsTrue(reg.ReturnType == typeof(IFoo));
+				Assert.IsTrue(reg.ImplementationType == typeof(Foo1));
+				
 				// Check index
 				Assert.IsTrue(container.Index.Contains(typeof(IFoo)));
 			}
@@ -31,7 +33,9 @@ namespace Dynamo.Ioc.Tests.Container
 				var reg = container.Register<IFoo>(c => new Foo1(), "Bar");
 				
 				// Correct return type
-				Assert.IsInstanceOfType(reg, typeof(IExpressionRegistration<IFoo>));
+				Assert.IsInstanceOfType(reg, typeof(IExpressionRegistration));
+				Assert.IsTrue(reg.ReturnType == typeof(IFoo));
+				Assert.IsTrue(reg.ImplementationType == typeof(Foo1));
 
 				// Test index
 				Assert.IsTrue(container.Index.Contains(typeof(IFoo), "Bar"));
@@ -115,8 +119,7 @@ namespace Dynamo.Ioc.Tests.Container
 				var registration = container.Register<int>(x => 32);		// Should use RegisterInstance ? will it work ?
 
 				// Check registration
-				Assert.IsInstanceOfType(registration, typeof(IExpressionRegistration<int>));
-
+				Assert.IsInstanceOfType(registration, typeof(IExpressionRegistration));
 				Assert.AreSame(registration.ReturnType, typeof(int));
 
 				// Try to resolve

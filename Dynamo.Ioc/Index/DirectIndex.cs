@@ -11,6 +11,8 @@ using System.Linq;
 // private readonly List<Registration> _allIndex = new List<IRegistration>();
 // Could create an index that takes the best from this and the GroupedIndex.
 
+// Keep null checks in here ?
+
 namespace Dynamo.Ioc.Index
 {
 	public class DirectIndex : IIndex
@@ -20,12 +22,12 @@ namespace Dynamo.Ioc.Index
 		private readonly Dictionary<Type, Dictionary<object, IRegistration>> _keyedIndex = new Dictionary<Type, Dictionary<object, IRegistration>>();
 		#endregion
 
-		public void Add<T>(IRegistration<T> registration, object key = null)
+		public void Add(IRegistration registration, object key = null)
 		{
 			if (registration == null)
 				throw new ArgumentNullException("registration");
 
-			var type = typeof(T);
+			var type = registration.ReturnType;
 
 			if (key == null)
 			{
@@ -53,27 +55,46 @@ namespace Dynamo.Ioc.Index
 
 		public IRegistration Get(Type type)
 		{
+			if (type == null)
+				throw new ArgumentNullException("type");
+
 			return _defaultIndex[type];
 		}
 		public IRegistration Get(Type type, object key)
 		{
+			if (type == null)
+				throw new ArgumentNullException("type");
+			if (key == null)
+				throw new ArgumentNullException("key");
+
 			return _keyedIndex[type][key];
 		}
-		public IRegistration<T> Get<T>()
+		public IRegistration Get<T>()
 		{
-			return (IRegistration<T>)_defaultIndex[typeof(T)];
+			return _defaultIndex[typeof(T)];
 		}
-		public IRegistration<T> Get<T>(object key)
+		public IRegistration Get<T>(object key)
 		{
-			return (IRegistration<T>)_keyedIndex[typeof(T)][key];
+			if (key == null)
+				throw new ArgumentNullException("key");
+
+			return _keyedIndex[typeof(T)][key];
 		}
 
 		public bool TryGet(Type type, out IRegistration registration)
 		{
+			if (type == null)
+				throw new ArgumentNullException("type");
+
 			return _defaultIndex.TryGetValue(type, out registration);
 		}
 		public bool TryGet(Type type, object key, out IRegistration registration)
 		{
+			if (type == null)
+				throw new ArgumentNullException("type");
+			if (key == null)
+				throw new ArgumentNullException("key");
+
 			Dictionary<object, IRegistration> entry;
 			if (_keyedIndex.TryGetValue(type, out entry))
 			{
@@ -83,37 +104,20 @@ namespace Dynamo.Ioc.Index
 			registration = null;
 			return false;
 		}
-		public bool TryGet<T>(out IRegistration<T> registration)
+		public bool TryGet<T>(out IRegistration registration)
 		{
-			IRegistration reg;
-			if (_defaultIndex.TryGetValue(typeof(T), out reg))
-			{
-				registration = (IRegistration<T>)reg;
-				return true;
-			}
-
-			registration = null;
-			return false;
+			return TryGet(typeof(T), out registration);
 		}
-		public bool TryGet<T>(object key, out IRegistration<T> registration)
+		public bool TryGet<T>(object key, out IRegistration registration)
 		{
-			Dictionary<object, IRegistration> entry;
-			if (_keyedIndex.TryGetValue(typeof(T), out entry))
-			{
-				IRegistration reg;
-				if (entry.TryGetValue(key, out reg))
-				{
-					registration = (IRegistration<T>)reg;
-					return true;
-				}
-			}
-
-			registration = null;
-			return false;
+			return TryGet(typeof(T), key, out registration);
 		}
 
 		public IEnumerable<IRegistration> GetAll(Type type)
 		{
+			if (type == null)
+				throw new ArgumentNullException("type");
+
 			// TryGet from both default and keyed - if no found in either throw exception - else yield return
 
 			// Currently only structured this way to make the code throw exception if not found.
@@ -143,13 +147,16 @@ namespace Dynamo.Ioc.Index
 				}
 			}
 		}
-		public IEnumerable<IRegistration<T>> GetAll<T>()
+		public IEnumerable<IRegistration> GetAll<T>()
 		{
-			return GetAll(typeof(T)).Cast<IRegistration<T>>();
+			return GetAll(typeof(T));
 		}
 
 		public IEnumerable<IRegistration> TryGetAll(Type type)
 		{
+			if (type == null)
+				throw new ArgumentNullException("type");
+
 			IRegistration defaultRegistration;
 			if (_defaultIndex.TryGetValue(type, out defaultRegistration))
 			{
@@ -165,17 +172,25 @@ namespace Dynamo.Ioc.Index
 				}
 			}
 		}
-		public IEnumerable<IRegistration<T>> TryGetAll<T>()
+		public IEnumerable<IRegistration> TryGetAll<T>()
 		{
-			return TryGetAll(typeof(T)).Cast<IRegistration<T>>();
+			return TryGetAll(typeof(T));
 		}
 
 		public bool Contains(Type type)
 		{
+			if (type == null)
+				throw new ArgumentNullException("type");
+
 			return _defaultIndex.ContainsKey(type);
 		}
 		public bool Contains(Type type, object key)
 		{
+			if (type == null)
+				throw new ArgumentNullException("type");
+			if (key == null)
+				throw new ArgumentNullException("key");
+
 			Dictionary<object, IRegistration> registrations;
 			if (_keyedIndex.TryGetValue(type, out registrations))
 			{
@@ -186,7 +201,7 @@ namespace Dynamo.Ioc.Index
 		}
 		public bool Contains<T>()
 		{
-			return Contains(typeof(T));
+			return _defaultIndex.ContainsKey(typeof(T));
 		}
 		public bool Contains<T>(object key)
 		{
@@ -195,6 +210,9 @@ namespace Dynamo.Ioc.Index
 
 		public bool ContainsAny(Type type)
 		{
+			if (type == null)
+				throw new ArgumentNullException("type");
+
 			return _defaultIndex.ContainsKey(type) || _keyedIndex.ContainsKey(type);
 		}
 		public bool ContainsAny<T>()
