@@ -7,7 +7,9 @@ using System.Collections.Generic;
 
 // IIndexReader / IIndexAccessor ?
 
-// No reason for the Generic overloads ? just syntactic sugar
+
+
+// No reason for the Generic overloads ? just syntactic sugar - remove them ?
 
 namespace Dynamo.Ioc.Index
 {

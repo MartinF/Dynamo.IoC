@@ -3,13 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-// Choosen as default because it is the best all-round with both Get() and Get<T>() etc.
+// It is the best all-round with both Get() and Get<T>() etc.
 // DirectIndex is a little bit faster when it comes to the Get() method but a lot slower using Get<T>()
-
-// Using "as" to cast instead of explicit cast is maybe slightly faster.
-// Using method with no overloads might also be slightly faster ?
-
-// Keep null checks in here ?
 
 namespace Dynamo.Ioc.Index
 {
@@ -20,24 +15,11 @@ namespace Dynamo.Ioc.Index
 		#endregion
 
 		#region Methods
-		public void Add(IRegistration registration)
-		{
-			AddImpl(registration, null);
-		}
-
-		public void Add(IRegistration registration, object key)
-		{
-			if (key == null)
-				throw new ArgumentNullException("key");
-
-			AddImpl(registration, key);
-		}
-
-		private void AddImpl(IRegistration registration, object key)
+		public void Add(IRegistration registration, object key = null)
 		{
 			if (registration == null)
 				throw new ArgumentNullException("registration");
-			
+
 			var type = registration.ReturnType;
 
 			GroupedEntry oldEntry;
@@ -52,7 +34,7 @@ namespace Dynamo.Ioc.Index
 				var newEntry = new GroupedEntry();
 				newEntry.Add(registration, key);
 				_index.Add(type, newEntry);
-			}			
+			}
 		}
 
 		public IRegistration Get(Type type)
