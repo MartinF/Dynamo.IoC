@@ -5,8 +5,8 @@ namespace Dynamo.Ioc.Index
 {
 	public interface IIndexBuilder
 	{
-		// Should index use returnType of IRegistration or should it be supplied?
-		void Add(IRegistration registration, object key = null);
+		void Add(IRegistration registration);
+		void Add(IRegistration registration, object key);
 
 		// bool TryAdd(IRegistration<T> registration, object key = null); ? - just adds if it not already contains registration
 

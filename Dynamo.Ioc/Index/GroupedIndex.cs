@@ -20,11 +20,24 @@ namespace Dynamo.Ioc.Index
 		#endregion
 
 		#region Methods
-		public void Add(IRegistration registration, object key = null)
+		public void Add(IRegistration registration)
+		{
+			AddImpl(registration, null);
+		}
+
+		public void Add(IRegistration registration, object key)
+		{
+			if (key == null)
+				throw new ArgumentNullException("key");
+
+			AddImpl(registration, key);
+		}
+
+		private void AddImpl(IRegistration registration, object key)
 		{
 			if (registration == null)
 				throw new ArgumentNullException("registration");
-
+			
 			var type = registration.ReturnType;
 
 			GroupedEntry oldEntry;
@@ -39,7 +52,7 @@ namespace Dynamo.Ioc.Index
 				var newEntry = new GroupedEntry();
 				newEntry.Add(registration, key);
 				_index.Add(type, newEntry);
-			}
+			}			
 		}
 
 		public IRegistration Get(Type type)

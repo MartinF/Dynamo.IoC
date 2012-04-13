@@ -11,8 +11,6 @@ using System.Linq;
 // private readonly List<Registration> _allIndex = new List<IRegistration>();
 // Could create an index that takes the best from this and the GroupedIndex.
 
-// Keep null checks in here ?
-
 namespace Dynamo.Ioc.Index
 {
 	public class DirectIndex : IIndex
@@ -22,34 +20,36 @@ namespace Dynamo.Ioc.Index
 		private readonly Dictionary<Type, Dictionary<object, IRegistration>> _keyedIndex = new Dictionary<Type, Dictionary<object, IRegistration>>();
 		#endregion
 
-		public void Add(IRegistration registration, object key = null)
+		public void Add(IRegistration registration)
 		{
 			if (registration == null)
 				throw new ArgumentNullException("registration");
 
+			// Default
+			_defaultIndex.Add(registration.ReturnType, registration);	
+		}
+		public void Add(IRegistration registration, object key)
+		{
+			if (registration == null)
+				throw new ArgumentNullException("registration");
+			if (key == null)
+				throw new ArgumentNullException("key");
+
 			var type = registration.ReturnType;
 
-			if (key == null)
+			// Keyed
+			Dictionary<object, IRegistration> keyedEntry;
+			if (_keyedIndex.TryGetValue(type, out keyedEntry))
 			{
-				// Default
-				_defaultIndex.Add(type, registration);	
+				// Add to already existing entry
+				keyedEntry.Add(key, registration);
 			}
 			else
 			{
-				// Keyed
-				Dictionary<object, IRegistration> keyedEntry;
-				if (_keyedIndex.TryGetValue(type, out keyedEntry))
-				{
-					// Add to already existing entry
-					keyedEntry.Add(key, registration);
-				}
-				else
-				{
-					// Add new keyed entry
-					keyedEntry = new Dictionary<object, IRegistration>();
-					keyedEntry.Add(key, registration);
-					_keyedIndex.Add(type, keyedEntry);
-				}
+				// Add new keyed entry
+				keyedEntry = new Dictionary<object, IRegistration>();
+				keyedEntry.Add(key, registration);
+				_keyedIndex.Add(type, keyedEntry);
 			}
 		}
 
