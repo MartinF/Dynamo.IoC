@@ -59,6 +59,9 @@ namespace Dynamo.Ioc
 		// IResolvable + IResolveable<T> - instead of IRegistration ? can be used as a lazy resolve feature bascically 
 		// IRegistration have all info about the registratration ? which shouldnt be available for IResolveable ?
 
+
+		// set compileMode to none instead of using a nullable enum ?
+
 		#region Methods
 
 		#region Register
@@ -76,6 +79,8 @@ namespace Dynamo.Ioc
 
 			return RegisterImpl(expression, key, lifetime, compileMode);
 		}
+
+
 		private IExpressionRegistration RegisterImpl<T>(Expression<Func<IResolver, T>> expression, object key, ILifetime lifetime, CompileMode? compileMode)
 		{
 			if (expression == null)
@@ -88,6 +93,9 @@ namespace Dynamo.Ioc
 			
 			var registration = new ExpressionRegistration<T>(expression, lifetime, compileMode.Value);
 			
+
+			// SHOULD BE 2 DIFFERENT VERSIONS OF ADD - one for key and one without ... which have the null checks on the key
+
 			_index.Add(registration, key);
 
 			return registration;
@@ -303,12 +311,13 @@ namespace Dynamo.Ioc
 		#region TryResolveAll
 		public IEnumerable<object> TryResolveAll(Type type)
 		{
-			yield return TryResolveAll<object>();
+			// Just  return or yield return ?
+			//yield return TryResolveAll<object>();
 
-			//foreach (var registration in _index.TryGetAll(type))
-			//{
-			//    yield return registration.GetInstance(this);
-			//}
+			foreach (var registration in _index.TryGetAll(type))
+			{
+				yield return registration.GetInstance(this);
+			}
 		}
 		public IEnumerable<T> TryResolveAll<T>()
 		{

@@ -3,7 +3,7 @@
 // How to name it?
 // Set TransientLifetime
 // Use TransientLifetime
-// With TransientLifetime
+// With TransientLifetime *** Register<IFoo, Foo1>().WithTransientLifetime
 
 namespace Dynamo.Ioc
 {
