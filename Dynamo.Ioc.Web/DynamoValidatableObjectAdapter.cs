@@ -29,6 +29,7 @@ namespace Dynamo.Ioc.Web
 			{
 				return Enumerable.Empty<ModelValidationResult>();
 			}
+
 			IValidatableObject validatableObject = model as IValidatableObject;
 			if (validatableObject == null)
 			{
@@ -38,6 +39,7 @@ namespace Dynamo.Ioc.Web
 					model.GetType().FullName
 				}));
 			}
+
 			ValidationContext validationContext = new ValidationContext(validatableObject, _provider, null);		// Inject the provider here
 			return this.ConvertResults(validatableObject.Validate(validationContext));
 		}

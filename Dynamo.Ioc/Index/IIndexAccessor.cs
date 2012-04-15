@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 
-// Should TryGetAll use normal TryXxx pattern with out parameter ? - in that case it cant use yield return and be lazy
-
-// Implement IsEmpty and Count or just use Linq Count() and Any() for that ? - implementing it will of course result in better performance
-
 // IIndexReader / IIndexAccessor ?
 
-
+// Should TryGetAll use normal TryXxx pattern with out parameter ? - in that case it cant use yield return and be lazy
+// Implement IsEmpty and Count or just use Linq Count() and Any() for that ? - implementing it will of course result in better performance
 
 // No reason for the Generic overloads ? just syntactic sugar - remove them ?
 

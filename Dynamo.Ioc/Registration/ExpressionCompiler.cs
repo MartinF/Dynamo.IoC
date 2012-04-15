@@ -5,11 +5,11 @@ using System.Linq.Expressions;
 // + Resolve(Registration) and Resolve(Registration<T>) ?
 
 // Turn Generic method calls into the equvilant using type directly ? - very small improvement
-// Add support for using cached compiled registration to speed it up instead of compiling the whole "tree" for each registration ?
 // TryCompile - which doesnt throw exception if not able to compile / find a reference to a registration needed ?
 
 // Better protection against infinite loop ?
 
+// Add support for using cached compiled registration to speed it up instead of compiling the whole "tree" for each registration ?
 // Wrap in Compiler which could take care of caching the Compiled Expressions to speed it up instead of compiling the full tree every single time.
 // Just let the Compiler provide methods for getting the Expression from an registration - check if has already been compiled and return it instead etc.
 

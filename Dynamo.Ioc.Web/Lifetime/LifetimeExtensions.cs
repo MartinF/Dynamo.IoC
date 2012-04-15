@@ -2,9 +2,8 @@
 using System.Web.Caching;
 
 // Name how ? 
-// Set-Request/Session/Cached-Lifetime ?
-// Prefix with Http ? - HttpRequestLifetime / SetHttpRequestLifetime ?
-// Instead of Http -RequestLifetime - prefix with Web ? Web-RequestLifetime / WebSessionLifetime ?
+// Set / With -Request/Session/Cached-Lifetime ?
+// Prefix with Http or Web? - HttpRequestLifetime / SetHttpRequestLifetime ?
 
 namespace Dynamo.Ioc.Web
 {

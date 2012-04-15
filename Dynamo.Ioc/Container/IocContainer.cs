@@ -10,8 +10,8 @@ using Dynamo.Ioc.Index;
 
 // IDisposable - Container, Registration, Lifetime, Index ? - but index and registration can be shared ?
 
-// Test performance !!!!!!!!
 // FIX tests
+
 // Nuget and homepage (version + documentation)
 
 namespace Dynamo.Ioc

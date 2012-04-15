@@ -1,7 +1,5 @@
 ﻿using System;
 
-// Could be generic but should use out keyword so it can always use ILifetime<object>
-
 namespace Dynamo.Ioc
 {
 	public interface ILifetime

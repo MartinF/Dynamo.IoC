@@ -4,6 +4,7 @@
 // Set TransientLifetime
 // Use TransientLifetime
 // With TransientLifetime *** Register<IFoo, Foo1>().WithTransientLifetime
+// But it already have a SetLifetime method - so SetTransientLifetime would make more sense?
 
 namespace Dynamo.Ioc
 {

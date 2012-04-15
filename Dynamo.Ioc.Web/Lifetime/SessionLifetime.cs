@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Web;
 
+// How to dispose object when session ends?
+// Create a wrapper implementing an destructor that automatically calls dispose?
+// but why not let the actual object implement it itself then?
+
 namespace Dynamo.Ioc.Web
 {
 	public sealed class SessionLifetime : HttpContextAwareLifetimeBase
@@ -29,6 +33,7 @@ namespace Dynamo.Ioc.Web
 			// or create some temporary storage (thread storage) ?
 			if (session == null)
 				return factory(resolver);
+				//throw new Exception("Xxx Type is registered using a SessionLifetime, but the session is not available at this point (maybe you are calling from a application startup) ... some good description");
 
 			object instance = session[_key];
 

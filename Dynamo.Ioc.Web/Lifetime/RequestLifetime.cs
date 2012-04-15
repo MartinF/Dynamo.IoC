@@ -39,10 +39,10 @@ namespace Dynamo.Ioc.Web
 				context.Items[_key] = instance;
 
 				if (_disposeOnEnd)
-					context.RegisterForDispose((IDisposable)instance);	// throws exception to make you aware that it doesnt implement IDisposable as expected 
+					context.RegisterForDispose((IDisposable)instance);	// throws exception to make you aware that it doesnt implement IDisposable as expected - or just ignore?
 
 				// But should throw different Exception than InvalidCastException ? Fix test ?
-				// Could make the check in Init instead ?
+				// Make Init method for the Lifetime where it can be checked?
 			}
 
 			return instance;

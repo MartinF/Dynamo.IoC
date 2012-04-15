@@ -2,32 +2,7 @@
 using System.Linq.Expressions;
 
 // Create IInstanceFactory interface with CreateInstance(IResolver) method instead of injecting Func<IResolver, object> directly into the GetInstance() method on ILifetime?
-
-
-
 // Registration also needs to be disposable - etc InstanceRegistration could have instance using unmanaged resources that needs to be disposed ?
-
-// What about writing a generic wrapper for any kind of object ? - the object should implement a desctructor that automatically calls Dispose on the object ?
-
-
-
-// Use generic parameter
-// Also make generic IRegistration interface which can be returned by the Register method and automatically used when using Resolve(IRegistration<T>) etc ?
-	// !!! - IRegistration could have generic implementation of GetInstance() - T GetInstance(IResolver) ?
-	// OBS.: Should be covariant then because the <T> value should not be the type registered but the type it should use for the lookup ?
-	// But not really needed ? using the the implementation Type as T will just give the exact type and not an interface etc !?
-
-// Make lifetime optional in constructor and let it automatically use TransientLifetime if null etc ?
-
-// Fix problem where Func<IResolver, object> factory always return an object - if generic it doesnt make sense to return anything else than the T
-// Requires fix of Expression<Func<IResolver, object>> to also include the T
-// The problem bascially comes from when the Expression is compiled by the compiler which currently doesnt preserve the original T but only works with object ?
-
-
-
-// Wrap the ExpressionCompiler - So there is a Worker/Visitior and a Compiler which is just a wrapper around it where a cache for the current compiling could be implemented etc ?
-
-
 
 // Doesnt need to be generic!? - only there to enforce the constraints
 
@@ -109,9 +84,6 @@ namespace Dynamo.Ioc
 			
 			if (lifetime == null)
 				throw new ArgumentNullException("lifetime");
-
-			// Init new lifetime
-			//lifetime.Init(this);
 
 			// If _lifetime is already set dispose it first ? or call Clear/Reset() if supported ?
 			//if (_lifetime != null)

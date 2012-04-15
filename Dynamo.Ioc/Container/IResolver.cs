@@ -25,16 +25,12 @@ namespace Dynamo.Ioc
 		IEnumerable<object> TryResolveAll(Type type);
 		IEnumerable<T> TryResolveAll<T>();
 
-
-
 		// Could add the following methods
 		// But requires additional work to the compiler, because it needs to distinguish between methods signatures (Resolve(Type) and Resolve(IRegistration))
 		// etc. for generic one it would be something like - if (arguments.Count == 1 && (!arguments[0].Type.IsImplementationOfGenericInterface(typeof(IRegistration<>)))) // T Resolve<T>(object key)
  
 		//object Resolve(IRegistration registration);
 		//T Resolve<T>(IRegistration<T> registration);
-
-
 
 		// bool TryResolve(IRegistration, out object instance)
 		// bool TryResolve<T>(IRegistration<T>, out T instance) ? 
