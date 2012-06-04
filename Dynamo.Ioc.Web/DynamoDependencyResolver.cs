@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Web.Mvc;
 
 // http://bradwilson.typepad.com/blog/2010/10/service-location-pt5-idependencyresolver.html
 
+// Adds support for both Mvc and Web Api
+
 namespace Dynamo.Ioc.Web
 {
-	public class DynamoDependencyResolver : IDependencyResolver, IServiceProvider
+	public class DynamoDependencyResolver : IServiceProvider, System.Web.Mvc.IDependencyResolver, System.Web.Http.Dependencies.IDependencyResolver
 	{
 		private readonly IIocContainer _container;
 
@@ -28,6 +29,15 @@ namespace Dynamo.Ioc.Web
 		public IEnumerable<object> GetServices(Type serviceType)
 		{
 			return _container.TryResolveAll(serviceType);
+		}
+
+		public System.Web.Http.Dependencies.IDependencyScope BeginScope()
+		{
+			return null;
+		}
+
+		public void Dispose()
+		{
 		}
 	}
 }
