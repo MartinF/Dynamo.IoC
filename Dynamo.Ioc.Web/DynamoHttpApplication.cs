@@ -8,19 +8,18 @@ using System.Web.Http;
 // Any way to run clean/clear on lifetime after Application_Start() have run ? - as there is no Session / Request context available
 //[assembly: WebActivator.PostApplicationStartMethod(typeof(Rmote.Web.App_Start.MiniProfilerPackage), "PostStart")]
 
-// Rename to DynamoIoCHttpApplication ?
-
 namespace Dynamo.Ioc.Web
 {
 	public abstract class DynamoHttpApplication : HttpApplication
 	{
-		// Must be static to be shared accross all HttpApplication instances created
+		// Properties
 		protected static DynamoDependencyResolver DependencyResolver { get; private set; }
 		
 		// Methods
 		protected virtual void Application_Start()
 		{
 			var container = new IocContainer();
+
 			var depencenyResolver = new DynamoDependencyResolver(container);
 			DependencyResolver = depencenyResolver;
 
