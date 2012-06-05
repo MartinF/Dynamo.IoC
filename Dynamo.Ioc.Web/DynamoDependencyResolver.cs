@@ -33,7 +33,7 @@ namespace Dynamo.Ioc.Web
 
 		public System.Web.Http.Dependencies.IDependencyScope BeginScope()
 		{
-			return this;	// null?
+			return this;
 		}
 
 		public void Dispose()
