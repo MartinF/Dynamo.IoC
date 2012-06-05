@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.SessionState;
 using Dynamo.Ioc.Tests;
-using Dynamo.Testing.Mocks.Web2;
+using Dynamo.Ioc.Web.Tests.Mocks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Dynamo.Ioc.Web.Tests

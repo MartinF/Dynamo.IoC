@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Web;
 using Dynamo.Ioc.Tests;
-using Dynamo.Testing.Mocks.Web2;
+using Dynamo.Ioc.Web.Tests.Mocks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 // Remove the dependency on Dynamo.Testing - just move the mock implementation over or write a new one (the old is a mess isnt it?)
