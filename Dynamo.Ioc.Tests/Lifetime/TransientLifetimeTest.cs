@@ -1,20 +1,17 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Dynamo.Ioc.Tests.LifetimeTests
+namespace Dynamo.Ioc.Tests.Lifetime
 {
 	[TestClass]
 	public class TransientLifetimeTest
 	{
-		/// <summary>
-		/// Resolving with Transient Lifetime returns a new instance
-		/// </summary>
 		[TestMethod]
 		public void TransientLifetimeAlwaysReturnsANewInstance()
 		{
 			// Arrange 
 			using (var container = new IocContainer())
 			{
-				container.Register<IFoo>(c => new Foo1());	//.SetLifetime(new TransientLifetime<IFoo>);
+				container.Register<IFoo>(c => new Foo1()).WithTransientLifetime();
 
 				// Act
 				var result1 = container.Resolve<IFoo>();

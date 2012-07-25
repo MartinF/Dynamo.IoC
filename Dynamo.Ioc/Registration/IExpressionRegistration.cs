@@ -1,20 +1,15 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-// Add IsCompiled Property ?
-// Keep ICompilableRegistration interface ? on the IExpressionRegistration interface or put on the implementation ExpressionRegistration ?
-
 namespace Dynamo.Ioc
 {
-	public interface IExpressionRegistration : IRegistration, ICompilableRegistration, IFluentInterface
+	public interface IExpressionRegistration : ILifetimeRegistration
 	{
 		// Properties
-		CompileMode CompileMode { get; }
-		ILifetime Lifetime { get; }
-		Expression<Func<IResolver, object>> Expression { get; }
-
-		// Methods
-		IExpressionRegistration SetLifetime(ILifetime lifetime);
-		IExpressionRegistration SetCompileMode(CompileMode compileMode);
+		CompileMode CompileMode { get; set; }
+		Expression<Func<IResolver, object>> Expression { get; set; }
+		IResolver Resolver { get; }
+		
+		// bool IsCompiled? - can be set automatically when Expression is changed?
 	}
 }

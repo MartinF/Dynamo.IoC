@@ -4,49 +4,42 @@
 
 namespace Dynamo.Ioc
 {
-	public class InstanceRegistration<T> : IRegistration
+	public class InstanceRegistration<T> : RegistrationBase<T>
 	{
 		#region Fields
-		private readonly Type _implementationType;
-		private readonly Type _returnType;
 		private readonly object _instance;
 		#endregion
 
 		#region Constructors
-		public InstanceRegistration(T instance)
+		public InstanceRegistration(T instance, object key = null) 
+			: base(key: key)
 		{
 			if (instance == null)
 				throw new ArgumentNullException("instance");
 
 			_instance = instance;
-
-			_returnType = typeof(T);
-			_implementationType = instance.GetType();
 		}
-		#endregion
-
-		#region Properties
-		public Type ImplementationType { get { return _implementationType; } }
-		public Type ReturnType { get { return _returnType; } }
 		#endregion
 
 		#region Methods
-		public object GetInstance(IResolver resolver)
+		public override object GetInstance()
 		{
 			return _instance;
 		}
-	
-		//public void Dispose()
+		
+		public override bool Verify()
+		{
+			return true;
+		}
+
+		//public override void Dispose()
 		//{
-		//    // Remove this ?
-
-		//    // Cant be sure that all instances registered should be disposed just because the container/registration is being disposed ?
-		//        // Either you should be able to configure it or it should be removed ?
-		//        // Resources shouldnt be open for the lifetime of the container anyway should they ?
-
-		//    //var disposable = _instance as IDisposable;
-		//    //if (disposable != null)
-		//    //    disposable.Dispose();
+		//	var disposable = _instance as IDisposable;
+		//	if (disposable != null)
+		//	{
+		//		disposable.Dispose();
+		//		_instance = null;
+		//	}
 		//}
 		#endregion
 	}

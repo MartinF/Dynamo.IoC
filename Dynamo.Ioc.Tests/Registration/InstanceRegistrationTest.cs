@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Dynamo.Ioc.Tests.Registration
@@ -17,10 +14,9 @@ namespace Dynamo.Ioc.Tests.Registration
 			var instance = new Foo1();
 			var reg = new InstanceRegistration<IFoo>(instance);
 
-			Assert.AreEqual(reg.ImplementationType, typeof(Foo1));
 			Assert.AreEqual(reg.ReturnType, typeof(IFoo));
 
-			var out1 = reg.GetInstance(container);
+			var out1 = reg.GetInstance();
 
 			Assert.AreSame(instance, out1);
 		}

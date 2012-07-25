@@ -102,16 +102,20 @@
     <Compile Include="DynamoAreaRegistration.cs" />
     <Compile Include="DynamoDataAnnotationsModelValidator.cs" />
     <Compile Include="DynamoDependencyResolver.cs" />
-    <Compile Include="DynamoHttpApplication.cs" />
+    <Compile Include="DynamoDependencyScope.cs" />
+    <Compile Include="DynamoMvcAndWebApiApplication.cs" />
     <Compile Include="DynamoValidatableObjectAdapter.cs" />
-    <Compile Include="Lifetime\CachedLifetime.cs" />
-    <Compile Include="Lifetime\HttpContextAwareLifetimeBase.cs" />
-    <Compile Include="Lifetime\LifetimeExtensions.cs" />
+    <Compile Include="Lifetime\LifetimeRegistrationExtensions.cs" />
     <Compile Include="Lifetime\RequestLifetime.cs" />
     <Compile Include="Lifetime\SessionLifetime.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResolverExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Dynamo.Ioc.Extensions\Dynamo.Ioc.Extensions.csproj">
+      <Project>{ae92e278-1a5f-4613-8334-b35ac8da9e5c}</Project>
+      <Name>Dynamo.Ioc.Extensions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Dynamo.Ioc\Dynamo.Ioc.csproj">
       <Project>{AADD668B-8394-4276-A10B-C8C2EFD165FD}</Project>
       <Name>Dynamo.Ioc</Name>

@@ -4,9 +4,13 @@ namespace Dynamo.Ioc
 {
 	public sealed class TransientLifetime : ILifetime
 	{
-		public object GetInstance(Func<IResolver, object> factory, IResolver resolver)
+		public object GetInstance(IInstanceFactoryRegistration registration)
 		{
-			return factory(resolver);
+			return registration.CreateInstance();
+		}
+
+		public void Dispose()
+		{
 		}
 	}
 }

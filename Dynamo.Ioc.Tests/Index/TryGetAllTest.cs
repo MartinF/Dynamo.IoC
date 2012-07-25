@@ -11,16 +11,16 @@ namespace Dynamo.Ioc.Tests.Index
 		public void TryGetAllReturnsExpectedRegistrations()
 		{
 			var reg1 = new InstanceRegistration<IFoo>(new Foo1());
-			var reg2 = new InstanceRegistration<IFoo>(new Foo1());
-			var reg3 = new InstanceRegistration<IFoo>(new Foo1());
-			var reg4 = new InstanceRegistration<IBar>(new Bar1());
+			var reg2 = new InstanceRegistration<IFoo>(new Foo1(), "Key1");
+			var reg3 = new InstanceRegistration<IFoo>(new Foo1(), "Key2");
+			var reg4 = new InstanceRegistration<IBar>(new Bar1(), "Key1");
 
 			foreach (var index in Helper.GetIndexes())
 			{
 				index.Add(reg1);
-				index.Add(reg2, "Key1");
-				index.Add(reg3, "Key2");
-				index.Add(reg4, "Key1");
+				index.Add(reg2);
+				index.Add(reg3);
+				index.Add(reg4);
 
 				var all = index.TryGetAll(typeof(IFoo));
 
@@ -42,16 +42,16 @@ namespace Dynamo.Ioc.Tests.Index
 		public void TryGetAllGenericReturnsExpectedRegistrations()
 		{
 			var reg1 = new InstanceRegistration<IFoo>(new Foo1());
-			var reg2 = new InstanceRegistration<IFoo>(new Foo1());
-			var reg3 = new InstanceRegistration<IFoo>(new Foo1());
-			var reg4 = new InstanceRegistration<IBar>(new Bar1());
+			var reg2 = new InstanceRegistration<IFoo>(new Foo1(), "Key1");
+			var reg3 = new InstanceRegistration<IFoo>(new Foo1(), "Key2");
+			var reg4 = new InstanceRegistration<IBar>(new Bar1(), "Key1");
 
 			foreach (var index in Helper.GetIndexes())
 			{
 				index.Add(reg1);
-				index.Add(reg2, "Key1");
-				index.Add(reg3, "Key2");
-				index.Add(reg4, "Key1");
+				index.Add(reg2);
+				index.Add(reg3);
+				index.Add(reg4);
 
 				var all = index.TryGetAll<IFoo>();
 
@@ -73,12 +73,12 @@ namespace Dynamo.Ioc.Tests.Index
 		public void TryGetAllThrowsExceptionIfTypeIsNotRegistered()
 		{
 			var reg1 = new InstanceRegistration<IFoo>(new Foo1());
-			var reg2 = new InstanceRegistration<IFoo>(new Foo1());
+			var reg2 = new InstanceRegistration<IFoo>(new Foo1(), "Key");
 
 			foreach (var index in Helper.GetIndexes())
 			{
 				index.Add(reg1);
-				index.Add(reg2, "Key");
+				index.Add(reg2);
 
 				var result = index.TryGetAll(typeof(IBar));
 
@@ -92,12 +92,12 @@ namespace Dynamo.Ioc.Tests.Index
 		public void TryGetAllGenericThrowsExceptionIfTypeIsNotRegistered()
 		{
 			var reg1 = new InstanceRegistration<IFoo>(new Foo1());
-			var reg2 = new InstanceRegistration<IFoo>(new Foo1());
+			var reg2 = new InstanceRegistration<IFoo>(new Foo1(), "Key");
 
 			foreach (var index in Helper.GetIndexes())
 			{
 				index.Add(reg1);
-				index.Add(reg2, "Key");
+				index.Add(reg2);
 
 				var result = index.TryGetAll<IBar>();
 

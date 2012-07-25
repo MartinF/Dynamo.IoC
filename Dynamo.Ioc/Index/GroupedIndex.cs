@@ -15,12 +15,13 @@ namespace Dynamo.Ioc.Index
 		#endregion
 
 		#region Methods
-		public void Add(IRegistration registration, object key = null)
+		public void Add(IRegistration registration)
 		{
 			if (registration == null)
 				throw new ArgumentNullException("registration");
 
 			var type = registration.ReturnType;
+			var key = registration.Key;
 
 			GroupedEntry oldEntry;
 			if (_index.TryGetValue(type, out oldEntry))
@@ -171,5 +172,15 @@ namespace Dynamo.Ioc.Index
 			return GetEnumerator();
 		}
 		#endregion
+
+		public void Dispose()
+		{
+			foreach (var reg in this)
+			{
+				reg.Dispose();
+			}
+
+			_index.Clear();
+		}
 	}
 }

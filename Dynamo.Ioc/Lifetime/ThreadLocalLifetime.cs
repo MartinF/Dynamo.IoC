@@ -1,24 +1,32 @@
 ﻿using System;
 using System.Threading;
 
-// Rename to ThreadLifetime / PerThreadLifetime
-// ThreadLocal<> needs to be disposed.
+// Rename to ThreadLifetime / PerThreadLifetime ?
 
 namespace Dynamo.Ioc
 {
 	public sealed class ThreadLocalLifetime : ILifetime
 	{
-		private readonly ThreadLocal<object> _threadLocalInstance = new ThreadLocal<object>();
+		private ThreadLocal<object> _threadLocalInstance = new ThreadLocal<object>();
 
-		public object GetInstance(Func<IResolver, object> factory, IResolver resolver)
+		public object GetInstance(IInstanceFactoryRegistration registration)
 		{
 			if (!_threadLocalInstance.IsValueCreated)
-				_threadLocalInstance.Value = factory(resolver);
+				_threadLocalInstance.Value = registration.CreateInstance();
 
 			return _threadLocalInstance.Value;
 		}
 
-		// Dispose
-		// Or implement desctructor to make sure _threadLocalInstance is disposed
+		public void Dispose()
+		{
+			// Only handle disposing of dynamo ioc related references
+			// If instance registered uses unmanaged resources and should be disposed the user should implement a finalizer
+
+			if (_threadLocalInstance != null)
+			{
+				_threadLocalInstance.Dispose();
+				_threadLocalInstance = null;
+			}
+		}
 	}
 }

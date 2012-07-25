@@ -12,7 +12,7 @@ namespace Dynamo.Ioc.Web.Tests
 		{
 			using (var container = new IocContainer(() => new TransientLifetime()))
 			{
-				var registration = container.Register<IFoo>(c => new Foo1()).RequestLifetime();
+				var registration = container.Register<IFoo>(c => new Foo1()).WithRequestLifetime();
 
 				Assert.IsTrue(registration.Lifetime is RequestLifetime);
 			}
@@ -23,20 +23,9 @@ namespace Dynamo.Ioc.Web.Tests
 		{
 			using (var container = new IocContainer(() => new TransientLifetime()))
 			{
-				var registration = container.Register<IFoo>(c => new Foo1()).SessionLifetime();
+				var registration = container.Register<IFoo>(c => new Foo1()).WithSessionLifetime();
 
 				Assert.IsTrue(registration.Lifetime is SessionLifetime);
-			}
-		}
-
-		[TestMethod]
-		public void CachedLifetimeExtensionMethodSetsLifetime()
-		{
-			using (var container = new IocContainer(() => new TransientLifetime()))
-			{
-				var registration = container.Register<IFoo>(c => new Foo1()).CachedLifetime();
-
-				Assert.IsTrue(registration.Lifetime is CachedLifetime);
 			}
 		}
 
@@ -44,21 +33,14 @@ namespace Dynamo.Ioc.Web.Tests
 		[ExpectedException(typeof(ArgumentNullException))]
 		public void RequestLifetimeExtensionMethodThrowsExceptionIfParameterIsNull()
 		{
-			LifetimeExtensions.RequestLifetime(null);
+			LifetimeRegistrationExtensions.WithRequestLifetime<ILifetimeRegistration>(null);
 		}
 
 		[TestMethod]
 		[ExpectedException(typeof(ArgumentNullException))]
 		public void SessionLifetimeExtensionMethodThrowsExceptionIfParameterIsNull()
 		{
-			LifetimeExtensions.SessionLifetime(null);
-		}
-
-		[TestMethod]
-		[ExpectedException(typeof(ArgumentNullException))]
-		public void CachedLifetimeExtensionMethodThrowsExceptionIfParameterIsNull()
-		{
-			LifetimeExtensions.CachedLifetime(null);
+			LifetimeRegistrationExtensions.WithSessionLifetime<ILifetimeRegistration>(null);
 		}
 	}
 }

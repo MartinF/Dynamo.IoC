@@ -48,6 +48,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Runtime.Caching" />
   </ItemGroup>
   <ItemGroup>
     <CodeAnalysisDependentAssemblyPaths Condition=" '$(VS100COMNTOOLS)' != '' " Include="$(VS100COMNTOOLS)..\IDE\PrivateAssemblies">
@@ -55,17 +56,16 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Container\CompileTest.cs" />
-    <Compile Include="Container\ContainerTest.cs" />
-    <Compile Include="Container\KeyResolverTest.cs" />
-    <Compile Include="Container\RegisterAutoTest.cs" />
-    <Compile Include="Container\RegisterInstanceTest.cs" />
-    <Compile Include="Container\RegisterTest.cs" />
-    <Compile Include="Container\ResolveAllTest.cs" />
-    <Compile Include="Container\ResolveTest.cs" />
-    <Compile Include="Container\TryResolveAllTest.cs" />
-    <Compile Include="Container\TryResolveTest.cs" />
-    <Compile Include="Container\VerifyTest.cs" />
+    <Compile Include="CompileTest.cs" />
+    <Compile Include="ContainerTest.cs" />
+    <Compile Include="RegisterAutoTest.cs" />
+    <Compile Include="RegisterInstanceTest.cs" />
+    <Compile Include="RegisterTest.cs" />
+    <Compile Include="ResolveAllTest.cs" />
+    <Compile Include="ResolveTest.cs" />
+    <Compile Include="TryResolveAllTest.cs" />
+    <Compile Include="TryResolveTest.cs" />
+    <Compile Include="VerifyTest.cs" />
     <Compile Include="Index\Add.cs" />
     <Compile Include="Index\ContainsTest.cs" />
     <Compile Include="Index\GetAllTest.cs" />
@@ -74,7 +74,8 @@
     <Compile Include="Index\IndexTest.cs" />
     <Compile Include="Index\TryGetTest.cs" />
     <Compile Include="Index\TryGetAllTest.cs" />
-    <Compile Include="Lifetime\LifetimeExtensionsTest.cs" />
+    <Compile Include="Lifetime\CachedLifetimeTest.cs" />
+    <Compile Include="Registration\LifetimeRegistrationExtensionsTest.cs" />
     <Compile Include="Registration\ExpressionRegistrationTest.cs" />
     <Compile Include="Registration\InstanceRegistrationTest.cs" />
     <Compile Include="Stubs.cs" />
@@ -84,6 +85,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Dynamo.Ioc.Extensions\Dynamo.Ioc.Extensions.csproj">
+      <Project>{ae92e278-1a5f-4613-8334-b35ac8da9e5c}</Project>
+      <Name>Dynamo.Ioc.Extensions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Dynamo.Ioc\Dynamo.Ioc.csproj">
       <Project>{AADD668B-8394-4276-A10B-C8C2EFD165FD}</Project>
       <Name>Dynamo.Ioc</Name>

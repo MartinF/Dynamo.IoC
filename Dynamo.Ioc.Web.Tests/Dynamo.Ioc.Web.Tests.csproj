@@ -85,7 +85,6 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CachedLifetimeTest.cs" />
     <Compile Include="LifetimeExtensionsTest.cs" />
     <Compile Include="Mocks\FakeControllerContext.cs" />
     <Compile Include="Mocks\FakeHttpContext.cs" />
@@ -113,7 +112,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

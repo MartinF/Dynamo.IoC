@@ -4,8 +4,6 @@ using Dynamo.Ioc.Tests;
 using Dynamo.Ioc.Web.Tests.Mocks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-// Remove the dependency on Dynamo.Testing - just move the mock implementation over or write a new one (the old is a mess isnt it?)
-
 namespace Dynamo.Ioc.Web.Tests
 {
 	[TestClass]
@@ -62,10 +60,10 @@ namespace Dynamo.Ioc.Web.Tests
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(InvalidOperationException))]
+		[ExpectedException(typeof(InvalidCastException))]
 		public void RequestLifetimeWithDisposeOnEndThrowsExceptionIfInstanceIsNotIDisposable()
 		{
-			// Currently throws the wrong Expection (InvalidCastException)
+			// What exception should it throw?
 			// Type Exception of some sort ?
 
 			using (var container = new IocContainer())
@@ -79,6 +77,61 @@ namespace Dynamo.Ioc.Web.Tests
 
 				// But currently first throws exception here
 				var instance = container.Resolve<IFoo>();
+			}
+		}
+
+		[TestMethod]
+		public void RequestLifetimeWorksWithCompile()
+		{
+			using (var container = new IocContainer())
+			{
+				// Arrange
+				var context = new FakeHttpContext("Http://fakeUrl1.com");
+				var requestLifetime = new RequestLifetime(() => context, disposeOnEnd: false);	// Do not test disposeOnEnd here
+
+				container.Register<IFoo, Foo1>();
+				container.Register<IBar, Bar1>().SetLifetime(requestLifetime);
+				container.Register<IFooBar, FooBar>();
+
+				// Act
+				container.Compile();
+
+				var fooBar = container.Resolve<IFooBar>();
+
+				// Assert
+				Assert.IsNotNull(fooBar);
+				Assert.IsNotNull(fooBar.Foo);
+				Assert.IsNotNull(fooBar.Bar);
+			}
+		}
+
+		[TestMethod]
+		public void RequestLifetimeNestedWorksWithCompile()
+		{
+			// This doesnt work - will affect other Lifetimes that just nests the expression 
+			// Need to fix the scope of the input parameter IResolver
+
+			using (var container = new IocContainer())
+			{
+				// Arrange
+				var context = new FakeHttpContext("Http://fakeUrl1.com");
+				var requestLifetime = new RequestLifetime(() => context, disposeOnEnd: false);	// Do not test disposeOnEnd here
+
+				container.Register<IFoo, Foo1>();
+				container.Register<IBar, Bar1>().SetLifetime(requestLifetime);
+				container.Register<IFooBar, FooBar>();
+				container.Register<IFooBarContainer, FooBarContainer>();
+
+				// Act
+				container.Compile();
+
+				var fooBarContainer = container.Resolve<IFooBarContainer>();
+
+				// Assert
+				Assert.IsNotNull(fooBarContainer);
+				Assert.IsNotNull(fooBarContainer.FooBar);
+				Assert.IsNotNull(fooBarContainer.FooBar.Foo);
+				Assert.IsNotNull(fooBarContainer.FooBar.Bar);
 			}
 		}
 	}

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Web.Http.Dependencies;
 
 // http://bradwilson.typepad.com/blog/2010/10/service-location-pt5-idependencyresolver.html
 
@@ -33,11 +34,20 @@ namespace Dynamo.Ioc.Web
 
 		public System.Web.Http.Dependencies.IDependencyScope BeginScope()
 		{
-			return this;
+			// Be able to switch between Container Scope (returning this) and "real" scope
+
+			return new DynamoDependencyScope(_resolver.GetScope());	// or GetRequestScope() ?
+
+			//return this;
 		}
 
 		public void Dispose()
 		{
+			// Store Scope and dispose here if not already disposed ?
+			// Store every Scope created with BeginScope in list or dispose scope if new is requested?
+
+			// As long as BeginScope() returns this
+			// disposing container/resolver here will be a problems
 		}
 	}
 }

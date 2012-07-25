@@ -33,11 +33,16 @@ namespace Dynamo.Ioc.Tests
 
 	public class Bar2 : IBar
 	{
-		private readonly IFooBar _foobar;
+		// Used to test for infinite loop
 
-		public Bar2(IFooBar foobar)
+		private readonly IFooBar _fooBar;
+
+		public Bar2(IFooBar fooBar)
 		{
-			_foobar = foobar;
+			if (fooBar == null)
+				throw new ArgumentNullException("fooBar");
+
+			_fooBar = fooBar;
 		}
 	}
 
@@ -54,12 +59,39 @@ namespace Dynamo.Ioc.Tests
 
 		public FooBar(IFoo f, IBar b)
 		{
+			if (f == null)
+				throw new ArgumentNullException("f");
+			if (b == null)
+				throw new ArgumentNullException("b");
+
 			Foo = f;
 			Bar = b;
 		}
 
 		public FooBar()
 		{
+		}
+	}
+
+	public interface IFooBarContainer
+	{
+		IFooBar FooBar { get; set; }
+	}
+
+	public class FooBarContainer : IFooBarContainer
+	{
+		public IFooBar FooBar { get; set; }
+
+		public FooBarContainer()
+		{
+		}
+
+		public FooBarContainer(IFooBar fooBar)
+		{
+			if (fooBar == null)
+				throw new ArgumentNullException("fooBar");
+
+			FooBar = fooBar;
 		}
 	}
 

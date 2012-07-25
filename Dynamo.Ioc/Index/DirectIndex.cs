@@ -20,12 +20,13 @@ namespace Dynamo.Ioc.Index
 		private readonly Dictionary<Type, Dictionary<object, IRegistration>> _keyedIndex = new Dictionary<Type, Dictionary<object, IRegistration>>();
 		#endregion
 
-		public void Add(IRegistration registration, object key = null)
+		public void Add(IRegistration registration)
 		{
 			if (registration == null)
 				throw new ArgumentNullException("registration");
 
 			var type = registration.ReturnType;
+			var key = registration.Key;
 
 			if (key == null)
 			{
@@ -239,6 +240,17 @@ namespace Dynamo.Ioc.Index
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
+		}
+
+		public void Dispose()
+		{
+			foreach (var reg in this)
+			{
+				reg.Dispose();
+			}
+
+			_defaultIndex.Clear();
+			_keyedIndex.Clear();
 		}
 	}
 }

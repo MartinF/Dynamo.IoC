@@ -1,10 +1,8 @@
-﻿
+﻿using System;
+
 namespace Dynamo.Ioc.Index
 {
-	public interface IIndex : IIndexAccessor, IIndexBuilder
+	public interface IIndex : IIndexReader, IIndexBuilder, IDisposable
 	{
-		// Implement IDisposable ?
-		// Or/And
-		// Clear() and Remove() methods ? 
 	}
 }

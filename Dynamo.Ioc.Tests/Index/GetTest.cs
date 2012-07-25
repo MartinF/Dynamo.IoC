@@ -10,16 +10,16 @@ namespace Dynamo.Ioc.Tests.Index
 		public void GetReturnTheExpectedRegistration()
 		{
 			var reg1 = new InstanceRegistration<IFoo>(new Foo1());
-			var reg2 = new InstanceRegistration<IFoo>(new Foo1());
-			var reg3 = new InstanceRegistration<IFoo>(new Foo1());
-			var reg4 = new InstanceRegistration<IBar>(new Bar1());
+			var reg2 = new InstanceRegistration<IFoo>(new Foo1(), "Key1");
+			var reg3 = new InstanceRegistration<IFoo>(new Foo1(), "Key2");
+			var reg4 = new InstanceRegistration<IBar>(new Bar1(), "Key1");
 
 			foreach (var index in Helper.GetIndexes())
 			{
 				index.Add(reg1);
-				index.Add(reg2, "Key1");
-				index.Add(reg3, "Key2");
-				index.Add(reg4, "Key1");
+				index.Add(reg2);
+				index.Add(reg3);
+				index.Add(reg4);
 
 				var out1 = index.Get(typeof(IFoo));
 				var out2 = index.Get(typeof(IFoo), "Key2");
@@ -36,16 +36,16 @@ namespace Dynamo.Ioc.Tests.Index
 		public void GetGenericReturnTheExpectedRegistration()
 		{
 			var reg1 = new InstanceRegistration<IFoo>(new Foo1());
-			var reg2 = new InstanceRegistration<IFoo>(new Foo1());
-			var reg3 = new InstanceRegistration<IFoo>(new Foo1());
-			var reg4 = new InstanceRegistration<IBar>(new Bar1());
+			var reg2 = new InstanceRegistration<IFoo>(new Foo1(), "Key1");
+			var reg3 = new InstanceRegistration<IFoo>(new Foo1(), "Key2");
+			var reg4 = new InstanceRegistration<IBar>(new Bar1(), "Key1");
 
 			foreach (var index in Helper.GetIndexes())
 			{
 				index.Add(reg1);
-				index.Add(reg2, "Key1");
-				index.Add(reg3, "Key2");
-				index.Add(reg4, "Key1");
+				index.Add(reg2);
+				index.Add(reg3);
+				index.Add(reg4);
 
 				var out1 = index.Get<IFoo>();
 				var out2 = index.Get<IFoo>("Key2");

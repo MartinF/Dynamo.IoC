@@ -1,14 +1,18 @@
 ﻿using System;
+using Dynamo.Ioc.Fluent;
 
 namespace Dynamo.Ioc
 {
-	public interface IRegistration
+	public interface IRegistration : IDisposable, IFluentInterface
 	{
 		// Properties
-		Type ImplementationType { get; }
 		Type ReturnType { get; }
+		object Key { get; }
 
 		// Methods
-		object GetInstance(IResolver resolver);
+		object GetInstance();
+		bool Verify();
+
+		//void Clear();	// Reset
 	}
 }

@@ -12,13 +12,13 @@ namespace Dynamo.Ioc.Tests.Index
 		{
 			var reg1 = new InstanceRegistration<IFoo>(new Foo1());
 			var reg2 = new InstanceRegistration<IBar>(new Bar1());
-			var reg3 = new InstanceRegistration<IBar>(new Bar1());
+			var reg3 = new InstanceRegistration<IBar>(new Bar1(), "Key");
 
 			foreach (var index in Helper.GetIndexes())
 			{
 				index.Add(reg1);
 				index.Add(reg2);
-				index.Add(reg3, "Key");
+				index.Add(reg3);
 
 				Assert.IsTrue(index.Count() == 3);
 
@@ -67,16 +67,16 @@ namespace Dynamo.Ioc.Tests.Index
 		[TestMethod]
 		public void AddUsingKeyThrowsExceptionWhenDuplicatesAreRegistered()
 		{
-			var reg1 = new InstanceRegistration<IFoo>(new Foo1());
-			var reg2 = new InstanceRegistration<IFoo>(new Foo1());
+			var reg1 = new InstanceRegistration<IFoo>(new Foo1(), "Key");
+			var reg2 = new InstanceRegistration<IFoo>(new Foo1(), "Key");
 
 			foreach (var index in Helper.GetIndexes())
 			{
-				index.Add(reg1, "Key");
+				index.Add(reg1);
 
 				try
 				{
-					index.Add(reg2, "Key");
+					index.Add(reg2);
 					Assert.IsTrue(false);
 				}
 				catch (ArgumentException)

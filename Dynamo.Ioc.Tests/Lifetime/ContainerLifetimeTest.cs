@@ -1,11 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-// Fix these tests, there is no reason to keep testing the same thing over and over again for all of the Lifetimes ?
-
-namespace Dynamo.Ioc.Tests.LifetimeTests
-{
-	// Test the actual lifetime - without going through the container !
 	
+namespace Dynamo.Ioc.Tests.Lifetime
+{
 	[TestClass]
 	public class ContainerLifetimeTest
 	{

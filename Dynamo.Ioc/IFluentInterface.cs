@@ -2,9 +2,8 @@
 using System.ComponentModel;
 
 // Used for hiding the methods in the intellisense to get a more fluent syntax feel
-// Keep or remove ?
 
-namespace Dynamo.Ioc
+namespace Dynamo.Ioc.Fluent
 {
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public interface IFluentInterface

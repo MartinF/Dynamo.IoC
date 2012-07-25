@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Dynamo.Ioc.Tests.LifetimeTests
+namespace Dynamo.Ioc.Tests.Lifetime
 {
 	[TestClass]
 	public class ThreadLocalLifetimeTest
@@ -45,6 +45,7 @@ namespace Dynamo.Ioc.Tests.LifetimeTests
 
 				Assert.AreSame(result1, result2);
 				Assert.AreSame(result3, result4);
+
 				Assert.AreNotSame(result1, result3);
 			}
 		}
