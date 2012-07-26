@@ -1,14 +1,14 @@
 ﻿@{
 	ViewBag.Title = "";
-	var currentRelease = "Dynamo.Ioc-1.0-Beta.zip";
+	var currentRelease = "Dynamo.Ioc-3.0.0.1.zip";
 }
 
-<a class="downloadlink" href="@Url.Content("~/Content/" + currentRelease)">Click to Download - Version 1.0 (Beta)</a>
+<a class="downloadlink" href="@Url.Content("~/Content/" + currentRelease)">Click to Download - Version 3.0.0.1</a>
 
 <div>
 	<h2>What</h2>
 	<div>
-		Dynamo IOC Container is as the name implies an Inversion Of Control Container.
+		Dynamo IoC Container is as the name implies an Inversion of Control Container.
 		<br />
 		It is created for .NET and written in C#.
 	</div>
@@ -17,14 +17,16 @@
 <div>
 	<h2>Features</h2>
 	<div>
-		Here are some of the key features of Dynamo IOC Container:
+		Here are some of the key features of the Dynamo IoC Container:
 		<ul>
 			<li>Automatic registration (using generic Register method).</li>
 			<li>Manual registration using lambdas.</li>
 			<li>Property injection.</li>
 			<li>Pluggable lifetime system including various build-in lifetime implementations (Transient, Container/Singleton, Instance, Request, Session, Cached, Threadlocal -Lifetime).</li>
 			<li>Compile feature that makes it blazing fast.</li>
-			<li>Support for MVC 3 - Dependency Resolver and a Default implementation of HttpApplication and AreaRegistration to quickly get started.</li>
+			<li>Support for MVC 4 - Dependency Resolver and a Default implementation of HttpApplication and AreaRegistration to quickly get started.</li>
+			<li>Support for Web API - Dependency Resolver including scopes.</li>
+            <li>Scoped Resolving (including Request and Session scopes).</li>
 		</ul>
 
 	</div>
@@ -33,11 +35,11 @@
 <div>
 	<h2>Performance</h2>
 	<div>
-		Dynamo IOC container is very fast.
+		Dynamo IoC container is very fast.
 		<br />
-		You can find a performance comparison of the the most popular IOC Containers <a href="http://www.iocbattle.com" target="_blank">here</a>.
+		You can find a performance comparison of the the most popular IoC Containers <a href="http://www.iocbattle.com" target="_blank">here</a>.
 		<br />
-		As you will see Dynamo is many times faster than any of the tested IOC Containers, and almost as fast as using the new operator.
+		As you will see Dynamo is many times faster than any of the tested IoC Containers, and almost as fast as using the new operator.
 	</div>
 </div>
 
@@ -46,7 +48,7 @@
 	<div>
 		You can download the binaries by clicking the download link at the top (or <a href="@Url.Content("~/Content/" + currentRelease)">here</a>), or get the latest source code from <a href="https://github.com/MartinF/DynamoIOC" target="_blank">GitHub</a>.
 		<br />
-		It is also available on NuGet (please be aware that the web features are in a seperate assembly - just search for Dynamo).
+		It is also available on NuGet (please be aware that some features are in seperate assemblies - Dynamo.Ioc.Extensions and Dynamo.Ioc.Web - just search for Dynamo).
 	</div>
 </div>
 

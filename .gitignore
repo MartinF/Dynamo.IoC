@@ -10,6 +10,7 @@ _ReSharper*
 *.suo
 *.Publish.xml
 *.DotSettings
+*.pubxml
 ToDo.txt
 ToDoClass.txt
 Build/
