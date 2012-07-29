@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2BFCEC63-F32A-4FC8-AEEA-095C7B3CD02C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Dynamo.Ioc.Extensions</RootNamespace>
+    <AssemblyName>Dynamo.Ioc.Extensions</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Dynamo.Ioc.Extensions\ContainerExpressionRegistration.cs">
+      <Link>ContainerExpressionRegistration.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Extensions\KeyResolver.cs">
+      <Link>KeyResolver.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Extensions\LambdaRegistration.cs">
+      <Link>LambdaRegistration.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Extensions\LambdaRegistrationExtensions.cs">
+      <Link>LambdaRegistrationExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Extensions\ResolverExtensions.cs">
+      <Link>ResolverExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Extensions\Scope\IResolverScope.cs">
+      <Link>Scope\IResolverScope.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Extensions\Scope\ResolverExtensions.cs">
+      <Link>Scope\ResolverExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Extensions\Scope\ResolverScope.cs">
+      <Link>Scope\ResolverScope.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Extensions\TransientExpressionRegistration.cs">
+      <Link>TransientExpressionRegistration.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Extensions\Properties\AssemblyInfo.cs">
+      <Link>Properties\AssemblyInfo.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Dynamo.Ioc.Net4\Dynamo.Ioc.Net4.csproj">
+      <Project>{7D69D939-DBA5-429B-941A-28A4F53C6030}</Project>
+      <Name>Dynamo.Ioc.Net4</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
