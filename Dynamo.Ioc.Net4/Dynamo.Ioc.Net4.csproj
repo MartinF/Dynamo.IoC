@@ -1,0 +1,172 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7D69D939-DBA5-429B-941A-28A4F53C6030}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Dynamo.Ioc</RootNamespace>
+    <AssemblyName>Dynamo.Ioc</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Dynamo.Ioc\Compiler\CompileMode.cs">
+      <Link>Compiler\CompileMode.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc\Compiler\ExpressionCompiler.cs">
+      <Link>Compiler\ExpressionCompiler.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc\Compiler\ExpressionCompilerVisitor.cs">
+      <Link>Compiler\ExpressionCompilerVisitor.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc\Compiler\ICompiler.cs">
+      <Link>Compiler\ICompiler.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc\Exception\InvalidRegistrationException.cs">
+      <Link>Exception\InvalidRegistrationException.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc\Helpers\ExpressionExtensions.cs">
+      <Link>Helpers\ExpressionExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc\Helpers\ExpressionHelper.cs">
+      <Link>Helpers\ExpressionHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc\Helpers\ReflectionHelper.cs">
+      <Link>Helpers\ReflectionHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc\IFluentInterface.cs">
+      <Link>IFluentInterface.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc\IIocContainer.cs">
+      <Link>IIocContainer.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc\Index\DirectIndex.cs">
+      <Link>Index\DirectIndex.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc\Index\GroupedEntry.cs">
+      <Link>Index\GroupedEntry.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc\Index\GroupedIndex.cs">
+      <Link>Index\GroupedIndex.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc\Index\IIndex.cs">
+      <Link>Index\IIndex.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc\Index\IIndexBuilder.cs">
+      <Link>Index\IIndexBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc\Index\IIndexReader.cs">
+      <Link>Index\IIndexReader.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc\IocContainer.cs">
+      <Link>IocContainer.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc\IResolver.cs">
+      <Link>IResolver.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc\Lifetime\CachedLifetime.cs">
+      <Link>Lifetime\CachedLifetime.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc\Lifetime\ContainerLifetime.cs">
+      <Link>Lifetime\ContainerLifetime.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc\Lifetime\ILifetime.cs">
+      <Link>Lifetime\ILifetime.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc\Lifetime\ThreadLocalLifetime.cs">
+      <Link>Lifetime\ThreadLocalLifetime.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc\Lifetime\TransientLifetime.cs">
+      <Link>Lifetime\TransientLifetime.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc\Registration\ExpressionRegistration.cs">
+      <Link>Registration\ExpressionRegistration.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc\Registration\ExpressionRegistrationExtensions.cs">
+      <Link>Registration\ExpressionRegistrationExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc\Registration\IExpressionRegistration.cs">
+      <Link>Registration\IExpressionRegistration.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc\Registration\IInstanceFactoryRegistration.cs">
+      <Link>Registration\IInstanceFactoryRegistration.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc\Registration\ILifetimeRegistration.cs">
+      <Link>Registration\ILifetimeRegistration.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc\Registration\InstanceRegistration.cs">
+      <Link>Registration\InstanceRegistration.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc\Registration\IRegistration.cs">
+      <Link>Registration\IRegistration.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc\Registration\LifetimeRegistrationBase.cs">
+      <Link>Registration\LifetimeRegistrationBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc\Registration\LifetimeRegistrationExtensions.cs">
+      <Link>Registration\LifetimeRegistrationExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc\Registration\RegistrationBase.cs">
+      <Link>Registration\RegistrationBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc\ResolverExtensions.cs">
+      <Link>ResolverExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc\ServiceProviderAdapter.cs">
+      <Link>ServiceProviderAdapter.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc\Properties\AssemblyInfo.cs">
+      <Link>Properties\AssemblyInfo.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

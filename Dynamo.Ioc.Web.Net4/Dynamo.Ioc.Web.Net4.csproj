@@ -5,12 +5,12 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{47BA6C40-4D08-4434-A27A-ACFBF0039658}</ProjectGuid>
+    <ProjectGuid>{9DEA36F2-CE16-486F-8920-24D40DA41AA2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dynamo.Ioc.Web</RootNamespace>
     <AssemblyName>Dynamo.Ioc.Web</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -99,30 +99,49 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DynamoAreaRegistration.cs" />
-    <Compile Include="DynamoDataAnnotationsModelValidator.cs" />
-    <Compile Include="DynamoDependencyResolver.cs" />
-    <Compile Include="DynamoDependencyScope.cs" />
-    <Compile Include="DynamoMvcAndWebApiApplication.cs" />
-    <Compile Include="DynamoValidatableObjectAdapter.cs" />
-    <Compile Include="Lifetime\LifetimeRegistrationExtensions.cs" />
-    <Compile Include="Lifetime\RequestLifetime.cs" />
-    <Compile Include="Lifetime\SessionLifetime.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ResolverExtensions.cs" />
+    <Compile Include="..\Dynamo.Ioc.Web\DynamoAreaRegistration.cs">
+      <Link>DynamoAreaRegistration.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Web\DynamoDataAnnotationsModelValidator.cs">
+      <Link>DynamoDataAnnotationsModelValidator.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Web\DynamoDependencyResolver.cs">
+      <Link>DynamoDependencyResolver.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Web\DynamoDependencyScope.cs">
+      <Link>DynamoDependencyScope.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Web\DynamoMvcAndWebApiApplication.cs">
+      <Link>DynamoMvcAndWebApiApplication.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Web\DynamoValidatableObjectAdapter.cs">
+      <Link>DynamoValidatableObjectAdapter.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Web\Lifetime\LifetimeRegistrationExtensions.cs">
+      <Link>Lifetime\LifetimeRegistrationExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Web\Lifetime\RequestLifetime.cs">
+      <Link>Lifetime\RequestLifetime.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Web\Lifetime\SessionLifetime.cs">
+      <Link>Lifetime\SessionLifetime.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Web\ResolverExtensions.cs">
+      <Link>ResolverExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Web\Properties\AssemblyInfo.cs">
+      <Link>Properties\AssemblyInfo.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Dynamo.Ioc.Extensions\Dynamo.Ioc.Extensions.csproj">
-      <Project>{ae92e278-1a5f-4613-8334-b35ac8da9e5c}</Project>
-      <Name>Dynamo.Ioc.Extensions</Name>
+    <ProjectReference Include="..\Dynamo.Ioc.Extensions.Net4\Dynamo.Ioc.Extensions.Net4.csproj">
+      <Project>{2BFCEC63-F32A-4FC8-AEEA-095C7B3CD02C}</Project>
+      <Name>Dynamo.Ioc.Extensions.Net4</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Dynamo.Ioc\Dynamo.Ioc.csproj">
-      <Project>{AADD668B-8394-4276-A10B-C8C2EFD165FD}</Project>
-      <Name>Dynamo.Ioc</Name>
+    <ProjectReference Include="..\Dynamo.Ioc.Net4\Dynamo.Ioc.Net4.csproj">
+      <Project>{7D69D939-DBA5-429B-941A-28A4F53C6030}</Project>
+      <Name>Dynamo.Ioc.Net4</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

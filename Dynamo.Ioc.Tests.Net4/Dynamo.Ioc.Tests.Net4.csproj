@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{E12B3EEF-0DD0-4C51-B189-A9F48490385B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Dynamo.Ioc.Tests</RootNamespace>
+    <AssemblyName>Dynamo.Ioc.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Runtime.Caching" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDependentAssemblyPaths Condition=" '$(VS100COMNTOOLS)' != '' " Include="$(VS100COMNTOOLS)..\IDE\PrivateAssemblies">
+      <Visible>False</Visible>
+    </CodeAnalysisDependentAssemblyPaths>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Dynamo.Ioc.Tests\CompileTest.cs">
+      <Link>CompileTest.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Tests\ContainerTest.cs">
+      <Link>ContainerTest.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Tests\Index\Add.cs">
+      <Link>Index\Add.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Tests\Index\ContainsTest.cs">
+      <Link>Index\ContainsTest.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Tests\Index\GetAllTest.cs">
+      <Link>Index\GetAllTest.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Tests\Index\GetTest.cs">
+      <Link>Index\GetTest.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Tests\Index\Helper.cs">
+      <Link>Index\Helper.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Tests\Index\IndexTest.cs">
+      <Link>Index\IndexTest.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Tests\Index\TryGetAllTest.cs">
+      <Link>Index\TryGetAllTest.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Tests\Index\TryGetTest.cs">
+      <Link>Index\TryGetTest.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Tests\Lifetime\CachedLifetimeTest.cs">
+      <Link>Lifetime\CachedLifetimeTest.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Tests\Lifetime\ContainerLifetimeTest.cs">
+      <Link>Lifetime\ContainerLifetimeTest.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Tests\Lifetime\ThreadLocalLifetimeTest.cs">
+      <Link>Lifetime\ThreadLocalLifetimeTest.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Tests\Lifetime\TransientLifetimeTest.cs">
+      <Link>Lifetime\TransientLifetimeTest.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Tests\RegisterAutoTest.cs">
+      <Link>RegisterAutoTest.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Tests\RegisterInstanceTest.cs">
+      <Link>RegisterInstanceTest.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Tests\RegisterTest.cs">
+      <Link>RegisterTest.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Tests\Registration\ExpressionRegistrationTest.cs">
+      <Link>Registration\ExpressionRegistrationTest.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Tests\Registration\InstanceRegistrationTest.cs">
+      <Link>Registration\InstanceRegistrationTest.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Tests\Registration\LifetimeRegistrationExtensionsTest.cs">
+      <Link>Registration\LifetimeRegistrationExtensionsTest.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Tests\ResolveAllTest.cs">
+      <Link>ResolveAllTest.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Tests\ResolveTest.cs">
+      <Link>ResolveTest.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Tests\Stubs.cs">
+      <Link>Stubs.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Tests\TryResolveAllTest.cs">
+      <Link>TryResolveAllTest.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Tests\TryResolveTest.cs">
+      <Link>TryResolveTest.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Tests\VerifyTest.cs">
+      <Link>VerifyTest.cs</Link>
+    </Compile>
+    <Compile Include="..\Dynamo.Ioc.Tests\Properties\AssemblyInfo.cs">
+      <Link>Properties\AssemblyInfo.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Dynamo.Ioc.Extensions.Net4\Dynamo.Ioc.Extensions.Net4.csproj">
+      <Project>{2BFCEC63-F32A-4FC8-AEEA-095C7B3CD02C}</Project>
+      <Name>Dynamo.Ioc.Extensions.Net4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Dynamo.Ioc.Net4\Dynamo.Ioc.Net4.csproj">
+      <Project>{7D69D939-DBA5-429B-941A-28A4F53C6030}</Project>
+      <Name>Dynamo.Ioc.Net4</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
