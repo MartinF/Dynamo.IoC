@@ -11,14 +11,30 @@
 <div>
 	Just create a new instance of the Container object.
 	<code>
-		var container = new Container();
+		var container = new IocContainer();
 	</code>
 			
 	It is possible to change the default lifetime used when registering (the default lifetime is Transient which always create a new instance).
 	<code>
-		var container = new Container(Lifetime.Container);
+		var container = new IocContainer(() => new ContainerLifetime());
 	</code>
 </div>
+
+
+
+Mention defining what constructor to use?
+Compile Mode
+
+Scope resolving
+Lambda Registration
+Request / Session lifetime
+
+lazyresolve / getfactory ... 
+
+
+Update feature list
+
+
 
 <h3>Registration</h3>
 <div>
