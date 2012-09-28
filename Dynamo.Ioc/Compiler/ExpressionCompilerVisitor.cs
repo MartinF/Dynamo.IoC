@@ -45,8 +45,8 @@ namespace Dynamo.Ioc.Compiler
 		private Expression HandleMethodCall(Type type, object key = null)
 		{
 			// Simple protection against infinite loop
-			// Assumes infinit loop if more than 100 visits 
-			if (_visitCount >= 100)
+			// Assumes infinit loop if more than 10000 visits 
+			if (_visitCount >= 10000)
 				throw new InvalidOperationException("Registration for/including " + FormatTypeKeyMessage(type, key) + " caused an infinite loop.");
 			
 			_visitCount++;
