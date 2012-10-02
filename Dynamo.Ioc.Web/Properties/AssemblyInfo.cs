@@ -32,4 +32,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion("3.0.0.3")]
 [assembly: AssemblyFileVersion("3.0.0.3")]
 
-[assembly: InternalsVisibleTo("Dynamo.Ioc.Web.Tests")]
+//[assembly: InternalsVisibleTo("Dynamo.Ioc.Web.Tests")]

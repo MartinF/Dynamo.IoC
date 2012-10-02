@@ -29,6 +29,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Dynamo.Ioc.Extensions.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -40,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ContainerExpressionRegistration.cs" />
+    <Compile Include="ContainerExtensions.cs" />
     <Compile Include="KeyResolver.cs" />
     <Compile Include="LambdaRegistration.cs" />
     <Compile Include="LambdaRegistrationExtensions.cs" />
@@ -56,7 +63,9 @@
       <Name>Dynamo.Ioc</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Dynamo.Ioc.Extensions.snk" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

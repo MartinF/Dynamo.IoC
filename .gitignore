@@ -18,3 +18,4 @@ NuGet/
 Local.testsettings
 _Resharper.*/
 *.log
+*.snk
