@@ -208,13 +208,9 @@ namespace Dynamo.Ioc.Compiler
 				// If using _index.Get() and not found it will throw KeyNotFoundException
 				// Could catch the KeyNotFoundException and wrap it in the InvalidOperationException instead ?			
 
-				//var msg = "Error occured when trying to compile registration for " + FormatTypeKeyMessage(_target.Type, _target.Key) + ". " +
-				//          "Cannot find the registration for " + FormatTypeKeyMessage(type, key);
-				//if (_current != _target)
-				//    msg += ", referenced in the registration for " + FormatTypeKeyMessage(_current.Type, _current.Key);
-				var msg = "Error occured when trying to compile registration";
+				var errorMsg = string.Format("Error occured when trying to compile registration for {0}. Could not find referenced registration for {1}. Please make sure it has been registered.", FormatTypeKeyMessage(_targetRegistration.ReturnType, _targetRegistration.Key), FormatTypeKeyMessage(type, key));
 
-				throw new InvalidOperationException(msg);
+				throw new InvalidOperationException(errorMsg);
 			}
 
 			return registration;
