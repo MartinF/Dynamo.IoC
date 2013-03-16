@@ -1,3 +1,3 @@
-# Dynamo IOC - The worlds fastest dependency Injector
+# Dynamo IOC - The super fast .NET dependency Injector
 
 See http://www.dynamoioc.com for more.
