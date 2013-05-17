@@ -57,7 +57,7 @@ namespace Dynamo.Ioc.Index
 			if (type == null)
 				throw new ArgumentNullException("type");
 			if (!_defaultIndex.ContainsKey(type))
-				throw new ArgumentException("type " + type.FullName + " is not in the index");
+				throw new KeyNotFoundException("type " + type.FullName + " is not in the index");
 
 			return _defaultIndex[type];
 		}
@@ -68,7 +68,7 @@ namespace Dynamo.Ioc.Index
 			if (key == null)
 				throw new ArgumentNullException("key");
 			if (!_keyedIndex.ContainsKey(type))
-				throw new ArgumentException("type " + type.FullName + " is not in the index");
+				throw new KeyNotFoundException("type " + type.FullName + " is not in the index");
 
 			return _keyedIndex[type][key];
 		}

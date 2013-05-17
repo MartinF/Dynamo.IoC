@@ -42,6 +42,8 @@ namespace Dynamo.Ioc.Index
 		{
 			if (type == null)
 				throw new ArgumentNullException("type");
+			if (!_index.ContainsKey(type))
+				throw new KeyNotFoundException("type " + type.FullName + " is not in the index");
 
 			return _index[type].Get();
 		}
@@ -49,16 +51,18 @@ namespace Dynamo.Ioc.Index
 		{
 			if (type == null)
 				throw new ArgumentNullException("type");
+			if (!_index.ContainsKey(type))
+				throw new KeyNotFoundException("type " + type.FullName + " is not in the index");
 
 			return _index[type].Get(key);
 		}
 		public IRegistration Get<T>()
 		{
-			return _index[typeof(T)].Get();
+			return Get(typeof(T));
 		}
 		public IRegistration Get<T>(object key)
 		{
-			return _index[typeof(T)].Get(key);
+			return Get(typeof(T), key);
 		}
 
 		public bool TryGet(Type type, out IRegistration registration)
