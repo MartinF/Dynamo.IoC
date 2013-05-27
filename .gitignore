@@ -19,3 +19,4 @@ Local.testsettings
 _Resharper.*/
 *.log
 *.snk
+*.nupkg
