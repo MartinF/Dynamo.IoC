@@ -14,7 +14,6 @@ _ReSharper*
 ToDo.txt
 ToDoClass.txt
 Build/
-NuGet/
 Local.testsettings
 _Resharper.*/
 *.log
