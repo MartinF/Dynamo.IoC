@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 // Create default configuration and test it instead of configuring every time - DRY
@@ -64,7 +65,62 @@ namespace Dynamo.Ioc.Tests
 				Assert.IsInstanceOfType(result, typeof(Foo1));
 			}
 		}
-	
+
+		[TestMethod]
+		public void ResolveCanResolveCollection()
+		{
+			var foo1 = new Foo1();
+			var foo2 = new Foo2();
+			var foo3 = new Foo1();
+			IList<IFoo> list = new List<IFoo>(new IFoo[] { foo1, foo2, foo3 });
+			
+			// Register Instance
+			using (var container = new IocContainer())
+			{
+				container.RegisterInstance(typeof(IEnumerable<IFoo>), list);
+				container.RegisterInstance(typeof(IEnumerable<IFoo>), list, "TheKey");
+
+				AssertResolveCanResolveIEnumerableType(container);
+				AssertResolveCanResolveIEnumerableType(container, "TheKey");
+			}
+
+			// RegisterInstance - Generic
+			using (var container = new IocContainer())
+			{
+				container.RegisterInstance<IEnumerable<IFoo>>(list);
+				container.RegisterInstance<IEnumerable<IFoo>>(list, "TheKey");
+
+				AssertResolveCanResolveIEnumerableType(container);
+				AssertResolveCanResolveIEnumerableType(container, "TheKey");
+			}
+
+			// Register
+			using (var container = new IocContainer())
+			{
+				container.Register<IEnumerable<IFoo>>(x => list);
+				container.Register<IEnumerable<IFoo>>(x => list, "TheKey");
+
+				AssertResolveCanResolveIEnumerableType(container);
+				AssertResolveCanResolveIEnumerableType(container, "TheKey");
+			}
+		}
+		
+		private void AssertResolveCanResolveIEnumerableType(IResolver resolver, string key = null)
+		{
+			// Test both generic and non - generic ? 
+
+			var result = key == null ? resolver.Resolve<IEnumerable<IFoo>>() : resolver.Resolve<IEnumerable<IFoo>>(key);
+
+			Assert.IsNotNull(result);
+			Assert.IsInstanceOfType(result, typeof(IEnumerable<IFoo>));
+
+			var collection = result.ToArray();
+
+			CollectionAssert.AllItemsAreNotNull(collection);
+			CollectionAssert.AllItemsAreUnique(collection);
+			CollectionAssert.AllItemsAreInstancesOfType(collection, typeof(IFoo));
+		}
+		
 		[TestMethod]
 		[ExpectedException(typeof(KeyNotFoundException))]
 		public void ResolveGenericThrowsExceptionIfRegistrationDoesntExist()
@@ -108,8 +164,6 @@ namespace Dynamo.Ioc.Tests
 				container.Resolve(typeof(IFoo), "Key");
 			}
 		}
-
-
 
 		[TestMethod]
 		public void ResolveByTypeOrKeyResolvesToDifferentTypes()
