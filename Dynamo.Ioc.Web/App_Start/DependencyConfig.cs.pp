@@ -5,7 +5,8 @@ using Dynamo.Ioc.Web;
 // Could as-well use the built-in attribute if you don't care about the order
 // [assembly: System.Web.PreApplicationStartMethodAttribute(typeof($rootnamespace$.App_Start.DependencyConfig), "PreStart")]
 
-[assembly: WebActivatorEx.PreApplicationStartMethod(typeof($rootnamespace$.App_Start.DependencyConfig), "PreStart", Order = 1)]
+// When Order is not defined it defaults to -1, so -2 is used to make it run first
+[assembly: WebActivatorEx.PreApplicationStartMethod(typeof($rootnamespace$.App_Start.DependencyConfig), "PreStart", Order = -2)]
 namespace $rootnamespace$.App_Start
 {
 	internal static class DependencyConfig
