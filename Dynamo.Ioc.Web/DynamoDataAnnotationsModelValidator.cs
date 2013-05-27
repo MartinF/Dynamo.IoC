@@ -5,7 +5,7 @@ using System.Web.Mvc;
 
 namespace Dynamo.Ioc.Web
 {
-	class DynamoDataAnnotationsModelValidator : DataAnnotationsModelValidator
+	public class DynamoDataAnnotationsModelValidator : DataAnnotationsModelValidator
 	{
 		private readonly IServiceProvider _provider;
 

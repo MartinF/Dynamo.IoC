@@ -43,11 +43,6 @@ namespace Dynamo.Ioc.Web
 
 		public void Dispose()
 		{
-			// Store Scope and dispose here if not already disposed ?
-			// Store every Scope created with BeginScope in list or dispose scope if new is requested?
-
-			// As long as BeginScope() returns this
-			// disposing container/resolver here will be a problems
 		}
 	}
 }
