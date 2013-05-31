@@ -234,13 +234,13 @@ namespace Dynamo.Ioc
 		{
 			var compiler = new ExpressionCompiler();
 			compiler.Compile(this);
-
-			Verify();
 		}
 
 		public void Verify()
 		{
 			// For ExpressionRegistrations it only verfies it can create instances - not if the lifetime is working like it should in the given context etc.
+
+			// TODO: Rename to Pre-heat / Bootstrap / ? 
 
 			foreach (var registration in _index)
 			{
