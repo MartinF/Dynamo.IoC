@@ -36,6 +36,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dynamo.Ioc.Web.Tests.Net4",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Net4", "Net4", "{F52AE492-C0E6-492D-B88C-F03F454CD7C8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dynamo.Ioc.ServiceLocator", "Dynamo.Ioc.ServiceLocator\Dynamo.Ioc.ServiceLocator.csproj", "{8CF4A896-2E9B-43B2-85B5-BDD41D133EFF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dynamo.Ioc.ServiceLocator.Tests", "Dynamo.Ioc.ServiceLocator.Tests\Dynamo.Ioc.ServiceLocator.Tests.csproj", "{951299AA-5098-4A8C-B8D6-9AB98553C359}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Dynamo.Ioc.vsmdi
@@ -97,6 +101,14 @@ Global
 		{FDB0FFD2-6BA2-418B-90E7-EBF2544259C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDB0FFD2-6BA2-418B-90E7-EBF2544259C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FDB0FFD2-6BA2-418B-90E7-EBF2544259C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CF4A896-2E9B-43B2-85B5-BDD41D133EFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CF4A896-2E9B-43B2-85B5-BDD41D133EFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CF4A896-2E9B-43B2-85B5-BDD41D133EFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CF4A896-2E9B-43B2-85B5-BDD41D133EFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{951299AA-5098-4A8C-B8D6-9AB98553C359}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{951299AA-5098-4A8C-B8D6-9AB98553C359}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{951299AA-5098-4A8C-B8D6-9AB98553C359}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{951299AA-5098-4A8C-B8D6-9AB98553C359}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
